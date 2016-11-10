@@ -12,7 +12,7 @@
 # include "../Utilitys/Yumayo.h"
 # include "../Interfaces/Talk.h"
 # include "../Interfaces/Description.h"
-# include "../Utilitys/HandAnimation.h"
+# include "../Utilitys/HundAnimation.h"
 
 //Nomoto's include
 # include "../Player/Player.h"
@@ -73,7 +73,7 @@ namespace User
         cinder::gl::Texture* kougeki;
         cinder::gl::Texture* bougyo;
         MoveInput moveInput;
-        HandAnimationRef handAnimation;
+        HundAnimation handAnimation;
         //=======================================
 
 
@@ -84,20 +84,20 @@ namespace User
         //=======================================
 
 
-		//=======================================
-		// 大ちゃんが管理するもののインスタンス化。
+        //=======================================
+        // 大ちゃんが管理するもののインスタンス化。
 
-		Special special;
-		std::vector<Audio*> mainbgm;
-		int watercount;
-		std::shared_ptr<Fusuma> fusuma;
-		int time;
-		Audio* mpmax;
-		bool ismpmax;
-		Audio* horagai;
-		bool isTutorialStart = false;
-		bool isTutorialEnd = false;
-		bool isGameStart = false;
-		//=======================================
+        Special special;
+        std::vector<Audio*> mainbgm;
+        int watercount;
+        std::shared_ptr<Fusuma> fusuma;
+        int time;
+        Audio* mpmax;
+        bool ismpmax;
+        Audio* horagai;
+        bool isTutorialStart = false;
+        bool isTutorialEnd = false;
+        bool isGameStart = false;
+        //=======================================
     };
 }

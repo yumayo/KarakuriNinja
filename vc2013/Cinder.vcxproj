@@ -152,10 +152,6 @@
     <ClCompile Include="..\src\User\SceneSystems\SceneCreater.cpp" />
     <ClCompile Include="..\src\User\SceneSystems\SceneTask.cpp" />
     <ClCompile Include="..\src\User\Scenes\SceneBegin.cpp" />
-    <ClCompile Include="..\src\User\Scenes\SceneGame.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\src\User\Scenes\SceneResult.cpp" />
     <ClCompile Include="..\src\User\Scenes\SceneTitle.cpp" />
     <ClCompile Include="..\src\User\Scenes\SceneTutorial.cpp" />
@@ -180,12 +176,13 @@
     <ClCompile Include="..\src\User\Utilitys\GlobalData.cpp" />
     <ClCompile Include="..\src\User\Utilitys\GlobalDraw.cpp" />
     <ClCompile Include="..\src\User\Utilitys\GlobalEditor.cpp" />
-    <ClCompile Include="..\src\User\Utilitys\HandAnimation.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Hirasawa.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\HundAnimation.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Nomoto.cpp" />
     <ClCompile Include="..\src\User\Utilitys\ObjRender.cpp" />
     <ClCompile Include="..\src\User\Utilitys\SearchSystem.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Skydome.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\TitleCircle.cpp" />
     <ClCompile Include="..\src\User\Utilitys\TutorialData.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Yumayo.cpp" />
     <ClCompile Include="..\src\User\ZKOO\InputZKOO.cpp" />
@@ -247,10 +244,6 @@
     <ClInclude Include="..\src\User\SceneSystems\SceneCreater.h" />
     <ClInclude Include="..\src\User\SceneSystems\SceneTask.h" />
     <ClInclude Include="..\src\User\Scenes\SceneBegin.h" />
-    <ClInclude Include="..\src\User\Scenes\SceneGame.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\src\User\Scenes\SceneResult.h" />
     <ClInclude Include="..\src\User\Scenes\SceneStart.h" />
     <ClInclude Include="..\src\User\Scenes\SceneTitle.h" />
@@ -281,12 +274,13 @@
     <ClInclude Include="..\src\User\Utilitys\GlobalData.h" />
     <ClInclude Include="..\src\User\Utilitys\GlobalDraw.h" />
     <ClInclude Include="..\src\User\Utilitys\GlobalEditor.h" />
-    <ClInclude Include="..\src\User\Utilitys\HandAnimation.h" />
     <ClInclude Include="..\src\User\Utilitys\Hirasawa.h" />
+    <ClInclude Include="..\src\User\Utilitys\HundAnimation.h" />
     <ClInclude Include="..\src\User\Utilitys\Nomoto.h" />
     <ClInclude Include="..\src\User\Utilitys\ObjRender.h" />
     <ClInclude Include="..\src\User\Utilitys\SearchSystem.h" />
     <ClInclude Include="..\src\User\Utilitys\Skydome.h" />
+    <ClInclude Include="..\src\User\Utilitys\TitleCircle.h" />
     <ClInclude Include="..\src\User\Utilitys\TutorialData.h" />
     <ClInclude Include="..\src\User\Utilitys\Yumayo.h" />
     <ClInclude Include="..\src\User\ZKOO\InputZKOO.h" />

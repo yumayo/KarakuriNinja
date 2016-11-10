@@ -50,13 +50,13 @@ namespace User
 
     void Field::draw( cinder::CameraPersp const& camera )
     {
-        skydome->Draw( camera );
+        /*skydome->Draw( camera );
 
         gl::pushModelView( );
         gl::translate( Vec3f( -ground->getWidth( ) / 2, 0, -ground->getHeight( ) / 2 ) );
         gl::rotate( Vec3f( 90, 0, 0 ) );
         gl::draw( *ground );
-        gl::popModelView( );
+        gl::popModelView( );*/
 
         for ( auto itr = karakuriMeshObjects.begin( ); itr != karakuriMeshObjects.end( ); ++itr )
         {

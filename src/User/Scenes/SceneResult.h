@@ -119,7 +119,6 @@ namespace User
         void drawTitle( );
         void drawTables( );
         void drawBeginScore( );
-        void textureDraw( cinder::gl::Texture const & texture, cinder::Vec2f position, cinder::Vec2f realsize, cinder::Area area, float size );
         void soundplay( Audio* audio, bool& flag );
         void pushIcon( );
         int calcurateScore(int score, int maxcombo, int nowhp, int time);
@@ -131,5 +130,6 @@ namespace User
         void updatecamera( );
         void drawMyIcon( );
 		void drawEnd();
+		void textureDraw(cinder::gl::Texture const & texture, cinder::Vec2f position, cinder::Vec2f realsize, cinder::Area area, float size);
     };
 }

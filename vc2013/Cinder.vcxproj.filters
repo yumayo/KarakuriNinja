@@ -156,9 +156,6 @@
     <ClInclude Include="..\src\User\SlashEffect\SlashEffect.h">
       <Filter>User\SlashEffect</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\User\Scenes\SceneGame.h">
-      <Filter>User\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\User\Assets\Assets.h">
       <Filter>User\Asset</Filter>
     </ClInclude>
@@ -357,7 +354,10 @@
     <ClInclude Include="..\src\User\Effect\EffectScore.h">
       <Filter>User\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\User\Utilitys\HandAnimation.h">
+    <ClInclude Include="..\src\User\Utilitys\HundAnimation.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\TitleCircle.h">
       <Filter>User\Utilitys</Filter>
     </ClInclude>
   </ItemGroup>
@@ -440,9 +440,6 @@
     </ClCompile>
     <ClCompile Include="..\src\User\SlashEffect\SlashEffect.cpp">
       <Filter>User\SlashEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\User\Scenes\SceneGame.cpp">
-      <Filter>User\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="..\src\User\Assets\Asstes.cpp">
       <Filter>User\Asset</Filter>
@@ -612,7 +609,10 @@
     <ClCompile Include="..\src\User\Effect\EffectScore.cpp">
       <Filter>User\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\User\Utilitys\HandAnimation.cpp">
+    <ClCompile Include="..\src\User\Utilitys\HundAnimation.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\TitleCircle.cpp">
       <Filter>User\Utilitys</Filter>
     </ClCompile>
   </ItemGroup>

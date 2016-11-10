@@ -1,88 +1,88 @@
 {
   "MeshObject": [
-    {
-      "beginCount": 60,
-      "moveCount": 100,
-      "begin": [ -10.0, 0.0, 0.0 ],
-      "end": [ -5.0, 0.0, 0.0 ],
-      "rotate": [ 0.0, 90.0, 0.0 ],
-      "scale": [ 2.0, 2.0, 2.0 ],
-      "texture": "kidobanya.jpg",
-      "obj": "kidobanya.obj"
-    },
-    {
-      "beginCount": 60,
-      "moveCount": 100,
-      "begin": [ -15.0, 0.0, 5.0 ],
-      "end": [ -5.0, 0.0, 5.0 ],
-      "rotate": [ 0.0, 90.0, 0.0 ],
-      "scale": [ 2.0, 2.0, 2.0 ],
-      "texture": "kidobanya.jpg",
-      "obj": "kidobanya.obj"
-    },
-    {
-      "beginCount": 60,
-      "moveCount": 100,
-      "begin": [ -20.0, 0.0, 10.0 ],
-      "end": [ -5.0, 0.0, 10.0 ],
-      "rotate": [ 0.0, 90.0, 0.0 ],
-      "scale": [ 2.0, 2.0, 2.0 ],
-      "texture": "kidobanya.jpg",
-      "obj": "kidobanya.obj"
-    },
-    {
-      "beginCount": 60,
-      "moveCount": 100,
-      "begin": [ -25.0, 0.0, 15.0 ],
-      "end": [ -5.0, 0.0, 15.0 ],
-      "rotate": [ 0.0, 90.0, 0.0 ],
-      "scale": [ 2.0, 2.0, 2.0 ],
-      "texture": "kidobanya.jpg",
-      "obj": "kidobanya.obj"
-    },
-    {
-      "beginCount": 60,
-      "moveCount": 100,
-      "begin": [ 10.0, 0.0, 0.0 ],
-      "end": [ 5.0, 0.0, 0.0 ],
-      "rotate": [ 0.0, 90.0, 0.0 ],
-      "scale": [ 2.0, 2.0, 2.0 ],
-      "texture": "kidobanya.jpg",
-      "obj": "kidobanya.obj"
-    },
-    {
-      "beginCount": 60,
-      "moveCount": 100,
-      "begin": [ 15.0, 0.0, 5.0 ],
-      "end": [ 5.0, 0.0, 5.0 ],
-      "rotate": [ 0.0, 90.0, 0.0 ],
-      "scale": [ 2.0, 2.0, 2.0 ],
-      "texture": "kidobanya.jpg",
-      "obj": "kidobanya.obj"
-    },
-    {
-      "beginCount": 60,
-      "moveCount": 100,
-      "begin": [ 20.0, 0.0, 10.0 ],
-      "end": [ 5.0, 0.0, 10.0 ],
-      "rotate": [ 0.0, 90.0, 0.0 ],
-      "scale": [ 2.0, 2.0, 2.0 ],
-      "texture": "kidobanya.jpg",
-      "obj": "kidobanya.obj"
-    },
-    {
-      "beginCount": 60,
-      "moveCount": 100,
-      "begin": [ 25.0, 0.0, 15.0 ],
-      "end": [ 5.0, 0.0, 15.0 ],
-      "rotate": [ 0.0, 90.0, 0.0 ],
-      "scale": [ 2.0, 2.0, 2.0 ],
-      "texture": "kidobanya.jpg",
-      "obj": "kidobanya.obj"
-    }
   ],
   "RectObject": [
-
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ 0.0, 0.0, 9.2 ],
+      "end": [ 0.0, 0.0, 9.2 ],
+      "rotate": [ 0.0, 0.0, 180.0 ],
+      "scale": [ 31.36, 17.28, 1.0 ],
+      "texture": "Stage/back (1).png"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ 0.0, 0.0, 9.3 ],
+      "end": [ 0.0, 0.0, 9.3 ],
+      "rotate": [ 0.0, 0.0, 180.0 ],
+      "scale": [ 31.36, 17.28, 1.0 ],
+      "texture": "Stage/back (2).png"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ 0.0, 0.0, 9.4 ],
+      "end": [ 0.0, 0.0, 9.4 ],
+      "rotate": [ 0.0, 0.0, 180.0 ],
+      "scale": [ 31.36, 17.28, 1.0 ],
+      "texture": "Stage/back (3).png"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ 0.0, 0.0, 9.5 ],
+      "end": [ 0.0, 0.0, 9.5 ],
+      "rotate": [ 0.0, 0.0, 180.0 ],
+      "scale": [ 31.36, 17.28, 1.0 ],
+      "texture": "Stage/back (4).png"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ 0.0, 0.0, 9.6 ],
+      "end": [ 0.0, 0.0, 9.6 ],
+      "rotate": [ 0.0, 0.0, 180.0 ],
+      "scale": [ 31.36, 17.28, 1.0 ],
+      "texture": "Stage/back (5).png"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ 0.0, 0.0, 9.7 ],
+      "end": [ 0.0, 0.0, 9.7 ],
+      "rotate": [ 0.0, 0.0, 180.0 ],
+      "scale": [ 31.36, 17.28, 1.0 ],
+      "texture": "Stage/back (6).png"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ 0.0, 0.0, 9.8 ],
+      "end": [ 0.0, 0.0, 9.8 ],
+      "rotate": [ 0.0, 0.0, 180.0 ],
+      "scale": [ 31.36, 17.28, 1.0 ],
+      "texture": "Stage/back (7).png"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ 0.0, 0.0, 9.9 ],
+      "end": [ 0.0, 0.0, 9.9 ],
+      "rotate": [ 0.0, 0.0, 180.0 ],
+      "scale": [ 31.36, 17.28, 1.0 ],
+      "texture": "Stage/back (8).png"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ 0.0, 0.0, 10.0 ],
+      "end": [ 0.0, 0.0, 10.0 ],
+      "rotate": [ 0.0, 0.0, 180.0 ],
+      "scale": [ 31.36, 17.28, 1.0 ],
+      "texture": "Stage/back (9).png"
+    }
   ],
   "Enemy": [
     {

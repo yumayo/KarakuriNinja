@@ -29,7 +29,6 @@ namespace User
         damageColor = ColorA( 1, 0, 0, 0 );
         talk = std::make_shared<Talk>( );
         description = std::make_shared<Description>( );
-        handAnimation = std::make_shared<HandAnimation>( );
         kougeki = &GData::FindTexture( "Textures/kougeki.png" );
         bougyo = &GData::FindTexture( "Textures/bougyo.png" );
 
@@ -288,7 +287,7 @@ namespace User
 
             Vec2f left( env.getWindowWidth( ) / 2 - 256, env.getWindowHeight( ) / 2 );
             Vec2f right( env.getWindowWidth( ) / 2 + 256, env.getWindowHeight( ) / 2 );
-            handAnimation->updateGuard( left, right, Vec2f( 512, 512 ) );
+            handAnimation.updateGuard( left, right, Vec2f( 512, 512 ) );
 
             description->SetMode( Description::Mode::BOUGYO );
 
@@ -336,7 +335,7 @@ namespace User
 
             Vec2f end( env.getWindowWidth( ) / 2 - 256, env.getWindowHeight( ) / 2 );
             Vec2f begin( env.getWindowWidth( ) / 2 + 256, env.getWindowHeight( ) / 2 );
-            handAnimation->updateAttack( begin, end, Vec2f( 512, 512 ) );
+            handAnimation.updateAttack( begin, end, Vec2f( 512, 512 ) );
 
             description->SetMode( Description::Mode::KOUGEKI );
 
@@ -539,11 +538,11 @@ namespace User
 
         if ( TRData::guard.IsStopUpdate( ) )
         {
-            handAnimation->drawGuard( );
+            handAnimation.drawGuard( Vec2f( 600, 50 ) );
         }
         else if ( TRData::playerAttack.IsStopUpdate( ) )
         {
-            handAnimation->drawAttack( );
+            handAnimation.drawAttack( Vec2f( 600, 50 ) );
         }
 
         if ( TRData::attackCircle.IsStopUpdate( ) || TRData::guard.IsStopUpdate( ) )

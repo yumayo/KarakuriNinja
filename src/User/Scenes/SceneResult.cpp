@@ -261,7 +261,8 @@ namespace User
     {
         if ( t_[TS::HONOO] >= 1.0f )
             Easing::tCount( t_[TS::NINJA], 1.f );
-        ninjasize = Vec2f( env.getWindowWidth( ) / 1.5f, env.getWindowHeight( ) / 1.5f );
+		ninjasize.x = env.getWindowWidth() / 2.5f;
+		ninjasize.y = ninjasize.x*(ninja->getSize().y / ninja->getSize().x);
         ninjapos.x = Easing::getEasing[Easing::SineOut]( t_[TS::NINJA], -env.getWindowWidth( ) / 2.f, env.getWindowWidth( ) / 4.f );
         ninjapos.y = env.getWindowHeight( ) - ninjasize.y / 2 * 1.1f;
 
@@ -586,7 +587,7 @@ namespace User
 		}
 		if (endt_[0] >= 1.0f) {
 			Vec2f size = Vec2f(700,160);
-			Easing::tCount(endt_[1], 5.f);
+			Easing::tCount(endt_[1], 2.f);
 			gl::pushModelView();
 			gl::translate(env.getWindowSize()/2);
 			gl::color(ColorA(1,1,1,1));
@@ -598,7 +599,7 @@ namespace User
 			tables.Draw(str, env.getWindowSize() / 2 +Vec2f(0,-tables.BoundingBox(str).getHeight() / 2.2F),Color::black(),User::Fonts::Mode::CENTERUP);
 		}
 		if (endt_[1] >= 1.0f) {
-			Easing::tCount(endt_[2], 3.f);
+			Easing::tCount(endt_[2], 2.f);
 			gl::pushModelView();
 			gl::translate(env.getWindowSize() / 2);
 			gl::color(ColorA(0, 0, 0, endt_[2]));
