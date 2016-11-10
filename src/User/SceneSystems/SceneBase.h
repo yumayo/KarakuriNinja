@@ -24,21 +24,4 @@ namespace User
         // ここ以外でのシーン切り替えは未定義に入るので気をつけましょう。
         virtual void select();
     };
-
-    //==============================
-    // ～コピー用～
-    //==============================
-    //# pragma once
-    //# include "Scene.hpp"
-    //class SceneTy : public SceneBase
-    //{
-    //public:
-    //    SceneTy( );
-    //    ~SceneTy( );
-    //public:
-    //    void resize( );
-    //    void update( );
-    //    void draw( );
-    //    void select( );
-    //};
 }

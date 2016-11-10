@@ -18,7 +18,7 @@ namespace User
         FieldManager( );
     public:
         void Update( );
-        void Draw( );
+        void Draw( cinder::CameraPersp const& camera );
         void End( );
         bool IsChange( );
         void ChangeField( );

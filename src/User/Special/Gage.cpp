@@ -2,16 +2,16 @@
 
 void Gage::draw()
 {
-	gagedraw(texs[GAGE], Vec2f(600, 70), Vec2f(app::getWindowWidth() / 2, app::getWindowHeight() / 1.1f),
-		cinder::Area(0, 0, texs[GAGE].getSize().x, texs[GAGE].getSize().y),count_);
+	gagedraw(*texs[GAGE], Vec2f(600, 70), Vec2f(app::getWindowWidth() / 2, app::getWindowHeight() / 1.1f),
+		cinder::Area(0, 0, texs[GAGE]->getSize().x, texs[GAGE]->getSize().y),count_);
 
 	gl::pushModelView();
 	gl::translate(Vec2f(app::getWindowWidth()/2, app::getWindowHeight() / 1.1f));
 	gl::scale(Vec2f(600,70));
 	gl::enableAlphaBlending();
-	texs[WAKU].enableAndBind();
+	texs[WAKU]->enableAndBind();
 	gl::drawSolidRect(ci::Rectf(Vec2f(-0.5f,-0.5f), Vec2f(0.5f, 0.5f)));
-	texs[WAKU].disable();
+	texs[WAKU]->disable();
 	gl::popModelView();
 
 

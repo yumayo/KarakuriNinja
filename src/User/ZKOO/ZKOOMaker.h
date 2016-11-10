@@ -8,7 +8,7 @@
 
 # include "ZKOOHand.h"
 
-# include "../Networks/Network.h"
+//# include "../Networks/Network.h"
 
 namespace User
 {
@@ -16,7 +16,7 @@ namespace User
     {
         ZKOOMaker( );
         std::vector<ZKOOHand> hands;
-        Network::UDP::P2P::Recv recv;
+        /*Network::UDP::P2P::Recv recv;*/
     public:
         static ZKOOMaker& Geti( );
     public:

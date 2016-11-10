@@ -1,6 +1,7 @@
 # include "SceneTitle.h"
 #include "SceneGame.h"
 
+#include "GlobalData.hpp"
 
 using namespace ci;
 
@@ -12,23 +13,11 @@ namespace User
         , logoAlphaSpeed( 0.0125f )
         , isEnd( false )
     {
-        Izanami::FileReader fileReader;
-        Izanami::TextureMaker tex;
-
-        //Title Texture読込
-        fileReader.make( "Json/TitleTexture.json" );
-
-        for ( auto& path : fileReader.members( ) )
-        {
-            textures.add( path.first, tex.Find( path.second ) );
-        }
-
         startButtonPosition = env.getWindowCenter( ) + Vec2f( 0, 100 );
     }
 
     SceneTitle::~SceneTitle( )
     {
-        textures.clear( );
     }
 
     void SceneTitle::resize( )
@@ -38,9 +27,6 @@ namespace User
 
     void SceneTitle::update( )
     {
-        inputzkoo.Resumption( );
-        if ( !inputzkoo.IsActive( ) ) return;
-
         slashInput.Begin( );
 
         UpdateLogoAlpha( );
@@ -86,49 +72,18 @@ namespace User
     }
     void SceneTitle::drawUI( )
     {
-        drawTexture( ci::Vec2f( 0, 0 ), env.getWindowSize( ), *textures.find( "view" ), ci::ColorA::white( ) );
+        drawTexture( ci::Vec2f( 0, 0 ), env.getWindowSize( ), GData::FindTexture( "Textures/Title/title.png" ), ci::ColorA::white( ) );
 
         // drawTextureでアルファブレンディングをOFFにしているので。
         ci::gl::enableAlphaBlending( );
 
         // スタートボタン
         gl::color( ci::ColorA( 1, 1, 1, logoAlpha ) );
-        gl::draw( *textures.find( "start" ), Rectf( startButtonPosition.x - 125.0F, startButtonPosition.y - 125.0F,
-                                                    startButtonPosition.x + 125.0F, startButtonPosition.y + 125.0F ) );
-        font.Draw( u8"スタート", startButtonPosition );
+        gl::draw( GData::FindTexture( "Textures/Title/start.jpg" ), Rectf( startButtonPosition.x - 125.0F, startButtonPosition.y - 125.0F,
+                                                                           startButtonPosition.x + 125.0F, startButtonPosition.y + 125.0F ) );
+        font.Draw( u8"スタート", startButtonPosition + Vec2f( 0, -80 / 2 ), Color::white( ), Fonts::Mode::CENTERUP );
 
         slashInput.Draw( );
-
-        // 画面を薄い黒で塗りつぶす。
-        if ( !inputzkoo.IsActive( ) )
-        {
-            gl::color( ColorA( 0, 0, 0, 0.5 ) );
-            gl::drawSolidRect( Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
-            gl::color( Color( 1, 1, 1 ) );
-        }
-
-        // ZKOOの表示
-        auto hand = inputzkoo.hand( );
-        for ( auto& i : inputzkoo.GetHandleIDs( ) )
-        {
-            if ( inputzkoo.isRecognition( i, hand ) )
-            {
-                gl::color( Color( 1, 1, 0 ) );
-                gl::drawSolidCircle( hand.Position( ), 100, 50 );
-            }
-            if ( inputzkoo.isPress( i, hand ) )
-            {
-                gl::color( Color( 1, 1, 1 ) );
-                gl::drawSolidCircle( hand.Position( ), 50, 50 );
-            }
-            if ( inputzkoo.isPush( i, hand ) )
-            {
-                if ( !inputzkoo.IsActive( ) )
-                {
-                    if ( inputzkoo.IsHandsActive( ) ) inputzkoo.Resumption( );
-                }
-            }
-        }
     }
     void SceneTitle::endDrawUI( )
     {

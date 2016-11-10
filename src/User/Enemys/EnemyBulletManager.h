@@ -17,8 +17,12 @@ namespace User
     class EnemyBulletManager
     {
         float colliedSize = 1.5F;
-        EnemyBulletList bulletList;
         int score = 0;
+        Audio* guard_se;
+        Audio* playerdamaged_se;
+        Audio* adddamage;
+    private:
+        EnemyBulletList bulletList;
     public:
         EnemyBulletManager( );
         void update( );
@@ -41,9 +45,6 @@ namespace User
     private:
         void Each( std::function<void( EnemyBulletBaseRef& )> func );
         void BulletEraser( );
-		std::vector<Audio> guard_se;
-        std::vector<Audio> playerdamaged_se;
-        std::vector<Audio> adddamage;
     };
 
     using EnemyBulletManagerRef = std::shared_ptr<EnemyBulletManager>;

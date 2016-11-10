@@ -3,6 +3,8 @@
 
 # include "cinder/Rand.h"
 
+# include "GlobalData.hpp"
+
 using namespace ci;
 
 namespace User
@@ -10,18 +12,18 @@ namespace User
     SceneResult::SceneResult( int score )
         : score( score )
         , font( u8"メイリオ", 200 )
-        , audio( "SE/result.wav" )
+        , audio( &GData::FindAudio( "SE/result.wav" ) )
         , isEnd( false )
         , logoAlpha( 0.0f )
         , logoAlphaSpeed( 0.0125f )
-        , titleTex( loadImage( app::loadAsset( "title.png" ) ) )
+        , texture( &GData::FindTexture( "title.png" ) )
     {
-        audio.Play( );
+        audio->Play( );
     }
 
     SceneResult::~SceneResult( )
     {
-
+        audio->Stop( );
     }
 
     void SceneResult::resize( )
@@ -31,9 +33,6 @@ namespace User
 
     void SceneResult::update( )
     {
-        inputzkoo.Resumption( );
-        if ( !inputzkoo.IsActive( ) ) return;
-
         slashInput.Begin( );
 
         UpdateLogoAlpha( );
@@ -79,46 +78,15 @@ namespace User
     }
     void SceneResult::drawUI( )
     {
-        gl::draw( titleTex, Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
+        gl::draw( *texture, Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
 
         gl::color( ColorA( 1, 1, 1, logoAlpha ) );
         gl::drawSolidCircle( env.getWindowCenter( ) + Vec2f( 0, 200 ), 125 );
 
         Color color( randFloat( ), randFloat( ), randFloat( ) );
-        font.Draw( std::to_string( score ), env.getWindowCenter( ) + Vec2f( 0, 200 ), color );
+        font.Draw( std::to_string( score ), env.getWindowCenter( ) + Vec2f( 0, 200 + -200 / 2 ), color, Fonts::Mode::CENTERUP );
 
         slashInput.Draw( );
-
-        // 画面を薄い黒で塗りつぶす。
-        if ( !inputzkoo.IsActive( ) )
-        {
-            gl::color( ColorA( 0, 0, 0, 0.5 ) );
-            gl::drawSolidRect( Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
-            gl::color( Color( 1, 1, 1 ) );
-        }
-
-        // ZKOOの表示
-        auto hand = inputzkoo.hand( );
-        for ( auto& i : inputzkoo.GetHandleIDs( ) )
-        {
-            if ( inputzkoo.isRecognition( i, hand ) )
-            {
-                gl::color( Color( 1, 1, 0 ) );
-                gl::drawSolidCircle( hand.Position( ), 100, 50 );
-            }
-            if ( inputzkoo.isPress( i, hand ) )
-            {
-                gl::color( Color( 1, 1, 1 ) );
-                gl::drawSolidCircle( hand.Position( ), 50, 50 );
-            }
-            if ( inputzkoo.isPush( i, hand ) )
-            {
-                if ( !inputzkoo.IsActive( ) )
-                {
-                    if ( inputzkoo.IsHandsActive( ) ) inputzkoo.Resumption( );
-                }
-            }
-        }
     }
     void SceneResult::endDrawUI( )
     {

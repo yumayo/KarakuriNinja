@@ -15,51 +15,53 @@
 //! @date 2016-07-12 
 //! @author Taka Nomoto 
 
+#include "GlobalData.hpp"
+
 
 class Slash
 {
 public:
-	Slash() : isActive(false), maxactiveTime(30),
-		activeTime(0)
-	{
-		using namespace cinder;
-		tex = loadImage(app::loadAsset("slash.png"));
-		delete_t = 0.0f;
-		for (int i = 0;i < 3;i++) {
-			slash_ses.push_back(User::Audio("SE/kiru" + std::to_string(i) + ".wav"));
-		}
+    Slash( ) : isActive( false ), maxactiveTime( 30 ),
+        activeTime( 0 )
+    {
+        using namespace cinder;
+        tex = &GData::FindTexture( "slash.png" );
+        delete_t = 0.0f;
+        for ( int i = 0; i < 3; i++ ) {
+            slash_ses.push_back( &GData::FindAudio( "SE/kiru" + std::to_string( i ) + ".wav" ) );
+        }
 
-	}
-	//Effect‚Ì•`‰æ‚ðÝ’è‚µ‚Ü‚· 
-	void Set(ci::Vec2f pos_, ci::Vec2f size_, float angle_)
-	{
-		pos = pos_;
-		size = size_;
-		angle = angle_;
-		activeTime = 0;
-		isActive = true;
-		slash_ses[cinder::randInt(3)].Play();
-	}
-	void Update();
-	void Draw();
-	bool Active() { return isActive; }
+    }
+    //Effect‚Ì•`‰æ‚ðÝ’è‚µ‚Ü‚· 
+    void Set( ci::Vec2f pos_, ci::Vec2f size_, float angle_ )
+    {
+        pos = pos_;
+        size = size_;
+        angle = angle_;
+        activeTime = 0;
+        isActive = true;
+        slash_ses[cinder::randInt( 3 )]->Play( );
+    }
+    void Update( );
+    void Draw( );
+    bool Active( ) { return isActive; }
 private:
-	ci::Vec2f pos;
-	ci::Vec2f size;
-	ci::Vec2f realsize;
-	ci::Vec2f realpos;
-	std::vector<User::Audio> slash_ses;
-	float angle;
-	float delete_t;
-	int activeTime;
-	int maxactiveTime;
-	cinder::gl::Texture tex;
-	bool isActive;
-	void textureDraw(cinder::gl::Texture const& texture, cinder::Vec2f position = cinder::Vec2f::zero());
-	void textureDraw(cinder::gl::Texture const& texture, cinder::Vec2f position, cinder::Area area, float value);
-	float EasingLinear(float t, float b, float e) {
-		return (e - b) * t + b;
+    ci::Vec2f pos;
+    ci::Vec2f size;
+    ci::Vec2f realsize;
+    ci::Vec2f realpos;
+    std::vector<User::Audio*> slash_ses;
+    float angle;
+    float delete_t;
+    int activeTime;
+    int maxactiveTime;
+    cinder::gl::Texture* tex;
+    bool isActive;
+    void textureDraw( cinder::gl::Texture const& texture, cinder::Vec2f position = cinder::Vec2f::zero( ) );
+    void textureDraw( cinder::gl::Texture const& texture, cinder::Vec2f position, cinder::Area area, float value );
+    float EasingLinear( float t, float b, float e ) {
+        return ( e - b ) * t + b;
 
-	}
+    }
 
 };

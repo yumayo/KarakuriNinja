@@ -26,7 +26,7 @@ namespace User
     private:
         int score;
         Fonts font;
-        Audio audio;
+        Audio* audio;
         // スラッシュでの操作を行いますので、インスタンス化します。
         // Yumayo.h
         SlashInput slashInput;
@@ -35,6 +35,6 @@ namespace User
         // スタートボタンの変数。
         float logoAlpha;
         float logoAlphaSpeed;
-        cinder::gl::Texture titleTex;
+        cinder::gl::Texture* texture;
     };
 }

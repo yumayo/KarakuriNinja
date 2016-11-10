@@ -13,6 +13,8 @@
 
 #include "../Utilitys/fileUtil.hpp"
 
+#include "GlobalData.hpp"
+
 namespace User
 {
     using namespace cinder;
@@ -35,9 +37,10 @@ namespace User
                 Create<EnemyBoss>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera );
             }
         }
-        gurad_se.push_back( Audio( "SE/guard.wav" ) );
-        playerdamaged_se.push_back( Audio( "SE/damage.wav" ) );
-        adddamage.push_back( Audio( "SE/adddamage.wav" ) );
+
+        gurad_se = &GData::FindAudio( "SE/guard.wav" );
+        playerdamaged_se = &GData::FindAudio( "SE/damage.wav" );
+        adddamage = &GData::FindAudio( "SE/adddamage.wav" );
     }
 
     void EnemyManager::update( cinder::CameraPersp const& camera )
@@ -47,6 +50,8 @@ namespace User
         EnemyEraser( );
 
         EnemyBulletsRecovery( );
+
+        EnemyEffectsRecovery( );
     }
 
     void EnemyManager::draw( cinder::CameraPersp const& camera )
@@ -90,7 +95,7 @@ namespace User
             float radius = Vec3f( size - vec ).length( ) / 2.0F * colliedSize;
             drainMp += enemyRef->Hit( CheckDefLineOfCircle( line_, vec, radius ) );
         } );
-        if ( drainMp != 0 )adddamage[0].Play( );
+        if ( drainMp != 0 )adddamage->Play( );
         score += drainMp * 100;
         return drainMp;
     }
@@ -113,7 +118,7 @@ namespace User
         {
             if ( enemyRef->Attack( camera ) == true ) {
                 damage += enemyRef->AttackPoint( );
-                playerdamaged_se[0].Play( );
+                playerdamaged_se->Play( );
             }
              
         } );
@@ -133,10 +138,10 @@ namespace User
                 float radius = Vec3f( size - vec ).length( ) / 2.0F;
                 if ( CheckDefLineOfCircle( line_, vec, radius + 50 ) > 1.0f ) {
                     totalDamage += enemyRef->AttackPoint( );
-                    playerdamaged_se[0].Play( );
+                    playerdamaged_se->Play( );
                 }
                 else {
-                    gurad_se[0].Play( );
+                    gurad_se->Play( );
                 }
             }
         } );
@@ -147,6 +152,13 @@ namespace User
     {
         auto ret = bulletList;
         bulletList.clear( );
+        return ret;
+    }
+
+    EffectList EnemyManager::EffectRecovery( )
+    {
+        auto ret = effectList;
+        effectList.clear( );
         return ret;
     }
 
@@ -195,6 +207,13 @@ namespace User
             // 以下のサイトを参考にしました。
             // http://d.hatena.ne.jp/pknight/20090814/1250227222
             bulletList.splice( bulletList.end( ), enemyRef->BulletsRecovery( ) );
+        } );
+    }
+    void EnemyManager::EnemyEffectsRecovery( )
+    {
+        Each( [ this ] ( EnemyBaseRef& enemyRef )
+        {
+            effectList.splice( effectList.end( ), enemyRef->EffectRecovery( ) );
         } );
     }
 }

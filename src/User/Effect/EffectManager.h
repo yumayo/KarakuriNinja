@@ -15,18 +15,14 @@ namespace User
     public:
         EffectManager( );
         void Update( ) override;
-        void Draw( ) override;
+        void Draw( cinder::CameraPersp const& camera ) override;
+    public:
+        void EffectRegister( EffectList& effectList );
+    private: // 以下アップデートに記入
+        void EffectEraser( );
     private:
         void Each( std::function<void( EffectBaseRef& )> function );
-    public:
-        // 弾を作成します。作成した弾はエネミーに一時的に保存されます。
-        template <class Ty>
-        void Create( Ty const& instans );
     };
 
-    template<class Ty>
-    inline void EffectManager::Create( Ty const& instans )
-    {
-        effectList.emplace_back( std::make_shared<Ty>( Ty( instans ) ) );
-    }
+    using EffectManagerRef = std::shared_ptr<EffectManager>;
 }

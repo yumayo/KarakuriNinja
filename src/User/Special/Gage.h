@@ -4,6 +4,7 @@
 #include "cinder/app/App.h"
 #include"../Utilitys/Hirasawa.h"
 #include"../Utilitys/Nomoto.h"
+#include"GlobalData.hpp"
 using namespace cinder;
 class Gage {
 public:
@@ -13,7 +14,8 @@ public:
 		texsname[WAKU] = "spwaku.png";
 		texsname[GAGE] = "spgage.png";
 		for (int i = 0;i < texs::MAX;i++) {
-			texs[i] = loadImage(app::loadAsset("Textures/"+texsname[i]));
+
+			texs[i] = &GData::FindTexture("Textures/"+texsname[i]);
 		}
 	}
 	void setisCount(bool is) {
@@ -34,6 +36,6 @@ private:
 	Vec2f size_;
 	float count_;
 	bool issuccces_;
-	gl::Texture texs[2];
+	gl::Texture* texs[2];
 	void gagedraw(cinder::gl::Texture const & texture,cinder::Vec2f maxsize,cinder::Vec2f position, cinder::Area area, float size);
 };

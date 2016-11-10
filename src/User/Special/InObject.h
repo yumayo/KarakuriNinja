@@ -7,13 +7,14 @@
 #include "cinder/ImageIo.h"
 #include "cinder/gl/Texture.h"
 #include"../Utilitys/Audio.h"
+#include"GlobalData.hpp"
 using namespace cinder;
 
 class InObject {
 public:
 	InObject(){}
 	InObject(int texnumber,User::Audio* se):se_(se) {
-		tex = loadImage(app::loadAsset("Textures/In/in"+std::to_string(texnumber)+".png"));
+		tex = &GData::FindTexture("Textures/In/in" + std::to_string(texnumber) + ".png");
 		pos_ = Vec2f(app::getWindowWidth() / 2, 300);
 		se_end_ = false;
 		flash_al_ = 0.0f;
@@ -39,9 +40,9 @@ public:
 		gl::rotate(angle_);
 		gl::scale(size_);
 		gl::color(ColorA(0, 0, 0, alfa_));
-		tex.enableAndBind();
+		tex->enableAndBind();
 		gl::drawSolidRect(ci::Rectf(Vec2f(-0.5f, -0.5f), Vec2f(0.5f, 0.5f)));
-		tex.disable();
+		tex->disable();
 		gl::popModelView();
 
 
@@ -79,7 +80,7 @@ public:
 		return isdelete_;
 	}
 private:
-	gl::Texture tex;
+	gl::Texture* tex;
 	User::Audio* se_;
 	Vec2f pos_;
 	Vec2f size_;

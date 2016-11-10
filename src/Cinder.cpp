@@ -3,8 +3,6 @@
 # include "Lib/InputTask.h"
 # include "Framework.hpp"
 
-# include "ZKOO.hpp"
-
 void Cinder::setup( )
 {
     Lib::InputTask::Geti( ).setup( );
@@ -13,7 +11,7 @@ void Cinder::setup( )
 
     scene.setup( );
 
-    setFullScreen( true );
+    //setFullScreen( true );
 }
 
 void Cinder::prepareSettings( cinder::app::AppNative::Settings *settings )
@@ -30,10 +28,6 @@ void Cinder::shutdown( )
 
 void Cinder::update( )
 {
-    // ZKOOを使うために、beginとendで囲んでいます。
-    User::ZKOOMaker::Geti( ).update( );
-    User::ZKOO::Geti( ).begin( );
-
     // Inputのbeginとendで囲まれた部分のみ、Inputの機能を扱えます。
     Lib::InputTask::Geti( ).update( );
     Lib::Input::Geti( ).begin( );
@@ -56,9 +50,6 @@ void Cinder::draw( )
 
     // Inputのbeginとendで囲まれた部分のみ、Inputの機能を扱えます。
     Lib::Input::Geti( ).end( );
-
-    // ZKOOを使うために、beginとendで囲んでいます。
-    User::ZKOO::Geti( ).end( );
 }
 
 void Cinder::mouseDown( cinder::app::MouseEvent event )

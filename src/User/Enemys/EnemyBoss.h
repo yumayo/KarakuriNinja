@@ -25,6 +25,8 @@ namespace User
         std::string serif;
         cinder::Vec2f serifDrawPosition;
         std::function<void( )> serifBehavior;
+    private:
+        cinder::gl::Texture* 何かの画像;
     public:
         EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera );
         void update( cinder::CameraPersp const& camera ) override;
@@ -49,27 +51,24 @@ namespace User
         void 弾をもう一度投げるかの確認( cinder::CameraPersp const& camera );
     private:
         void 出現した時のセリフ( cinder::CameraPersp const& camera );
+        bool IsHalfHPSerif( );
         void HPが半分以下になった時のセリフ( cinder::CameraPersp const& camera );
+        bool IsDeadSerif( );
         void 死ぬ時のセリフ( cinder::CameraPersp const& camera );
+    private:
+        void SetFunction( void ( EnemyBoss::* function ) ( cinder::CameraPersp const& camera ) );
     private:
         void ヌルセルフ( );
         void セリフ( );
     private:
-        bool IsHalfHPSerif( );
-        bool IsDeadSerif( );
-    private:
-        void SetFunction( void ( EnemyBoss::* function ) ( cinder::CameraPersp const& camera ) );
-    private:
-        // セリフ割り込み
-        void SerifInterrupt( );
         void SetSerifFunction( std::string const& serif, void ( EnemyBoss::* function ) ( ) );
     private:
         // 画面を中心に回転で決める波状バレット攻撃
         void WavyBulletFiring( float angle, cinder::CameraPersp const& camera );
         // ランダムに決めた二点から中点を求める波状バレット攻撃
         void RandomWavyBulletFiring( cinder::CameraPersp const& camera );
-		std::vector<Audio> se;
-		int 弾の上限回数 = 3;
-		int 弾カウント;
+        std::vector<Audio*> se;
+        int 弾の上限回数 = 3;
+        int 弾カウント;
     };
 }

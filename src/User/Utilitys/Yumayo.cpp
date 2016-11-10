@@ -385,82 +385,19 @@ namespace User
     }
     void Fonts::Draw( std::string const & string, cinder::Vec2f position, cinder::ColorA color, Mode mode )
     {
-        auto fontSize = font.getSize( );
-
-        auto stringGlyphs = font.getGlyphs( string );
-
-        float boundingLength = 0;
-        float maxBoundingHeight = 0;
-        for ( auto& obj : stringGlyphs )
+        switch ( mode )
         {
-            auto box = font.getGlyphBoundingBox( obj );
-            boundingLength += box.x1 + box.x2;
-            if ( maxBoundingHeight < box.y1 + box.y2 )
-            {
-                maxBoundingHeight = box.y1 + box.y2;
-            }
-        }
-
-        // メイリオは細かい誤差を補正しています。
-        if ( font.getName( ) == u8"メイリオ" )
-        {
-            boundingLength += fontSize / 4.0F; // 横方向の誤差
-            auto clearance = fontSize - maxBoundingHeight - fontSize / 8.0F;
-            auto correction = Vec2f( 0, -clearance ); // 縦方向の誤差
-
-            auto size = Vec2f( boundingLength, maxBoundingHeight );
-            Vec2f trans;
-            switch ( mode )
-            {
-            case User::Fonts::Mode::LEFTDOWN:
-                trans = Vec2f( 0, 0 );
-                break;
-            case User::Fonts::Mode::CENTERCENTER:
-                trans = -size / 2.0F;
-                break;
-            case User::Fonts::Mode::RIGHTDOWN:
-                trans = Vec2f( -size.x, 0 );
-                break;
-            default:
-                break;
-            }
-
-            gl::pushModelView( );
-            gl::translate( trans );
-            gl::drawString( string, position + correction, color, font );
-
-        #ifdef _DEBUG
-            gl::drawStrokedRect( Rectf( position, position + size ) );
-        #endif // _DEBUG
-            gl::popModelView( );
-        }
-        // 今のところメイリオ以外は誤差を補正しきれていません。
-        else
-        {
-            auto size = Vec2f( boundingLength, maxBoundingHeight );
-            Vec2f trans;
-            switch ( mode )
-            {
-            case User::Fonts::Mode::LEFTDOWN:
-                trans = Vec2f( 0, 0 );
-                break;
-            case User::Fonts::Mode::CENTERCENTER:
-                trans = -size / 2.0F;
-                break;
-            case User::Fonts::Mode::RIGHTDOWN:
-                trans = Vec2f( -size.x, 0 );
-                break;
-            default:
-                break;
-            }
-            gl::pushModelView( );
-            gl::translate( trans );
+        case User::Fonts::Mode::LEFTUP:
             gl::drawString( string, position, color, font );
-
-        #ifdef _DEBUG
-            gl::drawStrokedRect( Rectf( position, position + size ) );
-        #endif // _DEBUG
-            gl::popModelView( );
+            break;
+        case User::Fonts::Mode::CENTERUP:
+            gl::drawStringCentered( string, position, color, font );
+            break;
+        case User::Fonts::Mode::RIGHTUP:
+            gl::drawStringRight( string, position, color, font );
+            break;
+        default:
+            break;
         }
     }
 
@@ -468,6 +405,7 @@ namespace User
         : frame( 0 )
         , elapseFrame( randInt( 60, 120 ) )
         , isActive( false )
+        , isCount( false )
     {
         On( );
     }
@@ -475,8 +413,13 @@ namespace User
         : frame( 0 )
         , elapseFrame( elapseFrame )
         , isActive( false )
+        , isCount( false )
     {
         On( );
+    }
+    bool Timer::IsCount( )
+    {
+        return isCount && isActive;
     }
     bool Timer::IsAction( )
     {
@@ -485,16 +428,19 @@ namespace User
     void Timer::Update( )
     {
         frame += static_cast<int>( isActive );
+        isCount = !( elapseFrame < frame - 1 );
     }
     void Timer::Advance( )
     {
         frame = 0;
         elapseFrame = randInt( 60, 120 );
+        isCount = true;
     }
     void Timer::Advance( int elapseFrame )
     {
         frame = 0;
         this->elapseFrame = elapseFrame;
+        isCount = true;
     }
     void Timer::On( )
     {

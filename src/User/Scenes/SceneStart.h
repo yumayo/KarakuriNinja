@@ -1,6 +1,7 @@
 # pragma once
 
-# include "SceneTitle.h"
+# include "SceneBegin.h"
+# include "Framework.hpp"
 
 namespace User
 {
@@ -10,6 +11,8 @@ namespace User
     inline SceneBasePtr start( )
     {
         env.setWindowSize( 1280, 720 );
-        return new SceneTitle( );
+        env.setWindowPos( ( env.getDisplay( )->getSize( ) - env.getWindowSize( ) ) / 2 );
+
+        return new SceneBegin( );
     }
 }

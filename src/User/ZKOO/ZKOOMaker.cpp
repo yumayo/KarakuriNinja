@@ -1,13 +1,13 @@
 # include "ZKOOMaker.h"
 
-# include "Utility.hpp"
+# include "Utilitys.hpp"
 
 # include "Framework.hpp"
 
 namespace User
 {
     ZKOOMaker::ZKOOMaker( )
-        : recv( 52525 )
+        /*: recv( 52525 )*/
     {
 
     }
@@ -23,7 +23,7 @@ namespace User
         std::string str;
         while ( true )
         {
-            if ( recv.recv( str ) ) break;
+           /* if ( recv.recv( str ) )*/ break;
         }
 
         hands = handMake( Utl::split( str, '/' ) );

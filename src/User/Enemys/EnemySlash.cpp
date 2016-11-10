@@ -6,6 +6,8 @@
 
 # include "../Utilitys/Hirasawa.h"
 
+# include "GlobalData.hpp"
+
 namespace User
 {
     using namespace cinder;
@@ -15,13 +17,13 @@ namespace User
         , timer( )
         , isAttack( false )
         , prevMovePosition( Vec3f::zero( ) )
-        , 待機( std::make_shared<gl::Texture>( loadImage( app::loadAsset( fieldName + "/EnemySlash (1).png" ) ) ) )
-        , 攻撃モーション画像( std::make_shared<gl::Texture>( loadImage( app::loadAsset( fieldName + "/EnemySlash (2).png" ) ) ) )
-        , 攻撃画像( std::make_shared<gl::Texture>( loadImage( app::loadAsset( fieldName + "/EnemySlash (3).png" ) ) ) )
-        , 左に移動( std::make_shared<gl::Texture>( loadImage( app::loadAsset( fieldName + "/EnemySlash (4).png" ) ) ) )
-        , 右に移動( std::make_shared<gl::Texture>( loadImage( app::loadAsset( fieldName + "/EnemySlash (5).png" ) ) ) )
+        , 待機( &GData::FindTexture( fieldName + "/EnemySlash (1).png" ) )
+        , 攻撃モーション画像( &GData::FindTexture( fieldName + "/EnemySlash (2).png" ) )
+        , 攻撃画像( &GData::FindTexture( fieldName + "/EnemySlash (3).png" ) )
+        , 左に移動( &GData::FindTexture( fieldName + "/EnemySlash (4).png" ) )
+        , 右に移動( &GData::FindTexture( fieldName + "/EnemySlash (5).png" ) )
     {
-        textureRef = 待機;
+        texture = 待機;
         SetFunction( &EnemySlash::タイマーが鳴るまで待機 );
     }
     void EnemySlash::update( cinder::CameraPersp const& camera )
@@ -73,12 +75,12 @@ namespace User
                 timer.Advance( randInt( 30, 60 ) );
                 if ( randBool( ) )
                 {
-                    textureRef = 左に移動;
+                    texture = 左に移動;
                     SetFunction( &EnemySlash::左へ移動 );
                 }
                 else
                 {
-                    textureRef = 右に移動;
+                    texture = 右に移動;
                     SetFunction( &EnemySlash::右へ移動 );
                 }
             }
@@ -96,7 +98,7 @@ namespace User
         if ( timer.IsAction( ) )
         {
             timer.Advance( 60 ); // 攻撃モーションフレームを代入
-            textureRef = 攻撃モーション画像;
+            texture = 攻撃モーション画像;
             SetFunction( &EnemySlash::攻撃モーション );
             return;
         }
@@ -106,7 +108,7 @@ namespace User
         // モーション時間60フレームの後、次の関数へ。
         if ( timer.IsAction( ) )
         {
-            textureRef = 攻撃画像;
+            texture = 攻撃画像;
             SetFunction( &EnemySlash::攻撃 );
             return;
         }
@@ -125,7 +127,7 @@ namespace User
         isAttack = false;
         if ( timer.IsAction( ) )
         {
-            textureRef = 待機;
+            texture = 待機;
             SetFunction( &EnemySlash::ジャンプで戻る );
             return;
         }
@@ -167,7 +169,7 @@ namespace User
 
             // タイマーをセットしてまた待機状態にします。
             timer.Advance( randInt( 20, 30 ) );
-            textureRef = 右に移動;
+            texture = 右に移動;
             SetFunction( &EnemySlash::右へ移動 );
         }
 
@@ -175,7 +177,7 @@ namespace User
         {
             // タイマーをセットしてまた待機状態にします。
             timer.Advance( randInt( 60, 180 ) );
-            textureRef = 待機;
+            texture = 待機;
             SetFunction( &EnemySlash::タイマーが鳴るまで待機 );
         }
     }
@@ -191,7 +193,7 @@ namespace User
 
             // タイマーをセットしてまた待機状態にします。
             timer.Advance( randInt( 20, 30 ) );
-            textureRef = 左に移動;
+            texture = 左に移動;
             SetFunction( &EnemySlash::左へ移動 );
         }
 
@@ -199,7 +201,7 @@ namespace User
         {
             // タイマーをセットしてまた待機状態にします。
             timer.Advance( randInt( 60, 180 ) );
-            textureRef = 待機;
+            texture = 待機;
             SetFunction( &EnemySlash::タイマーが鳴るまで待機 );
         }
     }

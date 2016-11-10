@@ -25,7 +25,7 @@ namespace User
 
         auto translateScorePosition = Vec2f( -11, -26 );
         textureDraw( score, rightDown + Vec2f( -score.getWidth( ), 0 ) + translateScorePosition );
-        font.Draw( std::to_string( scorePoint ), rightDown + Vec2f( -score.getWidth( ) / 2.0F + 32, -score.getHeight( ) / 2.0F - 32 ) + translateScorePosition, Color::white( ), Fonts::Mode::RIGHTDOWN );
+        font.Draw( std::to_string( scorePoint ), rightDown + Vec2f( -score.getWidth( ) / 2.0F + 32, -score.getHeight( ) / 2.0F - 32 ) + translateScorePosition, Color::white( ), Fonts::Mode::RIGHTUP );
 
         textureDraw( HPEdge, leftDown );
         textureDraw( HPEdgeBase, leftDown,

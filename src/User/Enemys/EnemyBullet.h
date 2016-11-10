@@ -11,11 +11,11 @@ namespace User
         Timer timer;
         std::function<void( cinder::CameraPersp const& camera )> behavior;
     private:
-        std::shared_ptr<cinder::gl::Texture> 待機;
-        std::shared_ptr<cinder::gl::Texture> 攻撃モーション画像;
-        std::shared_ptr<cinder::gl::Texture> 攻撃画像;
-        std::shared_ptr<cinder::gl::Texture> 左に移動;
-        std::shared_ptr<cinder::gl::Texture> 右に移動;
+        cinder::gl::Texture* 待機;
+        cinder::gl::Texture* 攻撃モーション画像;
+        cinder::gl::Texture* 攻撃画像;
+        cinder::gl::Texture* 左に移動;
+        cinder::gl::Texture* 右に移動;
     public:
         EnemyBullet( cinder::Vec3f pos, const cinder::CameraPersp& camera, std::string const& fieldName );
         void update( cinder::CameraPersp const& camera ) override;
@@ -30,6 +30,6 @@ namespace User
         void 右へ移動( cinder::CameraPersp const& camera );
     private:
         void SetFunction( void ( EnemyBullet::* function ) ( cinder::CameraPersp const& camera ) );
-        std::vector<Audio> se;
+        std::vector<Audio*> se;
     };
 }

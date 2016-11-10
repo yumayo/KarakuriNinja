@@ -119,17 +119,18 @@ namespace User
     public:
         enum class Mode
         {
-            LEFTDOWN, CENTERCENTER, RIGHTDOWN
+            LEFTUP, CENTERUP, RIGHTUP
         };
         Fonts( std::string const& path = u8"メイリオ", float size = 24.0F );
         void SetFont( std::string const& path = u8"メイリオ", float size = 24.0F );
-        void Draw( std::string const& string, cinder::Vec2f position, cinder::ColorA color = cinder::ColorA::white( ), Mode mode = Mode::CENTERCENTER );
+        void Draw( std::string const& string, cinder::Vec2f position, cinder::ColorA color = cinder::ColorA::white( ), Mode mode = Mode::LEFTUP );
     };
 
     class Timer
     {
         int frame;
         int elapseFrame;
+        bool isCount;
         bool isActive;
     public:
         Timer( );
@@ -137,6 +138,7 @@ namespace User
     public:
         void Update( );
     public:
+        bool IsCount( );
         bool IsAction( );
     public:
         void Advance( );

@@ -12,7 +12,7 @@ using namespace cinder;
 class SpecialName {
 public:
 	SpecialName() {}
-	SpecialName(gl::Texture tex,Vec2f endpos,Vec2f endsize, ColorA color,User::Audio* _se) :se(_se){
+	SpecialName(gl::Texture* tex,Vec2f endpos,Vec2f endsize, ColorA color,User::Audio* _se) :se(_se){
 		tex_ = tex;
 		color_ = color;
 		endsize_ = endsize;
@@ -30,7 +30,7 @@ private:
 	Vec2f size_;
 	Vec2f endpos_;
 	Vec2f endsize_;
-	gl::Texture tex_;
+	gl::Texture* tex_;
 	ColorA color_;
 	float t_;
 	bool seend_;

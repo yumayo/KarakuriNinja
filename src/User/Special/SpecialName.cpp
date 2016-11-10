@@ -20,8 +20,8 @@ void SpecialName::draw()
 	gl::translate(pos_);
 	gl::scale(size_);
 	gl::color(color_);
-	tex_.enableAndBind();
+	tex_->enableAndBind();
 	gl::drawSolidRect(ci::Rectf(Vec2f(-0.5f, -0.5f), Vec2f(0.5f, 0.5f)));
-	tex_.disable();
+	tex_->disable();
 	gl::popModelView();
 }

@@ -5,6 +5,7 @@
 #include "cinder/gl/Texture.h"
 #include "cinder/Camera.h"
 #include "EnemyBulletManager.h"
+#include "../Effect/EffectManager.h"
 
 namespace User
 {
@@ -14,15 +15,21 @@ namespace User
         EnemyObject object;
         EnemyObject initObject;
         bool isLanding;
-        cinder::gl::TextureRef textureRef;
+        cinder::gl::Texture* texture;
     private:
         float maxHP;
-        float HP; // HPの変動はプレイヤーの攻撃のみなのでprivate.
-        cinder::Color hitColor; // カラーの変動はプレイヤーの攻撃のみなのでprivate.
-        bool isLive; // 生きているかどうかを判断するのは各自でやらないのでprivate.
-        int deadTime; // 死にゆく時間もいじることはないのでprivate.
-        int attackPoint; // プレイヤーへの攻撃力もいじることはないのでprivate.
-        EnemyBulletList bulletList; // 一時的に弾をエネミーに保存しておくだけなのでprivate.
+        float HP;
+        cinder::Color hitColor;
+        bool isLive;
+        int deadTime;
+        int attackPoint;
+    private:
+        EnemyBulletList bulletList;
+        EffectList effectList;
+    public:
+        // 発射した弾を全て回収します。この関数を呼ぶとこのクラスが持っている弾を全てクリアします。
+        EnemyBulletList BulletsRecovery( );
+        EffectList EffectRecovery( );
     protected: // 画像を作成しないコンストラクタ
         EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp& camera );
         EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp& camera, float sizeScale );
@@ -52,14 +59,14 @@ namespace User
         void Kill( );
         // エネミーを消していいかの確認
         bool IsActive( );
-        // 発射した弾を全て回収します。この関数を呼ぶとこのクラスが持っている弾を全てクリアします。
-        EnemyBulletList BulletsRecovery( );
     protected:
         bool IsJumping( );
         // 地面の中にいるかどうか。
         bool IsUnderGround( );
         // スクリーンの中にいる時はtrueが返ってきます。
         bool IsInTheScreen( cinder::CameraPersp const& camera );
+
+        bool IsInField( );
     protected: // 以下 アップデートに記入推奨
         // 地面の中にいたら地上に引き戻します。
         void CollideGround( );
@@ -75,6 +82,10 @@ namespace User
         template <class Ty>
         void BulletCreate( Ty const& instans );
     protected:
+        // 弾を作成します。作成した弾はエネミーに一時的に保存されます。
+        template <class Ty>
+        void EffectCreate( Ty const& instans );
+    protected:
         void CameraSee( cinder::CameraPersp const& camera );
         void Jump( cinder::Vec3f jumpPower );
     };
@@ -83,5 +94,10 @@ namespace User
     inline void EnemyBase::BulletCreate( Ty const& instans )
     {
         bulletList.emplace_back( std::make_shared<Ty>( Ty( instans ) ) );
+    }
+    template<class Ty>
+    inline void EnemyBase::EffectCreate( Ty const & instans )
+    {
+        effectList.emplace_back( std::make_shared<Ty>( Ty( instans ) ) );
     }
 }

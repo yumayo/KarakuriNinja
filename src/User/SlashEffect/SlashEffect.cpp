@@ -21,7 +21,7 @@ void Slash::Draw() {
 	if (isActive) {
 		float slashspeed = 4.0f;
 		int cutsize = int((std::min(float(slashspeed*activeTime) / float(maxactiveTime), 1.f)) * 1024);
-		textureDraw(tex, cinder::Vec2f(0, 0), cinder::Area(0, 0, cutsize, 128), 1);
+		textureDraw(*tex, cinder::Vec2f(0, 0), cinder::Area(0, 0, cutsize, 128), 1);
 	}
 	ci::gl::rotate(angle * (180.0f / M_PI) + 90);
 	ci::gl::popModelView();

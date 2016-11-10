@@ -28,9 +28,6 @@
     <Filter Include="User\Enemys">
       <UniqueIdentifier>{1505464f-b2ca-4a86-8fdb-af96d5ae497e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="User\ZKOO">
-      <UniqueIdentifier>{105966b1-a942-4603-a8d2-d2869406eaa7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="User\Interfaces">
       <UniqueIdentifier>{e59c0bb8-9c5f-4eb4-b4db-1677880ba46f}</UniqueIdentifier>
     </Filter>
@@ -66,6 +63,9 @@
     </Filter>
     <Filter Include="Asset">
       <UniqueIdentifier>{a3a55d9d-7c10-461b-a043-8dc09a17475c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\ZKOO">
+      <UniqueIdentifier>{5f9e654a-3936-4371-af76-966dd74fce80}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -132,9 +132,6 @@
     <ClInclude Include="..\src\User\Networks\Network.h">
       <Filter>User\Networks</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\User\ZKOO\ZKOOHand.h">
-      <Filter>User\ZKOO</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\User\Utilitys\Colli2D.h">
       <Filter>User\Utilitys</Filter>
     </ClInclude>
@@ -152,9 +149,6 @@
     </ClInclude>
     <ClInclude Include="..\src\User\Player\Player.h">
       <Filter>User\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\ZKOO.hpp">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\User\Attack\AttackFactory.h">
       <Filter>User\AttackFactory</Filter>
@@ -183,20 +177,11 @@
     <ClInclude Include="..\src\User\Enemys\EnemyObject.h">
       <Filter>User\Enemys</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\User\ZKOO\InputZKOO.h">
-      <Filter>User\ZKOO</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\User\ZKOO\ZKOOMaker.h">
-      <Filter>User\ZKOO</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\User\Enemys\EnemyBulletTexture.h">
       <Filter>User\Enemys</Filter>
     </ClInclude>
     <ClInclude Include="..\src\User\Field\Field.h">
       <Filter>User\Field</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\User\ZKOO\ZKOO.h">
-      <Filter>User\ZKOO</Filter>
     </ClInclude>
     <ClInclude Include="..\src\User\Utilitys\Yumayo.h">
       <Filter>User\Utilitys</Filter>
@@ -297,6 +282,36 @@
     <ClInclude Include="..\src\User\Utilitys\fileUtil.hpp">
       <Filter>User\Utilitys</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\User\ZKOO\InputZKOO.h">
+      <Filter>User\ZKOO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\ZKOO\ZKOO.h">
+      <Filter>User\ZKOO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\ZKOO\ZKOOHand.h">
+      <Filter>User\ZKOO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\ZKOO\ZKOOMaker.h">
+      <Filter>User\ZKOO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ZKOO.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\SearchSystem.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\GlobalData.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\GlobalData.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Utilitys.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Scenes\SceneBegin.h">
+      <Filter>User\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -354,9 +369,6 @@
     <ClCompile Include="..\src\User\SceneSystems\SceneTask.cpp">
       <Filter>User\SceneSystems</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\User\ZKOO\ZKOOHand.cpp">
-      <Filter>User\ZKOO</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\User\Utilitys\Colli2D.cpp">
       <Filter>User\Utilitys</Filter>
     </ClCompile>
@@ -402,20 +414,11 @@
     <ClCompile Include="..\src\User\Enemys\EnemyObject.cpp">
       <Filter>User\Enemys</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\User\ZKOO\InputZKOO.cpp">
-      <Filter>User\ZKOO</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\User\ZKOO\ZKOOMaker.cpp">
-      <Filter>User\ZKOO</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\User\Enemys\EnemyBulletTexture.cpp">
       <Filter>User\Enemys</Filter>
     </ClCompile>
     <ClCompile Include="..\src\User\Field\Field.cpp">
       <Filter>User\Field</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\User\ZKOO\ZKOO.cpp">
-      <Filter>User\ZKOO</Filter>
     </ClCompile>
     <ClCompile Include="..\src\User\Utilitys\Yumayo.cpp">
       <Filter>User\Utilitys</Filter>
@@ -497,6 +500,27 @@
     </ClCompile>
     <ClCompile Include="..\src\User\Utilitys\fileUtil.cpp">
       <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\ZKOO\InputZKOO.cpp">
+      <Filter>User\ZKOO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\ZKOO\ZKOO.cpp">
+      <Filter>User\ZKOO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\ZKOO\ZKOOHand.cpp">
+      <Filter>User\ZKOO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\ZKOO\ZKOOMaker.cpp">
+      <Filter>User\ZKOO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\SearchSystem.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\GlobalData.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Scenes\SceneBegin.cpp">
+      <Filter>User\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

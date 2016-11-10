@@ -21,9 +21,9 @@ void SpecialSelect::drawIcon()
 		gl::pushModelView();
 		gl::translate(icons[i].pos);
 		gl::rotate(Vec3f(0.f,icons[i].angle,0));
-		icontex[i].enableAndBind();
+		icontex[i]->enableAndBind();
 		gl::drawSolidRect(ci::Rectf(-icons[i].size / 2.f, icons[i].size / 2.f));
-		icontex[i].disable();
+		icontex[i]->disable();
 		gl::popModelView();
 	}
 }
@@ -48,7 +48,7 @@ void SpecialSelect::updateIcon()
 		icons[i].angle_t = std::min(1.0f, icons[i].angle_t);
 		if ((!icons[i].opened) && icons[i].angle_t >= 1.0f) {
 			icons[i].opened = true;
-			open_se[0].Play();
+			open_se[0]->Play();
 		}
 		icons[i].angle = EasingQuintIn(icons[i].angle_t, icons[i].startangle, 0);
 

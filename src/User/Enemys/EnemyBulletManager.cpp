@@ -1,14 +1,16 @@
 # include "EnemyBulletManager.h"
 
+# include "GlobalData.hpp"
+
 namespace User
 {
     using namespace cinder;
 
     EnemyBulletManager::EnemyBulletManager( )
     {
-		guard_se.push_back(Audio("SE/guard.wav"));
-        playerdamaged_se.push_back(Audio( "SE/damage.wav" ) );
-        adddamage.push_back( Audio( "SE/adddamage.wav" ) );
+        guard_se = &GData::FindAudio( "SE/guard.wav" );
+        playerdamaged_se = &GData::FindAudio( "SE/damage.wav" );
+        adddamage = &GData::FindAudio( "SE/adddamage.wav" );
     }
 
     void EnemyBulletManager::update( )
@@ -37,8 +39,8 @@ namespace User
             float radius = Vec3f( size - vec ).length( ) / 2.0F;
             drainMp += bulletRef->Hit( CheckDefLineOfCircle( line_, vec, radius ) );
         } );
-        if(drainMp!=0)
-            adddamage[0].Play();
+        if ( drainMp != 0 )
+            adddamage->Play( );
         score += drainMp * 100;
         return drainMp;
     }
@@ -63,7 +65,7 @@ namespace User
             {
                 damage += bulletRef->AttackPoint( );
                 bulletRef->Erase( );
-                playerdamaged_se[0].Play( );
+                playerdamaged_se->Play( );
             }
         } );
         return damage;
@@ -79,18 +81,18 @@ namespace User
                 Vec2f vec = camera.worldToScreen( bulletRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
                 Vec2f size = camera.worldToScreen( bulletRef->Position( ) + bulletRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
                 float radius = Vec3f( size - vec ).length( ) / 2.0F;
-				if (CheckDefLineOfCircle(line_, vec, radius + 50) > 1.0f) {
-                    damage += bulletRef->AttackPoint();
+                if ( CheckDefLineOfCircle( line_, vec, radius + 50 ) > 1.0f ) {
+                    damage += bulletRef->AttackPoint( );
                     if ( bulletRef->NormalizedMoveTime( ) == 1 ) {
-                        playerdamaged_se[0].Play( );
+                        playerdamaged_se->Play( );
                     }
-				}
-				else {
-					if (bulletRef->NormalizedMoveTime() == 1) {
-						guard_se[0].Play();
-					}
-				}
-				
+                }
+                else {
+                    if ( bulletRef->NormalizedMoveTime( ) == 1 ) {
+                        guard_se->Play( );
+                    }
+                }
+
                 bulletRef->Erase( );
             }
         } );
@@ -133,10 +135,7 @@ namespace User
 
     void EnemyBulletManager::BulletEraser( )
     {
-        auto eraceList = std::remove_if( bulletList.begin( ), bulletList.end( ), [ this ] ( EnemyBulletBaseRef& bulletRef ) 
-        {
-            return !bulletRef->IsActive( );
-        } );
+        auto eraceList = std::remove_if( bulletList.begin( ), bulletList.end( ), [ ] ( EnemyBulletBaseRef& bulletRef ) { return !bulletRef->IsActive( ); } );
         bulletList.erase( eraceList, bulletList.end( ) );
     }
 }

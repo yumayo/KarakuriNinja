@@ -11,12 +11,13 @@
 #include"../Special/Gage.h"
 #include"../Utilitys/Audio.h"
 #include"ZKOO.hpp"
+#include"GlobalData.hpp"
 using namespace cinder;
 class SpecialMinigame : public SpecialSceneBase {
 public:
-	SpecialMinigame() :inpush(User::Audio("SE/insound2.wav")) {
+	SpecialMinigame() :inpush(&GData::FindAudio("SE/insound2.wav")) {
 	}
-	SpecialMinigame(SpecialType type):inpush(User::Audio("SE/insound2.wav")) {
+	SpecialMinigame(SpecialType type):inpush(&GData::FindAudio("SE/insound2.wav")) {
 		success_count_ = 0;
 		step_ = 0;
 		go_next_ = false;
@@ -26,10 +27,10 @@ public:
 		info_t_ = 0.0f;
 		end_al_ = 0.0f;
 		endt_ = 0.0f;
-		backimage_ = loadImage(app::loadAsset("minihaikei.png"));
-		cursor_= loadImage(app::loadAsset("awasero.png"));
-		backninja_ = loadImage(app::loadAsset("Textures/backninja.png"));
-		charge_se_.push_back(User::Audio("SE/charge.wav"));
+		backimage_ = &GData::FindTexture("minihaikei.png");
+		cursor_= &GData::FindTexture("awasero.png");
+		backninja_ =&GData::FindTexture("Textures/backninja.png");
+		charge_se_.push_back(&GData::FindAudio("SE/charge.wav"));
 		start_angle_t_ = 0.0f;
 		ispush_back_circles_ = false;
 		endflash = false;
@@ -61,9 +62,9 @@ private:
 	int step_;
 	int success_count_;
 	bool go_next_;
-	gl::Texture backimage_;
-	gl::Texture cursor_;
-	gl::Texture backninja_;
+	gl::Texture* backimage_;
+	gl::Texture* cursor_;
+	gl::Texture* backninja_;
 	Vec2f backsize;
 	float backangle;
 	Vec2f infosize;
@@ -96,6 +97,6 @@ private:
 	bool startend() {
 		return start_t_y_ >= 1.0f;
 	}
-	User::Audio inpush;
-	std::vector< User::Audio> charge_se_;
+	User::Audio* inpush;
+	std::vector<User::Audio*> charge_se_;
 };

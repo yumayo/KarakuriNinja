@@ -46,3 +46,50 @@ bool isValidPath(const std::string& path) {
 	return (result == 0);
 	// TODO: ディレクトリかどうかも判定
 }
+
+FileUtil::FileUtil( char split )
+    : split(split)
+{
+}
+
+void FileUtil::Split( char split )
+{
+    this->split = split;
+}
+
+std::string FileUtil::getDirectoryname( const std::string & path )
+{
+    std::string::size_type end( path.rfind( split ) );
+    return ( end != std::string::npos ) ? path.substr( 0, end ) : std::string( );
+}
+
+std::string FileUtil::getFilename( const std::string & path )
+{
+    return path.substr( path.rfind( split ) + 1, path.length( ) );
+}
+
+std::string FileUtil::getFilenameNoExt( const std::string & path )
+{
+    std::string name = getFilename( path );
+    return name.substr( 0, name.rfind( '.' ) );
+}
+
+std::string FileUtil::getFilenameExt( const std::string & path )
+{
+    std::string::size_type pos( path.rfind( '.' ) );
+    return ( pos != std::string::npos ) ? path.substr( pos + 1, path.length( ) ) : std::string( );
+}
+
+std::string FileUtil::replaceFilenameExt( const std::string & path, const std::string & ext )
+{
+    std::string::size_type pos( path.rfind( '.' ) );
+    return ( pos != std::string::npos ) ? path.substr( 0, path.rfind( '.' ) + 1 ) + ext : path + ext;
+}
+
+bool FileUtil::isValidPath( const std::string & path )
+{
+    struct stat info;
+    int result = stat( path.c_str( ), &info );
+    return ( result == 0 );
+    // TODO: ディレクトリかどうかも判定
+}

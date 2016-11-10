@@ -59,23 +59,23 @@ void SpecialMinigame::update()
 		if (circles[0].getMoveStart() && circles[1].getMoveStart()) {
 			gage_.setisCount(circles[0].getIsRealSafe()&& circles[1].getIsRealSafe());
 			if (circles[0].getIsRealSafe() && circles[1].getIsRealSafe()) {
-				charge_se_[0].Looping(true);
-				if(!charge_se_[0].IsPlaying())
-				charge_se_[0].Play();
+				charge_se_[0]->Looping(true);
+				if(!charge_se_[0]->IsPlaying())
+				charge_se_[0]->Play();
 			}
 			else {
-				charge_se_[0].Stop();
+				charge_se_[0]->Stop();
 			}
 		}
 		if (circles[0].getClear() && circles[1].getClear()) {
-			inobject.push_back(InObject(getInObject(),&inpush));
+			inobject.push_back(InObject(getInObject(),inpush));
 			gage_.setisCount(false);
 			clearCircles();
 		}
 	}
 	else
 	{
-		charge_se_[0].Stop();
+		charge_se_[0]->Stop();
 	}
 	if (inobject.size() == 1) {
 		if (inobject[0].Mydelete() == true) {
@@ -181,9 +181,9 @@ void SpecialMinigame::drawInfo()
 		gl::pushModelView();
 		gl::translate(Vec2f(app::getWindowWidth() / 2, 100-50*info_t_));
 		gl::color(ColorA(0, 0, 0, infoalfa_));
-		cursor_.enableAndBind();
+		cursor_->enableAndBind();
 		gl::drawSolidRect(ci::Rectf(-infosize, infosize));
-		cursor_.disable();
+		cursor_->disable();
 		gl::color(ColorA(1, 1, 1, 1));
 		gl::popModelView();
 	}
@@ -194,9 +194,9 @@ void SpecialMinigame::drawBackninja()
 	gl::pushModelView();
 	gl::translate(Vec2f(app::getWindowWidth() / 2, app::getWindowHeight()/2+70));
 	gl::color(ColorA(1, 1, 1, infoalfa_/1.2f));
-	backninja_.enableAndBind();
+	backninja_->enableAndBind();
 	gl::drawSolidRect(ci::Rectf(-size,size));
-	backninja_.disable();
+	backninja_->disable();
 	gl::color(ColorA(1, 1, 1, 1));
 	gl::popModelView();
 }
@@ -291,9 +291,9 @@ void SpecialMinigame::drawBackground()
 	gl::pushModelView();
 	gl::translate(app::getWindowWidth() / 2, app::getWindowHeight() / 2);
 	gl::rotate(backangle);
-	backimage_.enableAndBind();
+	backimage_->enableAndBind();
 	gl::drawSolidRect(ci::Rectf(-backsize, backsize));
-	backimage_.disable();
+	backimage_->disable();
 	gl::popModelView();
 }
 

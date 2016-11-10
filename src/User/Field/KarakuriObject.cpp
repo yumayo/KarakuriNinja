@@ -10,6 +10,8 @@
 
 # include "cinder/app/App.h"
 
+# include "GlobalData.hpp"
+
 namespace User
 {
     using namespace cinder;
@@ -21,7 +23,7 @@ namespace User
         , beginCount( params.getValueForKey<float>( "beginCount" ) )
         , moveCount( params.getValueForKey<float>( "moveCount" ) )
         , size( getVec3f( params["size"] ) )
-        , texture( loadImage( app::loadAsset( params.getValueForKey<std::string>( "path" ) ) ) )
+        , texture( &GData::FindTexture( params.getValueForKey<std::string>( "path" ) ) )
     {
 
     }

@@ -18,8 +18,8 @@ using namespace cinder;
 
 class SpecialEffect : public SpecialSceneBase {
 public:
-	SpecialEffect() :inse_(User::Audio("SE/namesound2.wav")) {}
-	SpecialEffect(SpecialType type) :inse_(User::Audio("SE/namesound2.wav")) {
+	SpecialEffect() :inse_(&GData::FindAudio("SE/namesound2.wav")) {}
+	SpecialEffect(SpecialType type) :inse_(&GData::FindAudio("SE/namesound2.wav")) {
 		specialtype_ = type;
 		camera_move_ = false;
 		go_next_ = false;
@@ -27,10 +27,10 @@ public:
 		angle_ = 0.f;
 		roadTex();
 		namesize = Vec2f(100,100);
-		effect[0]= loadImage(app::loadAsset("Textures/Effect/effect"+std::to_string(2*int(type))+".png"));
-		effect[1] = loadImage(app::loadAsset("Textures/Effect/effect" + std::to_string(2*int(type)+1) + ".png"));
-		makimono= loadImage(app::loadAsset("Textures/makimono.png"));
-		effectse_.push_back(User::Audio("SE/ineffect"+std::to_string(0)+".wav"));
+		effect[0]= &GData::FindTexture("Textures/Effect/effect"+std::to_string(2*int(type))+".png");
+		effect[1] = &GData::FindTexture("Textures/Effect/effect" + std::to_string(2*int(type)+1) + ".png");
+		makimono= &GData::FindTexture("Textures/makimono.png");
+		effectse_.push_back(&GData::FindAudio("SE/ineffect"+std::to_string(0)+".wav"));
 	}
 	void draw() override;
 	void update() override;
@@ -53,14 +53,14 @@ private:
 	float angle_;
 	bool camera_move_;
 	void pushNames();
-	gl::Texture texs[7];
-	gl::Texture makimono;
+	gl::Texture* texs[7];
+	gl::Texture* makimono;
 	std::vector<SpecialName> names;
-	gl::Texture effect[2];
+	gl::Texture* effect[2];
 	std::vector<Fire> fire;
 	std::vector<Water> water;
 	std::vector<Tree> tree;
-	std::vector<User::Audio> effectse_;
+	std::vector<User::Audio*> effectse_;
 	void pushEffect();
 	void goShift();
 	void drawMakimono();
@@ -68,5 +68,5 @@ private:
 	Vec2f namepos[7];
 	Vec2f namesize;
 	void roadTex();
-	User::Audio inse_;
+	User::Audio* inse_;
 };

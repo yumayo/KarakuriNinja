@@ -33,9 +33,19 @@ namespace User
         }
     }
 
-    void Field::draw( )
+    void Field::draw( cinder::CameraPersp const& camera )
     {
-        Each( [ ] ( KarakuriRef& karakuri ) { karakuri->draw( ); } );
+        std::map<float, KarakuriRef> karakuriMap;
+
+        for ( auto itr = karakuris.begin( ); itr != karakuris.end( ); ++itr )
+        {
+            karakuriMap.insert( std::make_pair( camera.worldToEyeDepth( ( *itr )->Position( ) ), *itr ) );
+        }
+
+        for ( auto& obj : karakuriMap )
+        {
+            obj.second->draw( );
+        }
     }
 
     void Field::End( )

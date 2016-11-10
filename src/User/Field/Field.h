@@ -5,6 +5,8 @@
 
 # include "KarakuriBase.h"
 
+# include "cinder/Camera.h"
+
 namespace User
 {
     using KarakuriRef = std::shared_ptr<KarakuriBase>;
@@ -19,7 +21,7 @@ namespace User
         Field( std::string const& path );
     public:
         void update( );
-        void draw( );
+        void draw( cinder::CameraPersp const& camera );
         void End( );
         bool IsNextField( );
     private:

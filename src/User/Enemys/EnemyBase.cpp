@@ -3,7 +3,9 @@
 # include "cinder/ImageIo.h"
 # include "cinder/App/App.h"
 
-# include "../Utilitys/Colli2D.h"
+# include "Utilitys.hpp"
+
+# include "GlobalData.hpp"
 
 namespace User
 {
@@ -41,7 +43,7 @@ namespace User
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, std::string const & path )
         : object( pos, Vec3f( 0.5, 0.8, 0.01 ), Vec3f::zero( ) )
-        , textureRef( std::make_shared<gl::Texture>( loadImage( app::loadAsset( path ) ) ) )
+        , texture( &GData::FindTexture( path ) )
         , maxHP( 5.0F )
         , HP( maxHP )
         , hitColor( Color::white( ) )
@@ -57,7 +59,7 @@ namespace User
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, float sizeScale, const cinder::CameraPersp & camera, std::string const & path )
         : object( pos, Vec3f( 0.5 * sizeScale, 0.8 * sizeScale, 0.01 ), Vec3f::zero( ) )
-        , textureRef( std::make_shared<gl::Texture>( loadImage( app::loadAsset( path ) ) ) )
+        , texture( &GData::FindTexture( path ) )
         , maxHP( 5.0F )
         , HP( maxHP )
         , hitColor( Color::white( ) )
@@ -72,7 +74,7 @@ namespace User
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, float sizeScale, float HP, int attackPoint, const cinder::CameraPersp & camera, std::string const & path )
         : object( pos, Vec3f( 0.5 * sizeScale, 0.8 * sizeScale, 0.01 ), Vec3f::zero( ) )
-        , textureRef( std::make_shared<gl::Texture>( loadImage( app::loadAsset( path ) ) ) )
+        , texture( &GData::FindTexture( path ) )
         , maxHP( HP )
         , HP( maxHP )
         , hitColor( Color::white( ) )
@@ -113,13 +115,13 @@ namespace User
         gl::translate( object.Position( ) );
         gl::multModelView( object.Quaternion( ).toMatrix44( ) );
 
-        textureRef->bind( );
+        texture->bind( );
         gl::pushModelView( );
         gl::rotate( Vec3f( 0, 0, 180 ) );
         gl::color( HitColor( ) );
         gl::drawCube( Vec3f::zero( ), object.Size( ) );
         gl::popModelView( );
-        textureRef->unbind( );
+        texture->unbind( );
 
     #ifdef _DEBUG
         gl::color( Color::white( ) );
@@ -179,6 +181,12 @@ namespace User
         bulletList.clear( );
         return ret;
     }
+    EffectList EnemyBase::EffectRecovery( )
+    {
+        auto ret = effectList;
+        effectList.clear( );
+        return ret;
+    }
 
     bool EnemyBase::IsJumping( )
     {
@@ -193,6 +201,11 @@ namespace User
     {
         Vec2f ScreenPosition = camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
         return Utl::Colli2D::rectPoint( Vec2f::zero( ), env.getWindowSize( ), ScreenPosition );
+    }
+    bool EnemyBase::IsInField( )
+    {
+        auto x = object.Position( ).x;
+        return -1 <= x && x <= 1;
     }
     void EnemyBase::CollideGround( )
     {

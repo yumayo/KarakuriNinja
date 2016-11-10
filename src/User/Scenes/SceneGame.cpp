@@ -4,39 +4,40 @@
 # include "ZKOO.hpp"
 # include "cinder/Rand.h"
 
+# include "GlobalData.hpp"
+
 namespace User
 {
     using namespace cinder;
 
     SceneGame::SceneGame( )
     {
+        // ユーマヨが管理するものを作成。
         cameraEyePosition = Vec3f( 0, 0.7, -5 );
         camera.lookAt( cameraEyePosition, Vec3f( 0, 0.7, 0 ) );
         camera.setWorldUp( Vec3f( 0, 1, 0 ) );
         camera.setPerspective( 60.0F, env.getWindowAspectRatio( ), 1.0F, 100.0F );
-
-        // ユーマヨが管理するものを作成。
         fieldManager = std::make_shared<FieldManager>( );
         enemyManager = std::make_shared<EnemyManager>( camera, fieldManager->FieldDataPath( ) );
         enemyBulletManager = std::make_shared<EnemyBulletManager>( );
+        effectManager = std::make_shared<EffectManager>( );
         UI = std::make_shared<Interface>( );
         gameClearFrame = 60 * 3;
-        カメラを揺らす = false;
+        timer.Off( );
         damageColor = ColorA( 1, 0, 0, 0 );
 
+        // 野本が管理するものを作成。
         player = Player( 100, 100 );
-        mainbgm.push_back( Audio( "BGM/mainbgm0.wav" ) );
-        mainbgm[0].Looping( true );
-        mainbgm[0].Gain( 0.4 );
-        mainbgm[0].Play( );
-        handtex[0] = loadImage( app::loadAsset( "ZKOO/Left_OpenHand.png" ) );
-        handtex[1] = loadImage( app::loadAsset( "ZKOO/Left_CloseHand.png" ) );
-        handtex[2] = loadImage( app::loadAsset( "ZKOO/Right_OpenHand.png" ) );
-        handtex[3] = loadImage( app::loadAsset( "ZKOO/Right_CloseHand.png" ) );
+
+        // 大ちゃんが管理するものを作成。
+        mainbgm.push_back( &GData::FindAudio( "BGM/mainbgm0.wav" ) );
+        mainbgm[0]->Looping( true );
+        mainbgm[0]->Gain( 0.4 );
+        mainbgm[0]->Play( );
     }
     SceneGame::~SceneGame( )
     {
-
+        mainbgm[0]->Stop( );
     }
     void SceneGame::resize( )
     {
@@ -64,8 +65,7 @@ namespace User
 
         if ( playerHP != player.NowHp( ) )
         {
-            カメラを揺らす = true;
-            damageColor.a += 0.2;
+            damageColor.a = std::min( damageColor.a + 0.2, 0.6 );
             timer.On( );
             timer.Advance( 60 );
         }
@@ -88,9 +88,6 @@ namespace User
     }
     void SceneGame::update( )
     {
-        inputzkoo.Resumption( );
-        if ( !inputzkoo.IsActive( ) ) return;
-
         // スペシャルは最初にアップデートします。
         // エネミーがいない場合はスペシャルを発動できないようにします。
         if ( !enemyManager->IsEmpty( ) )
@@ -113,7 +110,7 @@ namespace User
 
         timer.Update( );
 
-        if ( カメラを揺らす )
+        if ( timer.IsCount( ) )
         {
             camera.lookAt( Vec3f( randFloat( -0.05F, 0.05F ), randFloat( -0.05F, 0.05F ), 0.0F ) + cameraEyePosition, camera.getCenterOfInterestPoint( ) );
         }
@@ -122,7 +119,6 @@ namespace User
         {
             timer.Off( );
             camera.lookAt( cameraEyePosition, camera.getCenterOfInterestPoint( ) );
-            カメラを揺らす = false;
         }
 
         // エフェクト終了時、全てのエネミー及び弾にダメージを与えます。
@@ -140,6 +136,8 @@ namespace User
             enemyManager->update( camera );
             enemyBulletManager->BulletRegister( enemyManager->BulletsRecovery( ) );
             enemyBulletManager->update( );
+            effectManager->EffectRegister( enemyManager->EffectRecovery( ) );
+            effectManager->Update( );
             UpdatePlayer( );
             UpdateColor( );
             UpdateScore( );
@@ -222,7 +220,7 @@ namespace User
         gl::drawCoordinateFrame( );
     #endif // _DEBUG
 
-        fieldManager->Draw( );
+        fieldManager->Draw( camera );
 
         enemyManager->draw( camera );
         enemyBulletManager->draw( );
@@ -261,92 +259,14 @@ namespace User
 
         enemyBulletManager->DrawBulletCircle( camera );
 
+        effectManager->Draw( camera );
+
         UI->draw( player.NormalizedMp( ), player.NormalizedHp( ) );
 
         special.draw( );
 
         gl::color( damageColor );
         gl::drawSolidRect( Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
-
-        // 画面を薄い黒で塗りつぶす。
-        if ( !inputzkoo.IsActive( ) )
-        {
-            gl::color( ColorA( 0, 0, 0, 0.5 ) );
-            gl::drawSolidRect( Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
-            gl::color( Color( 1, 1, 1 ) );
-            gl::drawSolidRect( Rectf( Vec2f( 200, 400 ), env.getWindowSize( ) ) );
-        }
-
-        // ZKOOの表示
-        auto hand = inputzkoo.hand( );
-        for ( auto& i : inputzkoo.GetHandleIDs( ) )
-        {
-            if ( i == 1 )
-            {
-                if ( inputzkoo.isPress( i, hand ) )
-                {
-                    gl::color( Color( 1, 1, 1 ) );
-                    gl::pushModelView( );
-                    gl::translate( hand.Position( ) + Vec2f( -handtex[1].getWidth( ) / 2.0F, -handtex[1].getHeight( ) / 2.0F ) );
-                    gl::draw( handtex[1] );
-                    gl::popModelView( );
-                    //gl::color( Color( 1, 1, 1 ) );
-                    //gl::drawSolidCircle( hand.Position( ), 50, 50 );
-                }
-                else
-                if ( inputzkoo.isRecognition( i, hand ) )
-                {
-                    gl::color( Color( 1, 1, 1 ) );
-                    gl::pushModelView( );
-                    gl::translate( hand.Position( ) );
-                    gl::scale( handtex[0].getSize( ) );
-                    handtex[0].enableAndBind( );
-                    gl::drawSolidRect( Rectf( Vec2f( -0.5, -0.5 ), Vec2f( 0.5, 0.5 ) ) );
-                    handtex[0].disable( );
-                    gl::popModelView( );
-                    //gl::color( Color( 1, 1, 0 ) );
-                    //gl::drawSolidCircle( hand.Position( ), 100, 50 );
-                }
-                if ( inputzkoo.isPush( i, hand ) )
-                {
-                    if ( !inputzkoo.IsActive( ) )
-                    {
-                        if ( inputzkoo.IsHandsActive( ) ) inputzkoo.Resumption( );
-                    }
-                }
-            }
-            else
-            {
-                if ( inputzkoo.isPress( i, hand ) )
-                {
-                    gl::color( Color( 1, 1, 1 ) );
-                    gl::pushModelView( );
-                    gl::translate( hand.Position( ) + Vec2f( -handtex[3].getWidth( ) / 2.0F, -handtex[3].getHeight( ) / 2.0F ) );
-                    gl::draw( handtex[3] );
-                    gl::popModelView( );
-                    //gl::color( Color( 1, 1, 1 ) );
-                    //gl::drawSolidCircle( hand.Position( ), 50, 50 );
-                }
-                else
-                if ( inputzkoo.isRecognition( i, hand ) )
-                {
-                    gl::color( Color( 1, 1, 1 ) );
-                    gl::pushModelView( );
-                    gl::translate( hand.Position( ) + Vec2f( -handtex[2].getWidth( ) / 2.0F, -handtex[2].getHeight( ) / 2.0F ) );
-                    gl::draw( handtex[2] );
-                    gl::popModelView( );
-                    //gl::color( Color( 1, 1, 0 ) );
-                    //gl::drawSolidCircle( hand.Position( ), 100, 50 );
-                }
-                if ( inputzkoo.isPush( i, hand ) )
-                {
-                    if ( !inputzkoo.IsActive( ) )
-                    {
-                        if ( inputzkoo.IsHandsActive( ) ) inputzkoo.Resumption( );
-                    }
-                }
-            }
-        }
     }
     void SceneGame::endDrawUI( )
     {

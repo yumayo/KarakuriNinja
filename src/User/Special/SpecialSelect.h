@@ -8,6 +8,7 @@
 #include"../Special/SpecialSceneBase.h"
 #include"ZKOO.hpp"
 #include"../Utilitys/Audio.h"
+#include"GlobalData.hpp"
 using namespace cinder;
 const int ICONNUM = 3;
 class SpecialSelect : public SpecialSceneBase{
@@ -33,9 +34,9 @@ public:
 			icons.push_back(icon);
 		}
 		for (int i = 0;i < 3;i++) {
-			icontex[i] = loadImage(app::loadAsset("Textures/select"+std::to_string(i)+".png"));
+			icontex[i] = &GData::FindTexture("Textures/select"+std::to_string(i)+".png");
 		}
-		open_se.push_back(User::Audio("SE/hiraku.wav"));
+		open_se.push_back(&GData::FindAudio("SE/hiraku.wav"));
 	}
 	void draw() override;
 	void update() override;
@@ -60,7 +61,7 @@ private:
 		Vec2f shiftpos;
 		bool opened;
 	};
-	std::vector<User::Audio> open_se;
+	std::vector<User::Audio*> open_se;
 	std::vector<Icon>icons;
 	void drawIcon();
 	Vec2f iconsize;
@@ -73,7 +74,7 @@ private:
 	float start_t;
 	float end_t_;
 	float last_t_;
-	gl::Texture icontex[3];
+	gl::Texture* icontex[3];
 	bool isCanChoose() {
 		return (icons[icons.size() - 1].angle_t >= 1.0f)&&(ischoosed_==false);
 	}

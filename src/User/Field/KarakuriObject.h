@@ -14,7 +14,7 @@ namespace User
         cinder::Vec3f end;
         cinder::Vec3f position;
         cinder::Vec3f size;
-        cinder::gl::Texture texture;
+        cinder::gl::Texture* texture;
     public:
         KarakuriObject( cinder::JsonTree const& params );
     public:
@@ -23,8 +23,8 @@ namespace User
         bool IsMoveKarakuri( int count );
         void EasePosition( float t );
     public:
-        void bind( ) { texture.bind( ); }
-        void unbind( ) { texture.unbind( ); }
+        void bind( ) { texture->bind( ); }
+        void unbind( ) { texture->unbind( ); }
         cinder::Vec3f Size( ) { return size; }
         cinder::Vec3f Position( ) { return position; }
     };

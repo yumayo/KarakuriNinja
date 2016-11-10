@@ -17,6 +17,8 @@ namespace User
         void update( int count );
         void draw( );
     public:
+        cinder::Vec3f Size( ) { return object.Size( ); }
+        cinder::Vec3f Position( ) { return object.Position( ); }
         cinder::Vec3f Direction( ) { return direction; }
         cinder::Quatf Quaternion( ) { return quaternion; }
         cinder::Matrix44f Rotate( ) { return quaternion.toMatrix44( ); }

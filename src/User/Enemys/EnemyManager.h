@@ -8,6 +8,7 @@
 #include "EnemyBase.h"
 #include "../Utilitys/Nomoto.h"
 #include"../Utilitys/Audio.h"
+
 namespace User
 {
     using EnemyBaseRef = std::shared_ptr<EnemyBase>;
@@ -16,9 +17,15 @@ namespace User
     class EnemyManager
     {
         float colliedSize = 1.0F;
-        EnemyList enemyList;
-        EnemyBulletList bulletList;
         int score = 0;
+        Audio* gurad_se;
+        Audio* playerdamaged_se;
+        Audio* adddamage;
+    private:
+        EnemyList enemyList;
+    private:
+        EnemyBulletList bulletList;
+        EffectList effectList;
     public:
         EnemyManager( const cinder::CameraPersp& camera, std::string const& path );
         void update( cinder::CameraPersp const& camera );
@@ -41,21 +48,26 @@ namespace User
         int EnemyToPlayerDamage( const cinder::CameraPersp& camera );
         // エネミーからプレイヤーへの攻撃（プレイヤーがガードをしている時の判定に使います）
         int EnemyToPlayerDamage( Line& line_, const cinder::CameraPersp& camera );
-        // 発射した弾を全て回収します。この関数を呼ぶとこのクラスが持っている弾を全てクリアします。
-        EnemyBulletList BulletsRecovery( );
+        
         // エネミーの当たり判定域を描画します。
         void DrawCollisionCircle( cinder::CameraPersp const& camera );
         bool IsEmpty( );
+
         int ScoreRecovery( ) { auto temp = score; score = 0; return temp; }
+
+        // 発射した弾を全て回収します。この関数を呼ぶとこのクラスが持っている弾を全てクリアします。
+        EnemyBulletList BulletsRecovery( );
+
+        EffectList EffectRecovery( );
     private:
         void Each( std::function<void( EnemyBaseRef& )> function );
+    private: // 以下アップデートで回します。
         // エネミーのHPが０だったら削除
         void EnemyEraser( );
         // 各エネミーの弾を回収します。
         void EnemyBulletsRecovery( );
-		std::vector<Audio> gurad_se;
-        std::vector<Audio> playerdamaged_se;
-        std::vector<Audio> adddamage;
+		
+        void EnemyEffectsRecovery( );
     };
 
     using EnemyManagerRef = std::shared_ptr<EnemyManager>;

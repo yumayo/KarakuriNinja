@@ -5,22 +5,24 @@
 
 # include "EnemyBulletTexture.h"
 
+# include "GlobalData.hpp"
+
 namespace User
 {
     using namespace cinder;
     EnemyBullet::EnemyBullet( cinder::Vec3f pos, const cinder::CameraPersp& camera, std::string const& fieldName )
         : EnemyBase( pos, camera, 2.0F )
-        , 待機( std::make_shared<gl::Texture>( loadImage( app::loadAsset( fieldName + "/EnemyBullet (1).png" ) ) ) )
-        , 攻撃モーション画像( std::make_shared<gl::Texture>( loadImage( app::loadAsset( fieldName + "/EnemyBullet (2).png" ) ) ) )
-        , 攻撃画像( std::make_shared<gl::Texture>( loadImage( app::loadAsset( fieldName + "/EnemyBullet (3).png" ) ) ) )
-        , 左に移動( std::make_shared<gl::Texture>( loadImage( app::loadAsset( fieldName + "/EnemyBullet (4).png" ) ) ) )
-        , 右に移動( std::make_shared<gl::Texture>( loadImage( app::loadAsset( fieldName + "/EnemyBullet (5).png" ) ) ) )
+        , 待機( &GData::FindTexture( fieldName + "/EnemyBullet (1).png" ) )
+        , 攻撃モーション画像( &GData::FindTexture( fieldName + "/EnemyBullet (2).png" ) )
+        , 攻撃画像( &GData::FindTexture( fieldName + "/EnemyBullet (3).png" ) )
+        , 左に移動( &GData::FindTexture( fieldName + "/EnemyBullet (4).png" ) )
+        , 右に移動( &GData::FindTexture( fieldName + "/EnemyBullet (5).png" ) )
     {
-        textureRef = 待機;
+        texture = 待機;
 
         SetFunction( &EnemyBullet::タイマーが鳴るまで待機 );
         for ( int i = 0; i < 3; i++ ) {
-            se.push_back( Audio( "SE/shuri" + std::to_string( i ) + ".wav" ) );
+            se.push_back( &GData::FindAudio( "SE/shuri" + std::to_string( i ) + ".wav" ) );
         }
     }
     void EnemyBullet::update( cinder::CameraPersp const& camera )
@@ -51,7 +53,7 @@ namespace User
         {
             if ( randInt( 0, 3 ) != 0 )
             {
-                textureRef = 攻撃モーション画像;
+                texture = 攻撃モーション画像;
                 timer.Advance( 60 );
                 SetFunction( &EnemyBullet::攻撃モーション );
             }
@@ -60,12 +62,12 @@ namespace User
                 timer.Advance( randInt( 30, 60 ) );
                 if ( randBool( ) )
                 {
-                    textureRef = 左に移動;
+                    texture = 左に移動;
                     SetFunction( &EnemyBullet::左へ移動 );
                 }
                 else
                 {
-                    textureRef = 右に移動;
+                    texture = 右に移動;
                     SetFunction( &EnemyBullet::右へ移動 );
                 }
             }
@@ -76,22 +78,29 @@ namespace User
         // モーション時間60フレームの後、次の関数へ。
         if ( timer.IsAction( ) )
         {
-            textureRef = 攻撃画像;
+            texture = 攻撃画像;
             SetFunction( &EnemyBullet::攻撃 );
             return;
         }
     }
     void EnemyBullet::攻撃( cinder::CameraPersp const & camera )
     {
-        auto u = randFloat(env.getWindowWidth()*0.25, env.getWindowWidth()*0.75 ) / env.getWindowWidth( );
+        auto u = randFloat( env.getWindowWidth( )*0.25, env.getWindowWidth( )*0.75 ) / env.getWindowWidth( );
         auto v = randFloat( env.getWindowHeight( )*0.25, env.getWindowHeight( )*0.75 ) / env.getWindowHeight( );
         auto ray = camera.generateRay( u, v, env.getWindowAspectRatio( ) );
         BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken2.png" ) );
+        EffectCreate( EffectBase( "Textures/Effect/effect4.png",
+                                  camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) ),
+                                  Vec2f( 240, 240 ),
+                                  EffectBase::Mode::CENTERCENTER
+        ) );
 
         // タイマーをセットしてまた待機状態にします。
         timer.Advance( 10 );
         SetFunction( &EnemyBullet::攻撃後硬直 );
-        se[randInt( 3 )].Play( );
+        se[randInt( 3 )]->Play( );
+
+
     }
     void EnemyBullet::攻撃後硬直( cinder::CameraPersp const & camera )
     {
@@ -99,7 +108,7 @@ namespace User
         {
             // タイマーをセットしてまた待機状態にします。
             timer.Advance( randInt( 120, 300 ) );
-            textureRef = 待機;
+            texture = 待機;
             SetFunction( &EnemyBullet::タイマーが鳴るまで待機 );
             return;
         }
@@ -116,7 +125,7 @@ namespace User
 
             // タイマーをセットしてまた待機状態にします。
             timer.Advance( randInt( 20, 30 ) );
-            textureRef = 右に移動;
+            texture = 右に移動;
             SetFunction( &EnemyBullet::右へ移動 );
         }
 
@@ -124,7 +133,7 @@ namespace User
         {
             // タイマーをセットしてまた待機状態にします。
             timer.Advance( randInt( 60, 180 ) );
-            textureRef = 待機;
+            texture = 待機;
             SetFunction( &EnemyBullet::タイマーが鳴るまで待機 );
         }
     }
@@ -140,7 +149,7 @@ namespace User
 
             // タイマーをセットしてまた待機状態にします。
             timer.Advance( randInt( 20, 30 ) );
-            textureRef = 左に移動;
+            texture = 左に移動;
             SetFunction( &EnemyBullet::左へ移動 );
         }
 
@@ -148,7 +157,7 @@ namespace User
         {
             // タイマーをセットしてまた待機状態にします。
             timer.Advance( randInt( 60, 180 ) );
-            textureRef = 待機;
+            texture = 待機;
             SetFunction( &EnemyBullet::タイマーが鳴るまで待機 );
         }
     }

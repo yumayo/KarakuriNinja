@@ -1,7 +1,6 @@
 # pragma once
 
 # include "Scene.hpp"
-# include "../Assets/Assets.h"
 
 # include "../Utilitys/Yumayo.h"
 
@@ -30,9 +29,6 @@ namespace User
 
         // Yumayo.h のフォントを扱うクラスです。
         Fonts font;
-
-        // 簡単なテクスチャマネージャー。
-        Izanami::Holder<ci::gl::Texture> textures;
 
         // スタートボタンの変数。
         float logoAlpha;

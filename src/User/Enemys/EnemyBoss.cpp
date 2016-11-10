@@ -8,6 +8,8 @@
 
 # include "EnemyBulletTexture.h"
 
+# include "GlobalData.hpp"
+
 namespace User
 {
     using namespace cinder;
@@ -26,17 +28,16 @@ namespace User
         timer.Advance( 180 ); // セリフを吐くフレーム
         SetFunction( &EnemyBoss::出現した時のセリフ );
         SetSerifFunction( u8"", &EnemyBoss::ヌルセルフ );
-        for ( int i = 0; i < 3; i++ ) {
-            se.push_back( Audio( "SE/shuri" + std::to_string( i ) + ".wav" ) );
+
+        for ( int i = 0; i < 3; i++ )
+        {
+            se.push_back( &GData::FindAudio( "SE/shuri" + std::to_string( i ) + ".wav" ) );
             弾カウント = 0;
         }
 
     }
     void EnemyBoss::update( cinder::CameraPersp const& camera )
     {
-        // セリフ割り込み
-        SerifInterrupt( );
-
         if ( isDeadStop )
         {
             // 重力処理
@@ -50,7 +51,7 @@ namespace User
         // 以下 EnemyBaseUpdate
         CameraSee( camera );
 
-        if ( IsLive( ) )
+        if ( isDeadStop )
         {
             object.PositionAdd( object.Speed( ) );
             DamageEffect( );
@@ -71,7 +72,7 @@ namespace User
     }
     bool EnemyBoss::Attack( const cinder::CameraPersp& camera )
     {
-        return isAttack && IsLive( );
+        return isAttack && isDeadStop;
     }
     void EnemyBoss::Gravitate( )
     {
@@ -83,6 +84,23 @@ namespace User
     }
     void EnemyBoss::タイマーが鳴るまで待機( cinder::CameraPersp const& camera )
     {
+        if ( IsHalfHPSerif( ) )
+        {
+            object.Speed( Vec3f::zero( ) );
+
+            timer.Advance( 180 ); // セリフを吐くフレーム
+            SetFunction( &EnemyBoss::HPが半分以下になった時のセリフ );
+            return;
+        }
+        if ( IsDeadSerif( ) )
+        {
+            object.Speed( Vec3f::zero( ) );
+
+            timer.Advance( 180 ); // セリフを吐くフレーム
+            SetFunction( &EnemyBoss::死ぬ時のセリフ );
+            return;
+        }
+
         // タイマーが鳴ったら次の関数へ。
         if ( timer.IsAction( ) )
         {
@@ -191,12 +209,12 @@ namespace User
             return;
         }
     }
-
     void EnemyBoss::弾を投げる( cinder::CameraPersp const & camera )
     {
         RandomWavyBulletFiring( camera );
-        for ( int i = 0; i < 3; i++ ) {
-            se[i].Play( );
+        for ( int i = 0; i < 3; i++ )
+        {
+            se[i]->Play( );
         }
         timer.Advance( 90 ); // 次の弾の発射フレーム
         isBulletFiring = randBool( );
@@ -222,7 +240,6 @@ namespace User
             return;
         }
     }
-
     void EnemyBoss::出現した時のセリフ( cinder::CameraPersp const & camera )
     {
         serifDrawPosition = camera.worldToScreen( object.Position( ) + Vec3f( 0, object.Size( ).y * 0.5, 0 ), env.getWindowWidth( ), env.getWindowHeight( ) );
@@ -235,7 +252,6 @@ namespace User
             return;
         }
     }
-
     void EnemyBoss::HPが半分以下になった時のセリフ( cinder::CameraPersp const & camera )
     {
         isHalfHPSerif = false;
@@ -250,7 +266,6 @@ namespace User
             return;
         }
     }
-
     void EnemyBoss::死ぬ時のセリフ( cinder::CameraPersp const & camera )
     {
         isDeadSerif = false;
@@ -264,18 +279,14 @@ namespace User
             isDeadStop = false;
         }
     }
-
     void EnemyBoss::ヌルセルフ( )
     {
         /*nothing*/
     }
-
     void EnemyBoss::セリフ( )
     {
-        font.Draw( serif, serifDrawPosition );
+        font.Draw( serif, serifDrawPosition + Vec2f( 0, -74 / 2 ), Color::white( ), Fonts::Mode::CENTERUP );
     }
-
-
     bool EnemyBoss::IsHalfHPSerif( )
     {
         return isHalfHPSerif && NormalizedHitPoint( ) <= 0.5F;
@@ -283,25 +294,6 @@ namespace User
     bool EnemyBoss::IsDeadSerif( )
     {
         return isDeadSerif && IsLive( ) == false;
-    }
-    void EnemyBoss::SerifInterrupt( )
-    {
-        if ( IsHalfHPSerif( ) )
-        {
-            object.Speed( Vec3f::zero( ) );
-
-            timer.Advance( 180 ); // セリフを吐くフレーム
-            SetFunction( &EnemyBoss::HPが半分以下になった時のセリフ );
-            return;
-        }
-        if ( IsDeadSerif( ) )
-        {
-            object.Speed( Vec3f::zero( ) );
-
-            timer.Advance( 180 ); // セリフを吐くフレーム
-            SetFunction( &EnemyBoss::死ぬ時のセリフ );
-            return;
-        }
     }
     void EnemyBoss::SetFunction( void( EnemyBoss::* function )( cinder::CameraPersp const &camera ) )
     {

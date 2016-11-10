@@ -6,10 +6,8 @@ namespace User
         : nowNumber( 0 )
     {
         fieldName.insert( std::make_pair( 0, "Field1.json" ) );
-        fieldName.insert( std::make_pair( 1, "Field2.json" ) );
-        fieldName.insert( std::make_pair( 2, "Field3.json" ) );
-        fieldName.insert( std::make_pair( 3, "Field4.json" ) );
-        fieldName.insert( std::make_pair( 4, "Field5.json" ) );
+        fieldName.insert( std::make_pair( 1, "Field3.json" ) );
+        fieldName.insert( std::make_pair( 2, "Field5.json" ) );
 
         CreateField( nowNumber );
     }
@@ -17,9 +15,9 @@ namespace User
     {
         field->update( );
     }
-    void FieldManager::Draw( )
+    void FieldManager::Draw( cinder::CameraPersp const& camera )
     {
-        field->draw( );
+        field->draw( camera );
     }
     void FieldManager::End( )
     {
