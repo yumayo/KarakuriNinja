@@ -6,44 +6,13 @@
 #include "cinder/Camera.h"
 #include "EnemyBulletManager.h"
 #include "../Effect/EffectManager.h"
+#include "AttackTime.h"
 
 namespace User
 {
-    class AttackTime
-    {
-        bool isAttackMotion;
-        int attackFrame;
-        int maxAttackFrame;
-    public:
-        AttackTime( )
-            : isAttackMotion( false )
-        {
-            AttackFrame( 0 );
-        }
-        void Update( )
-        {
-            attackFrame = std::min( attackFrame + 1, maxAttackFrame );
-            if ( attackFrame == maxAttackFrame ) isAttackMotion = false;
-        }
-        void AttackFrame( int attackFrame )
-        {
-            if ( attackFrame <= 0 ) // 0除算回避
-            {
-                isAttackMotion = false;
-                this->attackFrame = 1;
-                maxAttackFrame = 1;
-            }
-            else
-            {
-                isAttackMotion = true;
-                this->attackFrame = 0;
-                maxAttackFrame = attackFrame;
-            }
-        }
-        bool IsAttackMotion( ) { return isAttackMotion; }
-        bool IsAttackOneFramePrev( ) { return maxAttackFrame == attackFrame + 1; }
-        float NormalizedAttackFrame( ) { return static_cast<float>( attackFrame ) / maxAttackFrame; }
-    };
+    class EnemyBase;
+    using EnemyBaseRef = std::shared_ptr<EnemyBase>;
+    using EnemyList = std::list<EnemyBaseRef>;
 
     class EnemyBase
     {
@@ -80,12 +49,22 @@ namespace User
         cinder::Color hitColor;
         int deadTime;
         Status status;
-        EnemyBulletList bulletList;
-        EffectList effectList;
-    public:
-        // 発射した弾を全て回収します。この関数を呼ぶとこのクラスが持っている弾を全てクリアします。
-        EnemyBulletList BulletsRecovery( );
-        EffectList EffectRecovery( );
+
+    private: EnemyList enemyList;
+    public: EnemyList EnemyRecovery( );
+    protected:  template <class Ty>
+        void EnemyCreate( cinder::Vec3f position, const cinder::CameraPersp& camera );
+
+    private: EnemyBulletList bulletList;
+    public: EnemyBulletList BulletRecovery( );
+    protected: template <class Ty>
+        void BulletCreate( Ty const& instans );
+
+    private: EffectList effectList;
+    public: EffectList EffectRecovery( );
+    protected: template <class Ty>
+        void EffectCreate( Ty const& instans );
+
     public:
         EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp& camera );
         EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp& camera, Status status, float scale = 1.0F );
@@ -110,7 +89,7 @@ namespace User
         float NormalizedAttackFrame( ) { return attackTime.NormalizedAttackFrame( ); }
     public:
         // 引数 : あたった時の中心からの距離(正規化済み) : 0.0 ~ 1.0(半径)
-        int Hit( cinder::CameraPersp const& camera, float length, int scoreRate, float value = 1.0F);
+        int Hit( cinder::CameraPersp const& camera, float length, int scoreRate, float value = 1.0F );
         // 強制的にダメージを与える関数
         int Damage( int damage );
         // 敵を強制的に殺す関数
@@ -138,21 +117,19 @@ namespace User
         void LiveCheck( );
         // ダメージを受けた時に体の色を徐々に元通りにします。
         void DamageEffect( );
-    protected:
-        // 弾を作成します。作成した弾はエネミーに一時的に保存されます。
-        template <class Ty>
-        void BulletCreate( Ty const& instans );
-    protected:
-        // 弾を作成します。作成した弾はエネミーに一時的に保存されます。
-        template <class Ty>
-        void EffectCreate( Ty const& instans );
-    protected:
+        // カメラの方向を向きます。
         void CameraSee( cinder::CameraPersp const& camera );
+    protected:
         void Jump( cinder::Vec3f jumpPower );
     private:
         void SpawnEffect( cinder::CameraPersp const& camera );
     };
 
+    template<class Ty>
+    inline void EnemyBase::EnemyCreate( cinder::Vec3f position, const cinder::CameraPersp& camera )
+    {
+        enemyList.emplace_back( std::make_shared<Ty>( position, camera ) );
+    }
     template<class Ty>
     inline void EnemyBase::BulletCreate( Ty const& instans )
     {

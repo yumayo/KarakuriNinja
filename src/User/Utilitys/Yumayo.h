@@ -16,8 +16,13 @@
 
 namespace User
 {
+    int getInt( cinder::JsonTree const& params );
+    float getFloat( cinder::JsonTree const& params );
+    std::string getString( cinder::JsonTree const& params );
+
     // JSONの配列からVec3fへ
     cinder::Vec3f getVec3f( cinder::JsonTree const& params );
+    cinder::Vec2f getVec2f( cinder::JsonTree const& params );
 
     // JSONの配列からColorへ
     cinder::Color getColor( cinder::JsonTree const& params );
@@ -130,6 +135,7 @@ namespace User
         void SetFont( std::string const& path = u8"メイリオ", float size = 24.0F );
         void Draw( std::string const& string, cinder::Vec2f position, cinder::ColorA color = cinder::ColorA::white( ), Mode mode = Mode::LEFTUP );
         cinder::Rectf BoundingBox( std::string const& string );
+        cinder::gl::Texture MakeStringTexture( std::string const& string, float& baseLineOffset );
     };
 
     class Timer

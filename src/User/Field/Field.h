@@ -16,9 +16,6 @@ namespace User
     class Field
     {
     private:
-        cinder::gl::Texture* ground;
-        SkydomeRef skydome;
-
         KarakuriList karakuriMeshObjects;
         KarakuriList karakuriRectObjects;
         int count;
@@ -30,8 +27,11 @@ namespace User
         void update( );
         void draw( cinder::CameraPersp const& camera );
         void End( );
+        bool IsEnd( );
         bool IsNextField( );
         bool IsMoveing( );
+
+        float NormalizedCount( ) { return static_cast<float>( count ) / maxCount; }
     private:
         void Each( std::function<void( KarakuriRef& karakuri )> func );
     };

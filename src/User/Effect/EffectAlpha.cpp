@@ -8,8 +8,8 @@ namespace User
 {
 	using namespace cinder;
 
-	EffectAlpha::EffectAlpha(std::string const & path, cinder::Vec2f position, cinder::Vec2f size, cinder::Vec2f cutSize, Mode mode)
-		: EffectBase(path, position, size, cutSize, mode)
+	EffectAlpha::EffectAlpha(std::string const & path, cinder::Vec2f position, float depth, cinder::Vec2f size, cinder::Vec2f cutSize, Mode mode)
+		: EffectBase(path, position, depth, size, cutSize, mode)
 	{
 
 	}

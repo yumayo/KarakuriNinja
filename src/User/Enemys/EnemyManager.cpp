@@ -8,7 +8,9 @@
 
 #include "EnemyTutorial.h"
 #include "EnemySlash.h"
+#include "EnemySlashNot.h"
 #include "EnemyBullet.h"
+#include "EnemyBulletNot.h"
 #include "EnemyBoss.h"
 
 #include "cinder/app/App.h"
@@ -31,25 +33,29 @@ namespace User
         {
             auto type = obj.getValueForKey<std::string>( "type" );
             auto position = getVec3f( obj["position"] );
-            if ( type == "base" )
+            if ( type == "slashNot" )
             {
-                Create<EnemyBase>( position, camera );
+                EnemyCreate<EnemySlashNot>( position, camera );
+            }
+            else if ( type == "bulletNot" )
+            {
+                EnemyCreate<EnemyBulletNot>( position, camera );
             }
             else if ( type == "tutorial" )
             {
-                Create<EnemyTutorial>( position, camera );
+                EnemyCreate<EnemyTutorial>( position, camera );
             }
             else if ( type == "bullet" )
             {
-                Create<EnemyBullet>( position, camera );
+                EnemyCreate<EnemyBullet>( position, camera );
             }
             else if ( type == "slash" )
             {
-                Create<EnemySlash>( position, camera );
+                EnemyCreate<EnemySlash>( position, camera );
             }
             else if ( type == "boss" )
             {
-                Create<EnemyBoss>( position, camera );
+                EnemyCreate<EnemyBoss>( position, camera );
             }
         }
 
@@ -79,9 +85,11 @@ namespace User
 
         EnemyEraser( camera );
 
-        EnemyBulletsRecovery( );
+        EnemyIntegration( );
 
-        EnemyEffectsRecovery( );
+        EnemyBulletIntegration( );
+
+        EnemyEffectIntegration( );
     }
 
     void EnemyManager::draw( cinder::CameraPersp const& camera )
@@ -200,6 +208,7 @@ namespace User
             case SpecialType::FIRE: // 火
                 EffectCreate( EffectBase( "Textures/Effect/effect1.png",
                                           vec,
+                                          camera.worldToEyeDepth( enemyRef->Position( ) ),
                                           Vec2f( vec - size ),
                                           Vec2f( 240, 240 ),
                                           EffectBase::Mode::CENTERCENTER
@@ -208,6 +217,7 @@ namespace User
             case SpecialType::WATER: // 水
                 EffectCreate( EffectBase( "Textures/Effect/attack_blue.png",
                                           vec,
+                                          camera.worldToEyeDepth( enemyRef->Position( ) ),
                                           Vec2f( vec - size ),
                                           Vec2f( 512, 512 ),
                                           EffectBase::Mode::CENTERCENTER
@@ -216,6 +226,7 @@ namespace User
             case SpecialType::TREE: // 木
                 EffectCreate( EffectBase( "Textures/Effect/effect4.png",
                                           vec,
+                                          camera.worldToEyeDepth( enemyRef->Position( ) ),
                                           Vec2f( vec - size ),
                                           Vec2f( 240, 240 ),
                                           EffectBase::Mode::CENTERCENTER
@@ -267,6 +278,7 @@ namespace User
                     float pos_y = a*( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 ) + b;
                     EffectCreate( EffectAlpha( "Textures/Effect/guard3.png",
                                                Vec2f( pos_x, pos_y ),
+                                               camera.worldToEyeDepth( enemyRef->Position( ) ),
                                                Vec2f( 480, 480 ),
                                                Vec2f( 480, 480 ),
                                                EffectBase::Mode::CENTERCENTER
@@ -341,7 +353,7 @@ namespace User
         gl::popModelView( );
     }
 
-    EnemyBulletList EnemyManager::BulletsRecovery( )
+    EnemyBulletList EnemyManager::BulletRecovery( )
     {
         auto ret = bulletList;
         bulletList.clear( );
@@ -388,6 +400,7 @@ namespace User
                 Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
                 EffectCreate( EffectCombo( "Textures/Effect/pipo-btleffect102c.png",
                                            vec,
+                                           camera.worldToEyeDepth( enemyRef->Position( ) ),
                                            Vec2f( vec - size ) * 3.0F,
                                            Vec2f( 240, 240 ),
                                            EffectBase::Mode::CENTERCENTER,
@@ -402,17 +415,34 @@ namespace User
         enemyList.erase( eraceList, enemyList.end( ) );
     }
 
-    void EnemyManager::EnemyBulletsRecovery( )
+    void EnemyManager::EnemyIntegration( )
+    {
+        EnemyList enemyRec;
+
+        Each( [ &enemyRec, this ] ( EnemyBaseRef& enemyRef )
+        {
+            enemyRec.splice( enemyRec.end( ), enemyRef->EnemyRecovery( ) );
+        } );
+
+        for ( auto& obj : enemyRec )
+        {
+            maxEnemyHitPoint += obj->GetStatus( ).maxHP;
+        }
+
+        enemyList.splice( enemyList.end( ), enemyRec );
+    }
+
+    void EnemyManager::EnemyBulletIntegration( )
     {
         Each( [ this ] ( EnemyBaseRef& enemyRef )
         {
             // spliceはlist同士をつなげるときに使います。
             // 以下のサイトを参考にしました。
             // http://d.hatena.ne.jp/pknight/20090814/1250227222
-            bulletList.splice( bulletList.end( ), enemyRef->BulletsRecovery( ) );
+            bulletList.splice( bulletList.end( ), enemyRef->BulletRecovery( ) );
         } );
     }
-    void EnemyManager::EnemyEffectsRecovery( )
+    void EnemyManager::EnemyEffectIntegration( )
     {
         Each( [ this ] ( EnemyBaseRef& enemyRef )
         {

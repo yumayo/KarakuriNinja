@@ -109,6 +109,7 @@ void SpecialEffect::drawMakimono()
 	gl::pushModelView();
 	gl::translate(Vec2f(app::getWindowWidth() / 2, end_y_pos));
 	gl::scale(Vec2f(1100,300));
+    gl::color( ColorA( 1, 1, 1, 1 ) );
 	makimono->enableAndBind();
 	gl::drawSolidRect(Rectf(Vec2f(-0.5,-0.5),Vec2f(0.5,0.5)));
 	makimono->disable();

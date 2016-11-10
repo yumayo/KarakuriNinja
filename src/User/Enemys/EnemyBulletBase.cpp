@@ -37,6 +37,7 @@ namespace User
     {
         MoveCount( );
         Move( NormalizedMoveTime( ) );
+        frame += 9;
     }
 
     void EnemyBulletBase::draw( )
@@ -46,14 +47,14 @@ namespace User
         gl::multModelView( object.Quaternion( ).toMatrix44( ) );
 
         gl::pushModelView( );
-        gl::rotate( Vec3f( 0, 180, 180 ) );
+        gl::rotate( Vec3f( 0, 180, 180 + frame ) );
         gl::color( Color::white( ) );
-        gl::drawSolidRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
+        gl::drawSolidRect( Rectf( -object.Size( ).xy( ), object.Size( ).xy( ) ) );
         gl::popModelView( );
 
     #ifdef _DEBUG
         gl::color( Color::white( ) );
-        gl::drawStrokedRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
+        gl::drawStrokedRect( Rectf( -object.Size( ).xy( ), object.Size( ).xy( ) ) );
     #endif // _DEBUG
 
         gl::popModelView( );

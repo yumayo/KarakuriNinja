@@ -21,6 +21,7 @@ namespace User
 		EffectCombo(
 			std::string const& path, 
 			cinder::Vec2f position, 
+            float depth,
 			cinder::Vec2f size, 
 			cinder::Vec2f cutSize, 
 			Mode mode,

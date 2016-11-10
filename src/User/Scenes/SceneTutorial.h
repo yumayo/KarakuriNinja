@@ -13,6 +13,8 @@
 # include "../Interfaces/Talk.h"
 # include "../Interfaces/Description.h"
 # include "../Utilitys/HundAnimation.h"
+# include "../Utilitys/MojiManager.h"
+# include "cinder/params/Params.h"
 
 //Nomoto's include
 # include "../Player/Player.h"
@@ -24,6 +26,23 @@
 namespace User
 {
     class Fusuma;
+
+    struct CameraData
+    {
+        cinder::Vec3f eyePosition;
+        cinder::Vec3f targetPosition;
+        float fov;
+        cinder::JsonTree jsonData;
+        cinder::CameraPersp camera;
+        cinder::params::InterfaceGlRef editor;
+
+        CameraData( );
+        ~CameraData( );
+        void Update( );
+        void Shake( float range );
+        void DrawEditor( );
+        cinder::CameraPersp& operator()( ) { return camera; }
+    };
 
     class SceneTutorial : public SceneBase
     {
@@ -57,16 +76,15 @@ namespace User
     private:
         //=======================================
         // ユーマヨが管理するもののインスタンス化。
-
-        cinder::Vec3f cameraEyePosition;
-        cinder::CameraPersp camera;
+        CameraData camera;
         EnemyManagerRef enemyManager;
         EnemyBulletManagerRef enemyBulletManager;
         FieldManagerRef fieldManager;
         EffectManagerRef effectManager;
         InterfaceRef UI;
         Timer timer;
-        int gameClearFrame;
+        int maxSceneChangeFrame = 60 * 3;
+        int sceneChangeFrame = maxSceneChangeFrame;
         cinder::ColorA damageColor;
         TalkRef talk;
         DescriptionRef description;
@@ -74,6 +92,7 @@ namespace User
         cinder::gl::Texture* bougyo;
         MoveInput moveInput;
         HundAnimation handAnimation;
+        MojiManager mojiManager;
         //=======================================
 
 

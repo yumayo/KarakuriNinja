@@ -10,9 +10,8 @@ namespace User
     {
         int beginCount; // 開始のフレーム
         int moveCount; // 何フレームで移動を終えるのか
-        cinder::Vec3f begin;
-        cinder::Vec3f end;
         cinder::Vec3f position;
+        cinder::Vec3f endScale;
         cinder::Vec3f scale;
         cinder::Vec3f rotate;
         cinder::gl::Texture* texture;
@@ -28,6 +27,6 @@ namespace User
         cinder::Vec3f Position( ) { return position; }
     private:
         bool IsMoveKarakuri( int count );
-        void EasePosition( float t );
+        void EaseScale( float t );
     };
 }

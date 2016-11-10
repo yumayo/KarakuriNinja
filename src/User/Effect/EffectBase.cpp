@@ -8,9 +8,10 @@ namespace User
 {
     using namespace cinder;
 
-    EffectBase::EffectBase( std::string const & path, cinder::Vec2f position, cinder::Vec2f size, cinder::Vec2f cutSize, Mode mode )
+    EffectBase::EffectBase( std::string const & path, cinder::Vec2f position, float depth, cinder::Vec2f size, cinder::Vec2f cutSize, Mode mode )
         : texture( &GData::FindTexture( path ) )
         , frame( 0 )
+        , depth( depth )
         , size( size )
         , speed( 5 )
         , isActive( true )

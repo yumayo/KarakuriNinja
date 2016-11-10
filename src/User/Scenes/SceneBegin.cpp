@@ -1,7 +1,6 @@
 # include "SceneBegin.h"
 
 # include "GlobalData.hpp"
-# include "../Utilitys/GlobalEditor.h"
 # include "SceneTitle.h"
 
 using namespace cinder;
@@ -14,7 +13,6 @@ namespace User
         , kuriko( loadImage( app::loadAsset( "TEXTURE/Textures/backninja.png" ) ) )
         , font( u8"ÉÅÉCÉäÉI", 32 )
     {
-        GlobalEditor::editor = params::InterfaceGl::create( "Edit Parameter", Vec2i( 400, 600 ) );
         GData::Setup( env.getAppPath( ).string( ) );
         timer.Off( );
     }

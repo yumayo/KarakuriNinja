@@ -12,6 +12,21 @@ namespace User
 {
     using namespace cinder;
 
+    int getInt( cinder::JsonTree const & params )
+    {
+        return std::stoi( params.getValue( ) );
+    }
+
+    float getFloat( cinder::JsonTree const & params )
+    {
+        return std::stof( params.getValue( ) );
+    }
+
+    std::string getString( cinder::JsonTree const & params )
+    {
+        return params.getValue( );
+    }
+
     cinder::Vec3f getVec3f( cinder::JsonTree const & params )
     {
         Vec3f v;
@@ -19,6 +34,15 @@ namespace User
         v.x = params.getValueAtIndex<float>( 0 );
         v.y = params.getValueAtIndex<float>( 1 );
         v.z = params.getValueAtIndex<float>( 2 );
+
+        return v;
+    }
+    cinder::Vec2f getVec2f( cinder::JsonTree const & params )
+    {
+        Vec2f v;
+
+        v.x = params.getValueAtIndex<float>( 0 );
+        v.y = params.getValueAtIndex<float>( 1 );
 
         return v;
     }
@@ -278,6 +302,13 @@ namespace User
         return Rectf( 0, 0, tex.getWidth( ), tex.getHeight( ) - baselineOffset );
     }
 
+    cinder::gl::Texture Fonts::MakeStringTexture( std::string const & string, float& baseLineOffset )
+    {
+        if ( string.empty( ) ) return cinder::gl::Texture( );
+
+        return gl::Texture( renderString( string, font, Color::white( ), &baseLineOffset ) );
+    }
+
     Timer::Timer( )
         : frame( 0 )
         , elapseFrame( randInt( 60, 120 ) )
@@ -309,7 +340,7 @@ namespace User
     void Timer::Update( )
     {
         frame = std::min( frame + static_cast<int>( isActive ), elapseFrame );
-        isCount = !( elapseFrame != frame );
+        isCount = elapseFrame != frame;
     }
     void Timer::Advance( )
     {

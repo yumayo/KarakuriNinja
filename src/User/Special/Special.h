@@ -62,15 +62,16 @@ public:
 	float getspecialPower() {
 		return specialpower_;
 	}
+    void goSpecialMode( ) {
+        if ( special_type_ == NOTSELECTED ) {
+            isspesial = true;
+            special_ = std::make_shared<SpecialSelect>( );
+            mode = SELECT;
+        }
+    }
 private:
 	//スペシャルを選択するモードに入る時に使います、一応サブ効果中は入れないようにしておきました
-	void goSpecialMode() {
-		if (special_type_ == NOTSELECTED) {
-			isspesial = true;
-			special_ = std::make_shared<SpecialSelect>();
-			mode = SELECT;
-		}
-	}
+
 	std::shared_ptr<SpecialSceneBase>special_;
 	void shift();
 	enum MODE {

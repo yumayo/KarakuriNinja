@@ -10,7 +10,7 @@ namespace User
     using namespace cinder;
 
     Talk::Talk( )
-        : font( u8"メイリオ", 48 )
+        : font( u8"HG行書体", 72 )
     {
         int index = 1;
         messageBoxLeft = &GData::FindTexture( "UI/serihu" + std::to_string( index++ ) + ".png" );
@@ -67,8 +67,8 @@ namespace User
         auto rectCenter = Rectf( Vec2f::zero( ), Vec2f( textSize.x, messageBoxHeight ) );
         auto rectRight = Rectf( Vec2f::zero( ), messageBoxRight->getSize( ) );
 
-        int ue = 5;
-        int inMessageHeight = 63;
+        int ue = 9;
+        int inMessageHeight = 99;
         int fontStartHeightPosition = ue + ( inMessageHeight - textSize.y ) / 2;
 
         // メッセージボックスの表示

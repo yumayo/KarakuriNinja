@@ -13,8 +13,8 @@ namespace User
 
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera )
         : object( pos, Vec3f( 1.7, 1.7, 0.01 ), Vec3f::zero( ) )
-        , texture( &GData::FindTexture( "Enemy/Base/Base (1).png" ) )
-        , knockBackTexture( &GData::FindTexture( "Enemy/Base/Base (1).png" ) )
+        , texture( &GData::FindTexture( "null" ) )
+        , knockBackTexture( &GData::FindTexture( "null" ) )
         , hitColor( Color::white( ) )
         , isLanding( true )
         , isLive( true )
@@ -28,8 +28,8 @@ namespace User
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, Status status, float sizeScale )
         : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
-        , texture( &GData::FindTexture( "Enemy/Base/Base (1).png" ) )
-        , knockBackTexture( &GData::FindTexture( "Enemy/Base/Base (1).png" ) )
+        , texture( &GData::FindTexture( "null" ) )
+        , knockBackTexture( &GData::FindTexture( "null" ) )
         , hitColor( Color::white( ) )
         , isLanding( true )
         , isLive( true )
@@ -133,13 +133,13 @@ namespace User
         else if ( length <= 0.5F )
         {
             status.HP = std::max( status.HP - 2.5F * value, 0.0F );
-            hitColor = Color( 1, 0.3, 0.3 );
+            hitColor = Color( 1, 0.2, 0.2 );
             drainMP = 5;
         }
         else if ( length <= 1.0F )
         {
             status.HP = std::max( status.HP - 1.5F * value, 0.0F );
-            hitColor = Color( 1, 0.5, 0.5 );
+            hitColor = Color( 1, 0.3, 0.3 );
             drainMP = 2;
         }
 
@@ -178,7 +178,13 @@ namespace User
     {
         return false;
     }
-    EnemyBulletList EnemyBase::BulletsRecovery( )
+    EnemyList EnemyBase::EnemyRecovery( )
+    {
+        auto ret = enemyList;
+        enemyList.clear( );
+        return ret;
+    }
+    EnemyBulletList EnemyBase::BulletRecovery( )
     {
         auto ret = bulletList;
         bulletList.clear( );
@@ -292,6 +298,7 @@ namespace User
         Vec2f size = camera.worldToScreen( object.Position( ) + object.Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
         EffectCreate( EffectAlpha( "Textures/Effect/kumo2.png",
                                    vec,
+                                   camera.worldToEyeDepth( object.Position( ) ),
                                    Vec2f( vec - size ) * 2.5F,
                                    Vec2f( 600, 300 ),
                                    EffectBase::Mode::CENTERCENTER

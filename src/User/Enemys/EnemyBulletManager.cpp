@@ -102,11 +102,12 @@ namespace User
                         float b = line_.startPos.y - a * line_.startPos.x;
                         float pos_x = ( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 );
                         float pos_y = a*( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 ) + b;
-                        EffectCreate( EffectAlpha( "Textures/Effect/guard3.png",
-                                                  Vec2f( pos_x, pos_y ),
-                                                  Vec2f( 480, 480 ),
-                                                  Vec2f( 480, 480 ),
-                                                  EffectBase::Mode::CENTERCENTER
+                        EffectCreate( EffectBase( "Textures/Effect/guard3.png",
+                                                   Vec2f( pos_x, pos_y ),
+                                                   0.0F,
+                                                   Vec2f( 480, 480 ),
+                                                   Vec2f( 480, 480 ),
+                                                   EffectBase::Mode::CENTERCENTER
                         ) );
                     }
                 }

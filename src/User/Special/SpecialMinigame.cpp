@@ -1,6 +1,6 @@
 #include "SpecialMinigame.h"
 
-const int STEPNUM = 2;
+const int STEPNUM = 1;
 
 void SpecialMinigame::draw()
 {

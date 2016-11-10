@@ -15,6 +15,7 @@ namespace User
         int maxMoveTime;
         int moveTime;
         bool isActive;
+        int frame = 0;
     public:
         EnemyBulletBase( cinder::Vec3f begin, cinder::Vec3f end );
         EnemyBulletBase( cinder::Vec3f begin, cinder::Vec3f end, int attackPoint );

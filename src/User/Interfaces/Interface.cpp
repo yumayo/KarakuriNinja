@@ -16,7 +16,7 @@ namespace User
         , HPEdgeBasedamage( &GData::FindTexture( "UI/HPEdgeBase2.png" ) )
         , specialeffect( &GData::FindTexture( "Textures/Effect/effectgage.png" ) )
         , makimono( &GData::FindTexture( "Textures/makimono.png" ) )
-        , font( u8"メイリオ", 85 )
+        , font( u8"HG行書体", 85 )
         , touchfont( u8"HG行書体", 30 )
         , scorePoint( 0 )
         , count( 0 )
@@ -241,7 +241,7 @@ namespace User
         if ( !_ismpmax ) {//何も選ばれていない
             return;
         }
-        auto leftDown = Vec2f( 0, env.getWindowHeight( ) );
+       /* auto leftDown = Vec2f( 0, env.getWindowHeight( ) );
         auto rightDown = env.getWindowSize( );
         std::string str;
         cinder::ColorA color;
@@ -254,17 +254,18 @@ namespace User
         gl::color( ColorA( 1, 1, 1, alfa ) );
         gl::drawSolidRect( cinder::Rectf( -size / 2, size / 2 ) );
         makimono->disable( );
-        gl::popModelView( );
+        gl::popModelView( );*/
         //color = ColorA(0, 0, 0, alfa);
 
-        touchfont.Draw( u8"タッチで必殺発動", pos, ColorA( 0, 0, 0, 1 ), Fonts::Mode::CENTERUP );
+        //touchfont.Draw( u8"タッチで必殺発動", pos, ColorA( 0, 0, 0, 1 ), Fonts::Mode::CENTERUP );
     }
 
     Combo::Combo( )
-        : font( u8"メイリオ", 80 )
+        : font( u8"HG行書体", 85 )
         , backGround( &GData::FindTexture( "UI/ReamHammer.png" ) )
         , effect( "Textures/Effect/pipo-btleffect102c.png",
                   Vec2f::zero( ),
+                  0.0F,
                   Vec2f( 480, 480 ),
                   Vec2f( 240, 240 ),
                   EffectBase::Mode::LEFTUP )

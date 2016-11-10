@@ -16,9 +16,6 @@
 
 namespace User
 {
-    using EnemyBaseRef = std::shared_ptr<EnemyBase>;
-    using EnemyList = std::list<EnemyBaseRef>;
-
     class EnemyManager
     {
         float playerAttackColliedSize = 1.0F;
@@ -34,7 +31,6 @@ namespace User
         int enemyHitPoint = 0;
     private:
         EnemyList enemyList;
-    private:
         EnemyBulletList bulletList;
         EffectList effectList;
     public:
@@ -43,9 +39,6 @@ namespace User
         void draw( cinder::CameraPersp const& camera );
         void drawUI( cinder::CameraPersp const& camera );
     public:
-        // エネミーの作成を行います。
-        template <class Ty>
-        void Create( cinder::Vec3f position, const cinder::CameraPersp& camera );
         // エネミーが一体でも攻撃していたら true になります。
         bool IsAttack( const cinder::CameraPersp& camera );
         // プレイヤーからエネミーへのダメージラインとの当たり判定も込み
@@ -68,12 +61,6 @@ namespace User
         void DrawAttackCircle( cinder::CameraPersp const & camera );
         // エネミーの合計体力を表示します。
         void DrawEnemyHitPoint( );
-        // 発射した弾を全て回収します。この関数を呼ぶとこのクラスが持っている弾を全てクリアします。
-        EnemyBulletList BulletsRecovery( );
-        // エフェクトを全て回収します。この関数を呼ぶとこのクラスが持っているエフェクトを全てクリアします。
-        EffectList EffectRecovery( );
-        template <class Ty>
-        void EffectCreate( Ty const& instans );
     public:
         // エネミーの当たり判定域を描画します。(デバッグ用)
         void DrawCollisionCircle( cinder::CameraPersp const& camera );
@@ -82,20 +69,29 @@ namespace User
     private: // 以下アップデートで回します。
         // エネミーのHPが０だったら削除
         void EnemyEraser( cinder::CameraPersp const& camera );
-        // 各エネミーの弾を回収します。
-        void EnemyBulletsRecovery( );
-
-        void EnemyEffectsRecovery( );
+    private:
+        void EnemyIntegration( );
+        template <class Ty>
+        void EnemyCreate( cinder::Vec3f position, const cinder::CameraPersp& camera );
+    public:
+        EnemyBulletList BulletRecovery( );
+    private:
+        void EnemyBulletIntegration( );
+    public:
+        EffectList EffectRecovery( );
+    private:
+        void EnemyEffectIntegration( );
+        template <class Ty>
+        void EffectCreate( Ty const& instans );
     private:
         bool IsDamage( Line line_, cinder::Vec2f pos_, float size_ );
-
         float NormalizedHitPoint( ) { return static_cast<float>( enemyHitPoint ) / maxEnemyHitPoint; }
     };
 
     using EnemyManagerRef = std::shared_ptr<EnemyManager>;
 
     template<class Ty>
-    inline void EnemyManager::Create( cinder::Vec3f position, const cinder::CameraPersp& camera )
+    inline void EnemyManager::EnemyCreate( cinder::Vec3f position, const cinder::CameraPersp& camera )
     {
         enemyList.emplace_back( std::make_shared<Ty>( position, camera ) );
     }

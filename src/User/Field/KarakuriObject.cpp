@@ -19,10 +19,9 @@ namespace User
     KarakuriObject::KarakuriObject( cinder::JsonTree const & params )
         : beginCount( params.getValueForKey<int>( "beginCount" ) )
         , moveCount( params.getValueForKey<int>( "moveCount" ) == 0 ? 1 : params.getValueForKey<int>( "moveCount" ) )
-        , begin( getVec3f( params["begin"] ) )
-        , end( getVec3f( params["end"] ) )
-        , position( begin )
-        , scale( getVec3f( params["scale"] ) )
+        , position( getVec3f( params["position"] ) )
+        , scale( Vec3f::zero( ) )
+        , endScale( getVec3f( params["endScale"] ) )
         , rotate( getVec3f( params["rotate"] ) )
         , texture( &GData::FindTexture( params.getValueForKey<std::string>( "texture" ) ) )
     {
@@ -32,18 +31,17 @@ namespace User
     {
         if ( IsMoveKarakuri( count ) )
         {
-            // カラクリ動作中なら、位置を動かします。
-            EasePosition( static_cast<float>( count - beginCount ) / moveCount );
+            EaseScale( static_cast<float>( count - beginCount ) / moveCount );
         }
     }
     bool KarakuriObject::IsMoveKarakuri( int count )
     {
         return beginCount <= count && count <= beginCount + moveCount;
     }
-    void KarakuriObject::EasePosition( float t )
+    void KarakuriObject::EaseScale( float t )
     {
-        position.x = EasingQuadInOut( t, begin.x, end.x );
-        position.y = EasingQuadInOut( t, begin.y, end.y );
-        position.z = EasingQuadInOut( t, begin.z, end.z );
+        scale.x = endScale.x;
+        scale.y = EasingElasticOut( t, 0, endScale.y );
+        scale.z = endScale.z;
     }
 }

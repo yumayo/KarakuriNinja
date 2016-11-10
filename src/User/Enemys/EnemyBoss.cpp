@@ -4,58 +4,33 @@
 # include "cinder/gl/gl.h"
 # include "cinder/Rand.h"
 
+#include "EnemyTutorial.h"
+#include "EnemySlash.h"
+#include "EnemySlashNot.h"
+#include "EnemyBullet.h"
+#include "EnemyBulletNot.h"
+#include "EnemyBoss.h"
+
 # include "../Utilitys/Hirasawa.h"
 
 # include "EnemyBulletTexture.h"
 
 # include "GlobalData.hpp"
 
+# include "TutorialData.hpp"
+
 namespace User
 {
     using namespace cinder;
 
-    void EnemyBoss::DrawAura( )
-    {
-        if ( auraTex )
-        {
-            auto object = this->object;
-            object.Position( object.Position( ) - object.Direction( ) * 0.1 );
-
-            gl::disable( GL_CULL_FACE );
-
-            gl::pushModelView( );
-            gl::translate( object.Position( ) );
-            gl::multModelView( object.Quaternion( ).toMatrix44( ) );
-
-            if ( !IsKnockBack( ) )
-            {
-                gl::pushModelView( );
-                float s = 2.0F + ( 0.3F * math<float>::sin( float( frame ) / 2.5F ) );
-                gl::scale( s, s, s );
-                gl::rotate( Vec3f( 0, 180, 180 + frame ) );
-                ColorA col = ColorA::white( );
-                col.a = 0.5F + ( 0.5 * math<float>::cos( float( frame ) / 2.5F ) );
-                gl::color( col );
-                auraTex->bind( );
-                gl::drawSolidRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
-                auraTex->unbind( );
-                gl::popModelView( );
-            }
-
-            gl::popModelView( );
-
-            gl::enable( GL_CULL_FACE );
-        }
-    }
-
     EnemyBoss::EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera )
-        : EnemyBase( pos, camera, Status( 20.0F, 7 ) )
+        : EnemyBase( pos, camera, Status( 40.0F, 12 ) )
         , timer( )
         , isAttack( false )
         , isDeadStop( true )
         , isHalfHPSerif( true )
         , isDeadSerif( true )
-        , font( u8"メイリオ", 74 )
+        , font( u8"HG行書体", 74 )
         , serif( u8"" )
     {
         {
@@ -96,6 +71,9 @@ namespace User
             se.push_back( &GData::FindAudio( "SE/shuri" + std::to_string( i ) + ".wav" ) );
             弾カウント = 0;
         }
+
+        jsonEnemys = JsonTree( app::loadAsset( "JSON/Bosspawn.json" ) )["Enemy"];
+        jsonItr = jsonEnemys.begin( );
     }
     void EnemyBoss::update( cinder::CameraPersp const& camera )
     {
@@ -331,6 +309,7 @@ namespace User
 
             objects.clear( );
             texture = 攻撃モーション画像;
+            prevPosition = object.Position( );
             SetFunction( &EnemyBoss::攻撃モーション );
             return;
         }
@@ -338,12 +317,14 @@ namespace User
     void EnemyBoss::攻撃モーション( cinder::CameraPersp const& camera )
     {
         auraTex = ( ( frame / 15 ) % 2 == 0 ? オーラ1 : オーラ2 );
-
+        auto yureru = Vec3f( randFloat( -0.01, 0.01 ), randFloat( -0.01, 0.01 ), randFloat( 0, 0.001 ) );
+        object.Position( prevPosition + yureru );
         // 攻撃モーション後、次の関数へ。
         if ( timer.IsAction( ) )
         {
             auraTex = nullptr;
             texture = 攻撃画像;
+            object.Position( prevPosition );
             SetFunction( &EnemyBoss::攻撃 );
             return;
         }
@@ -453,10 +434,56 @@ namespace User
     }
     void EnemyBoss::出現した時のセリフ( cinder::CameraPersp const & camera )
     {
-        SetSerifFunction( u8"がっはっは、何用だ貴様", &EnemyBoss::セリフ );
+        SetSerifFunction( u8"貴様か、我の計画を邪魔するものは！！", &EnemyBoss::セリフ );
 
         if ( timer.IsAction( ) )
         {
+            timer.Advance( 180 );
+            SetFunction( &EnemyBoss::出現した時のセリフ2 );
+            return;
+        }
+    }
+    void EnemyBoss::出現した時のセリフ2( cinder::CameraPersp const & camera )
+    {
+        SetSerifFunction( u8"いでよ、我が下僕よ！", &EnemyBoss::セリフ );
+
+        if ( frame % 9 == 0 )
+        {
+            if ( jsonItr != jsonEnemys.end( ) )
+            {
+                auto type = jsonItr->getValueForKey<std::string>( "type" );
+                auto position = getVec3f( ( *jsonItr )["position"] );
+                if ( type == "slashNot" )
+                {
+                    EnemyCreate<EnemySlashNot>( position, camera );
+                }
+                else if ( type == "bulletNot" )
+                {
+                    EnemyCreate<EnemyBulletNot>( position, camera );
+                }
+                else if ( type == "tutorial" )
+                {
+                    EnemyCreate<EnemyTutorial>( position, camera );
+                }
+                else if ( type == "bullet" )
+                {
+                    EnemyCreate<EnemyBullet>( position, camera );
+                }
+                else if ( type == "slash" )
+                {
+                    EnemyCreate<EnemySlash>( position, camera );
+                }
+                else if ( type == "boss" )
+                {
+                    EnemyCreate<EnemyBoss>( position, camera );
+                }
+                jsonItr++;
+            }
+        }
+
+        if ( timer.IsAction( ) )
+        {
+            TRData::special.TutorialStart( );
             SetSerifFunction( u8"", &EnemyBoss::ヌルセルフ );
             SetFunction( &EnemyBoss::タイマーが鳴るまで待機 );
             return;
@@ -604,5 +631,39 @@ namespace User
         pos3.y = ( pos1.y + pos2.y ) / 2.0F;
         ray = camera.generateRay( pos3.x, pos3.y, env.getWindowAspectRatio( ) );
         BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken.png", attackPoint ) );
+    }
+
+    void EnemyBoss::DrawAura( )
+    {
+        if ( auraTex )
+        {
+            auto object = this->object;
+            object.Position( object.Position( ) - object.Direction( ) * 0.1 );
+
+            gl::disable( GL_CULL_FACE );
+
+            gl::pushModelView( );
+            gl::translate( object.Position( ) );
+            gl::multModelView( object.Quaternion( ).toMatrix44( ) );
+
+            if ( !IsKnockBack( ) )
+            {
+                gl::pushModelView( );
+                float s = 2.0F + ( 0.3F * math<float>::sin( float( frame ) / 2.5F ) );
+                gl::scale( s, s, s );
+                gl::rotate( Vec3f( 0, 180, 180 + frame ) );
+                ColorA col = ColorA::white( );
+                col.a = 0.5F + ( 0.5 * math<float>::cos( float( frame ) / 2.5F ) );
+                gl::color( col );
+                auraTex->bind( );
+                gl::drawSolidRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
+                auraTex->unbind( );
+                gl::popModelView( );
+            }
+
+            gl::popModelView( );
+
+            gl::enable( GL_CULL_FACE );
+        }
     }
 }

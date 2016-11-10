@@ -44,14 +44,15 @@ namespace User
         int ScoreRecovery( ) { auto temp = score; score = 0; return temp; }
         // 弾が当たる場所を描画します。
         void DrawBulletCircle( cinder::CameraPersp const & camera );
-        EffectList EffectRecovery( );
     public:
         // 弾の当たり判定域を描画します。（デバッグ用）
         void DrawCollisionCircle( cinder::CameraPersp const& camera );
     private:
         void Each( std::function<void( EnemyBulletBaseRef& )> func );
         void BulletEraser( );
-        template <class Ty>
+
+    public: EffectList EffectRecovery( );
+    private: template <class Ty>
         void EffectCreate( Ty const& instans );
     };
 

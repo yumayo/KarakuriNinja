@@ -260,7 +260,7 @@ namespace User
     void SceneResult::updateNinja( )
     {
         if ( t_[TS::HONOO] >= 1.0f )
-            Easing::tCount( t_[TS::NINJA], 1.f );
+            Easing::tCount( t_[TS::NINJA], 0.5f );
 		ninjasize.x = env.getWindowWidth() / 2.5f;
 		ninjasize.y = ninjasize.x*(ninja->getSize().y / ninja->getSize().x);
         ninjapos.x = Easing::getEasing[Easing::SineOut]( t_[TS::NINJA], -env.getWindowWidth( ) / 2.f, env.getWindowWidth( ) / 4.f );
@@ -305,13 +305,13 @@ namespace User
             Easing::tCount( t_[TITLE], 0.4f );
         float redcolor = Easing::getEasing[Easing::CircIn]( t_[TS::TITLE], 1, 0 );
         Vec2f pos = Vec2f( env.getWindowWidth( ) / 4.f, env.getWindowHeight( ) / 20 );
-        font.Draw( u8"結果発表！", pos + Vec2f( 30, 0 ), ColorA( redcolor, 0, 0, 1 ), User::Fonts::Mode::CENTERUP );
+        font.Draw( u8"結果発表！", pos + Vec2f( 30,15 ), ColorA( redcolor, 0, 0, 1 ), User::Fonts::Mode::CENTERUP );
 
     }
     void SceneResult::drawTables( )
     {
         if ( t_[TS::NINJA] < 1.0f )return;
-        Easing::tCount( t_[TS::TABLE], 0.8f );
+        Easing::tCount( t_[TS::TABLE], 0.4f );
         Vec2f scorepos;
         float rate = 1.17f;
         float endpos_x = env.getWindowWidth( ) / 2.f + 120;
@@ -347,7 +347,7 @@ namespace User
     void SceneResult::drawBeginScore( )
     {
         float rate = 1.17f;
-        float time = 0.6f;
+        float time = 0.3f;
         if ( t_[TS::TABLE] < 1.0f )return;
         soundplay( taiko1, s_end[SPE::E_SCORE] );
         Easing::tCount( t_[TS::SCORE], time );
@@ -383,7 +383,7 @@ namespace User
 
         if ( t_[TS::LASTSCORE] < 1.0f )return;
         soundplay( taiko2, s_end[SPE::E_RANKING] );
-        Easing::tCount( t_[TS::RANKING], 3.0f );
+        Easing::tCount( t_[TS::RANKING], 1.5f );
         Vec2f rankingpos = Vec2f( scorepos.x, scorepos.y + TABLEFONTSIZE*rate * 5 );
         tables.Draw( std::to_string( ranking ) + u8"位/" + std::to_string( datanum ) + u8"人", rankingpos, ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
     }
@@ -526,17 +526,17 @@ namespace User
             float beginpos = -icons[0].size.y*1.15f * ( float( icons.size( ) ) + 0.5f );
             float endpos = 0;
             if ( t_[TS::RANKING] < 1 )return;
-            Easing::tCount( camera_t, 5.f );
+            Easing::tCount( camera_t, 2.5f );
             iconcamera = Easing::getEasing[Easing::QuintInOut]( camera_t, beginpos, endpos );
         }
         else {
             float beginpos = -icons[0].size.y*1.15f * ( float( icons.size( ) ) + 0.5f );
             float endpos = -myrankpos_ + env.getWindowHeight( ) / 2;
             if ( t_[TS::RANKING] < 1 )return;
-            Easing::tCount( camera_t, 3.f );
+            Easing::tCount( camera_t, 1.5f );
             iconcamera = Easing::getEasing[Easing::CubicInOut]( camera_t, beginpos, endpos );
             if ( ( camera_t >= 1.0f ) && ( delay_t < 1.0f ) ) {
-                Easing::tCount( move_t, 1.0f );
+                Easing::tCount( move_t, 0.5f );
                 if ( move_t >= 1.0f )
                     Easing::tCount( delay_t, 1.0f );
             }
@@ -544,7 +544,7 @@ namespace User
                 beginpos = -myrankpos_ + env.getWindowHeight( ) / 2;
                 endpos = 0;
                 iconcamera = Easing::getEasing[Easing::CubicInOut]( myrank_camera_t, beginpos, endpos );
-                Easing::tCount( myrank_camera_t, 2.0f );
+                Easing::tCount( myrank_camera_t, 1.0f );
             }
         }
     }
@@ -577,12 +577,12 @@ namespace User
 	{
 		if (rankin) {
 			if (myrank_camera_t >= 1) {
-				Easing::tCount(endt_[0],1.f);
+				Easing::tCount(endt_[0],0.5f);
 			}
 		}
 		else {
 			if (camera_t >= 1) {
-				Easing::tCount(endt_[0], 1.f);
+				Easing::tCount(endt_[0], 0.5f);
 			}
 		}
 		if (endt_[0] >= 1.0f) {

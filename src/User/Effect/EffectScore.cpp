@@ -11,11 +11,12 @@ namespace User
     using namespace cinder;
 
     EffectScore::EffectScore( cinder::Vec2f position, int scoreNum )
-        : EffectBase( "Textures/score.png", position, Vec2f( 256, 256 ), Vec2f( 256, 256 ), Mode::LEFTUP )
-        , font( u8"ÉÅÉCÉäÉI", 64 )
+        : EffectBase( "Textures/score.png", position, 0.0F, Vec2f( 256, 256 ), Vec2f( 256, 256 ), Mode::LEFTUP )
+        , font( u8"HGçsèëëÃ", 90 )
         , score( scoreNum )
     {
         size = font.BoundingBox( std::to_string( score ) ).getSize( );
+
     }
     void EffectScore::Update( )
     {

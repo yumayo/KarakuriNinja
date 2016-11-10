@@ -6,6 +6,11 @@
 
 # include "cinder/gl/Texture.h"
 #include"../Utilitys/Hirasawa.h"
+
+// エフェクトもエフェクトの中でソートして表示するようにしました。
+// それにしたがって引数に depth が増えています。
+// 2016.09.08
+
 namespace User
 {
     // Effectは画像の左上を基点として表示されます。
@@ -22,14 +27,15 @@ namespace User
         int frame;
         int speed;
         cinder::Vec2f position;
+        float depth;
         cinder::Vec2f cutSize;
         cinder::Vec2f size;
         int maxIndex;
         Mode mode;
-	protected:
+    protected:
         bool isActive;
     public:
-        EffectBase( std::string const& path, cinder::Vec2f position, cinder::Vec2f size, cinder::Vec2f cutSize, Mode mode = Mode::LEFTUP);
+        EffectBase( std::string const& path, cinder::Vec2f position, float depth, cinder::Vec2f size, cinder::Vec2f cutSize, Mode mode = Mode::LEFTUP );
     public:
         virtual void Update( ) override;
         virtual void Draw( ) override;
@@ -37,6 +43,7 @@ namespace User
         void Position( cinder::Vec2f position );
         void CutSize( cinder::Vec2f cutSize );
     public:
+        float GetDepth( ) { return depth; }
         // 弾を消していいかの確認
         bool IsActive( );
     protected:

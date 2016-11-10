@@ -20,7 +20,13 @@ namespace User
     }
     void EffectManager::Draw( )
     {
-        Each( [ ] ( EffectBaseRef& effectBase ) { effectBase->Draw( ); } );
+        std::multimap<float, std::function<void( )>> draw;
+        Each( [ & ] ( EffectBaseRef& effectBase )
+        {
+            draw.insert( std::make_pair( effectBase->GetDepth( ), std::bind( &EffectBase::Draw, effectBase ) ) );
+        } );
+
+        for ( auto& obj : draw ) obj.second( );
     }
     void EffectManager::EffectRegister( EffectList & effectList )
     {

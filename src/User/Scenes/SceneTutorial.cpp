@@ -12,19 +12,67 @@ namespace User
 {
     using namespace cinder;
 
+    CameraData::CameraData( )
+    {
+        jsonData = JsonTree( app::loadAsset( "JSON/CameraData.json" ) );
+        auto& data = jsonData["Camera"];
+
+        eyePosition = getVec3f( data["eyePosition"] );
+        targetPosition = getVec3f( data["targetPosition"] );
+        fov = getFloat( data["fov"] );
+
+        editor = params::InterfaceGl::create( "Edit Parameter", Vec2i( 400, 600 ) );
+        editor->addParam( "eyePosition", &eyePosition ).group( "Camera" );
+        editor->addParam( "targetPosition", &targetPosition ).group( "Camera" );
+        editor->addParam( "fov", &fov ).group( "Camera" );
+
+        Update( );
+    }
+
+    CameraData::~CameraData( )
+    {
+        auto& data = jsonData["Camera"];
+
+        auto& eyePos = data["eyePosition"] = JsonTree::makeArray( "eyePosition" );
+        eyePos.pushBack( JsonTree( "", eyePosition.x ) );
+        eyePos.pushBack( JsonTree( "", eyePosition.y ) );
+        eyePos.pushBack( JsonTree( "", eyePosition.z ) );
+
+        auto& tarPos = data["targetPosition"] = JsonTree::makeArray( "targetPosition" );
+        tarPos.pushBack( JsonTree( "", targetPosition.x ) );
+        tarPos.pushBack( JsonTree( "", targetPosition.y ) );
+        tarPos.pushBack( JsonTree( "", targetPosition.z ) );
+
+        data["fov"] = ci::JsonTree( "fov", fov );
+
+        jsonData.write( env.getAssetPath( "JSON/CameraData.json" ) );
+    }
+
+    void CameraData::Update( )
+    {
+        camera.lookAt( eyePosition, targetPosition );
+        camera.setPerspective( fov, env.getWindowAspectRatio( ), 1.0F, 100.0F );
+    }
+
+    void CameraData::Shake( float range )
+    {
+        auto shakePower = Vec3f( randFloat( -range, range ), randFloat( -range, range ), 0.0F );
+        camera.lookAt( eyePosition + shakePower, targetPosition );
+    }
+
+    void CameraData::DrawEditor( )
+    {
+        editor->draw( );
+    }
+
     SceneTutorial::SceneTutorial( )
     {
         // ユーマヨが管理するものを作成。
-        cameraEyePosition = Vec3f( 0, 0.7, -5 );
-        camera.lookAt( cameraEyePosition, Vec3f( 0, 0.7, 0 ) );
-        camera.setWorldUp( Vec3f( 0, 1, 0 ) );
-        camera.setPerspective( 60.0F, env.getWindowAspectRatio( ), 1.0F, 100.0F );
         fieldManager = std::make_shared<FieldManager>( "JSON/TutorialField.json" );
-        enemyManager = std::make_shared<EnemyManager>( camera, fieldManager->FieldDataPath( ) );
+        enemyManager = std::make_shared<EnemyManager>( camera( ), fieldManager->FieldDataPath( ) );
         enemyBulletManager = std::make_shared<EnemyBulletManager>( );
         effectManager = std::make_shared<EffectManager>( );
         UI = std::make_shared<Interface>( );
-        gameClearFrame = 60 * 3;
         timer.Off( );
         damageColor = ColorA( 1, 0, 0, 0 );
         talk = std::make_shared<Talk>( );
@@ -53,7 +101,7 @@ namespace User
     }
     void SceneTutorial::resize( )
     {
-        camera.setAspectRatio( env.getWindowAspectRatio( ) );
+        camera( ).setAspectRatio( env.getWindowAspectRatio( ) );
     }
 
     void SceneTutorial::UpdateDamage( )
@@ -71,8 +119,8 @@ namespace User
         {
             bool 無敵じゃない = ( !( special.getSpecialType( ) == SpecialType::TREE ) );
             int damage = 0;
-            damage += enemyManager->EnemyToPlayerDamage( camera ) * 無敵じゃない;
-            damage += enemyBulletManager->EnemyToPlayerDamage( camera ) * 無敵じゃない;
+            damage += enemyManager->EnemyToPlayerDamage( camera( ) ) * 無敵じゃない;
+            damage += enemyBulletManager->EnemyToPlayerDamage( camera( ) ) * 無敵じゃない;
             player.TranseNowHp( -damage );
         }
 
@@ -80,8 +128,8 @@ namespace User
         if ( player.Command( ) == CommandType::GUARD )
         {
             int damage = 0;
-            damage += enemyManager->EnemyToPlayerDamage( player.GuardLine( ), camera );
-            damage += enemyBulletManager->EnemyToPlayerDamage( player.GuardLine( ), camera );
+            damage += enemyManager->EnemyToPlayerDamage( player.GuardLine( ), camera( ) );
+            damage += enemyBulletManager->EnemyToPlayerDamage( player.GuardLine( ), camera( ) );
             player.TranseNowHp( -damage * !( special.getSpecialType( ) == SpecialType::TREE ) );
         }
 
@@ -96,14 +144,14 @@ namespace User
         {
             int AP = 0;
             float damagerate = ( special.getSpecialType( ) == SpecialType::FIRE ) ? 1.3f : 1.0f;
-            AP += enemyManager->PlayerToEnemyDamage( obj, camera, damagerate, UI->ComboNumber( ) );
-            AP += enemyBulletManager->PlayerToEnemyDamage( obj, camera );
+            AP += enemyManager->PlayerToEnemyDamage( obj, camera( ), damagerate, UI->ComboNumber( ) );
+            AP += enemyBulletManager->PlayerToEnemyDamage( obj, camera( ) );
             player.TranseNowMp( AP );
         }
     }
     void SceneTutorial::UpdateColor( )
     {
-        damageColor.a = std::max( damageColor.a - 0.01F, 0.0F );
+        if ( player.NowHp( ) != 0 ) damageColor.a = std::max( damageColor.a - 0.01F, 0.0F );
     }
     void SceneTutorial::UpdateScore( )
     {
@@ -119,7 +167,7 @@ namespace User
         bool isHit = false;
         for ( auto& obj : moveInput.Lines( ) )
         {
-            if ( 0 != enemyManager->PlayerToEnemyAttackCheck( obj, camera ) )
+            if ( 0 != enemyManager->PlayerToEnemyAttackCheck( obj, camera( ) ) )
             {
                 isHit = true;
                 break;
@@ -134,13 +182,12 @@ namespace User
 
         if ( timer.IsCount( ) )
         {
-            camera.lookAt( Vec3f( randFloat( -0.05F, 0.05F ), randFloat( -0.05F, 0.05F ), 0.0F ) + cameraEyePosition, camera.getCenterOfInterestPoint( ) );
+            camera.Shake( 0.02F );
         }
 
         if ( timer.IsAction( ) )
         {
             timer.Off( );
-            camera.lookAt( cameraEyePosition, camera.getCenterOfInterestPoint( ) );
         }
     }
     void SceneTutorial::UpdateNextStage( )
@@ -154,18 +201,10 @@ namespace User
         // ステージの移動が終了したら次のステージへ。
         if ( !fieldManager->IsLastField( ) && fieldManager->IsChange( ) )
         {
+            mojiManager.End( );
             fieldManager->ChangeField( );
-            enemyManager = std::make_shared<EnemyManager>( camera, fieldManager->FieldDataPath( ) );
+            enemyManager = std::make_shared<EnemyManager>( camera( ), fieldManager->FieldDataPath( ) );
             enemyBulletManager = std::make_shared<EnemyBulletManager>( );
-        }
-
-        // ラスボスを倒し終わったら、何らかのアクション後、次のシーンへ。
-        if ( enemyManager->IsEmpty( ) && fieldManager->IsLastField( ) )
-        {
-            float gain = ( static_cast<float>( gameClearFrame ) / ( 60 * 3 ) ) * 0.4F;
-            mainbgm[0]->Gain( gain );
-            gameClearFrame = std::max( gameClearFrame - 1, 0 );
-            camera.lookAt( Vec3f( randFloat( -0.05F, 0.05F ), randFloat( -0.05F, 0.05F ), 0.0F ) + cameraEyePosition, camera.getCenterOfInterestPoint( ) );
         }
     }
     void SceneTutorial::UpdateAllInstans( )
@@ -180,8 +219,8 @@ namespace User
                 player.Update( );
                 player.UpdateDeffenceOfTouch( );
 
-                enemyManager->update( camera );
-                enemyBulletManager->BulletRegister( enemyManager->BulletsRecovery( ) );
+                enemyManager->update( camera( ) );
+                enemyBulletManager->BulletRegister( enemyManager->BulletRecovery( ) );
                 enemyBulletManager->update( );
 
                 UpdateDamage( );
@@ -199,18 +238,25 @@ namespace User
         if ( ( TRData::enemyKill.IsComplete( ) ) && ( !special.getIsSpecial( ) ) && ( !fieldManager->IsMoveing( ) ) ) {
             time++;
         }
-        if ( ( player.NowMp( ) == player.MaxMp( ) ) && ( !ismpmax ) ) {
+  /*      if ( ( player.NowMp( ) == player.MaxMp( ) ) && ( !ismpmax ) ) {
             mpmax->Gain( 0.5f );
             mpmax->Play( );
             ismpmax = true;
         }
         if ( ( !( player.NowMp( ) == player.MaxMp( ) ) ) && ( ismpmax ) ) {
             ismpmax = false;
-        }
+        }*/
         /////////////////////////////////
+
+        mojiManager.Update( );
     }
     void SceneTutorial::UpdateSpecial( )
     {
+        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_s ) )
+        {
+            special.goSpecialMode( );
+        }
+
         // スペシャルは最初にアップデートします。
         // エネミーがいない場合はスペシャルを発動できないようにします。
         if ( !enemyManager->IsEmpty( ) )
@@ -221,21 +267,15 @@ namespace User
         // プレイヤーのスペシャルエフェクト時にカメラを揺らします。
         if ( special.isEffecting( ) )
         {
-            camera.lookAt( Vec3f( randFloat( -0.05F, 0.05F ), randFloat( -0.05F, 0.05F ), 0.0F ) + cameraEyePosition, camera.getCenterOfInterestPoint( ) );
+            camera.Shake( 0.05F );
             player.TranseNowMp( -1 );
-        }
-
-        // エフェクト終了時、カメラを元通りにします。
-        if ( special.getEffectEnd( ) )
-        {
-            camera.lookAt( cameraEyePosition, camera.getCenterOfInterestPoint( ) );
         }
 
         // エフェクト終了時、全てのエネミー及び弾にダメージを与えます。
         if ( special.getEffectEnd( ) )
         {
             const float damagevalue = 10.0F;
-            player.TranseNowMp( enemyManager->PlayerSpecialAttackToEnemyDamage( special.getspecialPower( ) * damagevalue, camera, special.getSpecialType( ) ) );
+            player.TranseNowMp( enemyManager->PlayerSpecialAttackToEnemyDamage( special.getspecialPower( ) * damagevalue, camera( ), special.getSpecialType( ) ) );
             player.TranseNowMp( enemyBulletManager->PlayerSpecialAttackToEnemyDamage( ) );
         }
     }
@@ -300,7 +340,7 @@ namespace User
                 TRData::guard.TutorialEnd( );
                 isTalked = false;
             }
-            else if ( player.Command( ) == CommandType::GUARD && enemyManager->EnemyToPlayerGuardCheck( player.GuardLine( ), camera ) )
+            else if ( player.Command( ) == CommandType::GUARD && enemyManager->EnemyToPlayerGuardCheck( player.GuardLine( ), camera( ) ) )
             {
                 TRData::talkString.clear( );
                 TRData::talkString.push_front( u8"そうそうその調子。" );
@@ -342,14 +382,14 @@ namespace User
             // 攻撃時に必要な関数。
             player.UpdateDeffenceOfTouch( );
             UpdateDamage( );
-            enemyManager->update( camera );
+            enemyManager->update( camera( ) );
             UpdateScore( );
             UpdateCombo( );
 
             bool isHit = false;
             for ( auto& obj : moveInput.Lines( ) )
             {
-                if ( 0 != enemyManager->PlayerToEnemyAttackCheck( obj, camera ) )
+                if ( 0 != enemyManager->PlayerToEnemyAttackCheck( obj, camera( ) ) )
                 {
                     isHit = true;
                     break;
@@ -391,6 +431,7 @@ namespace User
             talk->Update( );
             if ( TRData::IsSerifTalked( ) )
             {
+                mojiManager.Setup( "JSON/GameStart.json" );
                 TRData::enemyKill.TutorialEnd( );
             }
         }
@@ -398,13 +439,25 @@ namespace User
         if ( TRData::special.IsStopUpdate( ) )
         {
             talk->Update( );
-            if ( TRData::IsSerifTalked( ) ) TRData::special.TutorialEnd( );
+            if ( TRData::IsSerifTalked( ) )
+            {
+                TRData::special.TutorialEnd( );
+                mpmax->Gain( 1.f );
+                mpmax->Play( );
+                special.goSpecialMode( );
+
+            }
         }
     }
     void SceneTutorial::update( )
     {
-        moveInput.Begin( UI->ComboNumber( ) );
-        if ( player.Command( ) == GUARD ) moveInput.InputInvalidation( );
+        camera.Update( );
+
+        if ( !special.getIsSpecial( ) )
+        {
+            moveInput.Begin( UI->ComboNumber( ) );
+            if ( player.Command( ) == GUARD ) moveInput.InputInvalidation( );
+        }
 
         UpdateDebugTutorialClear( );
 
@@ -418,7 +471,7 @@ namespace User
 
         UpdateNextStage( );
 
-        moveInput.End( );
+        if ( !special.getIsSpecial( ) ) moveInput.End( );
     }
     void SceneTutorial::draw( )
     {
@@ -438,24 +491,43 @@ namespace User
             return;
         }
 
-        if ( player.NowHp( ) <= 0.0F )
+        // ラスボスを倒し終わったら、何らかのアクション後、次のシーンへ。
+        if ( enemyManager->IsEmpty( ) && fieldManager->IsLastField( ) && sceneChangeFrame != 0 )
         {
-            float gain = ( static_cast<float>( gameClearFrame ) / ( 60 * 3 ) ) * 0.4F;
+            float gain = ( static_cast<float>( sceneChangeFrame ) / maxSceneChangeFrame ) * 0.4F;
             mainbgm[0]->Gain( gain );
-            gameClearFrame = std::max( gameClearFrame - 1, 0 );
+            sceneChangeFrame = std::max( sceneChangeFrame - 1, 0 );
 
-            create( new SceneResult( UI->Score( ), UI->MaxComboNumber( ), player.NowHp( ) + player.NowMp( ), time / 60 ) );
-            return;
+            camera.Shake( 0.05F );
+
+            mojiManager.ReCall( "JSON/GameClear.json" );
         }
 
-        if ( gameClearFrame == 0 )
+        // 死亡したらゲームオーバーの文字を表示して襖を閉める。
+        if ( player.NowHp( ) <= 0.0F && sceneChangeFrame != 0 )
         {
-            fusuma->closeFusuma( );
+            float gain = ( static_cast<float>( sceneChangeFrame ) / maxSceneChangeFrame ) * 0.4F;
+            mainbgm[0]->Gain( gain );
+            sceneChangeFrame = std::max( sceneChangeFrame - 1, 0 );
 
-            if ( fusuma->IsMoveFinished( ) )
+            damageColor.a = std::min( damageColor.a + 0.005, 0.6 );
+
+            mojiManager.ReCall( "JSON/GameOver.json" );
+        }
+
+        if ( sceneChangeFrame == 0 )
+        {
+            mojiManager.End( );
+
+            if ( mojiManager.IsEnded( ) )
             {
-                create( new SceneResult( UI->Score( ), UI->MaxComboNumber( ), player.NowHp( ) + player.NowMp( ), time / 60 ) );
-                return;
+                fusuma->closeFusuma( );
+
+                if ( fusuma->IsMoveFinished( ) )
+                {
+                    create( new SceneResult( UI->Score( ), UI->MaxComboNumber( ), player.NowHp( ) + player.NowMp( ), time / 60 ) );
+                    return;
+                }
             }
         }
     }
@@ -476,15 +548,15 @@ namespace User
         //glLightModeli( GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR );
 
         gl::setViewport( env.getWindowBounds( ) );
-        gl::setMatrices( camera );
+        gl::setMatrices( camera( ) );
     }
     void SceneTutorial::drawMain( )
     {
         if ( special.isMinigame( ) ) return;
 
-        fieldManager->Draw( camera );
-        enemyManager->draw( camera );
-        enemyBulletManager->draw( camera );
+        fieldManager->Draw( camera( ) );
+        enemyManager->draw( camera( ) );
+        enemyBulletManager->draw( camera( ) );
 
         GlobalDraw::Draw( );
     }
@@ -515,11 +587,11 @@ namespace User
 
             moveInput.Draw( );
 
-            enemyManager->drawUI( camera );
+            enemyManager->drawUI( camera( ) );
 
-            enemyManager->DrawAttackCircle( camera );
+            enemyManager->DrawAttackCircle( camera( ) );
 
-            enemyBulletManager->DrawBulletCircle( camera );
+            enemyBulletManager->DrawBulletCircle( camera( ) );
 
             effectManager->Draw( );
 
@@ -530,44 +602,43 @@ namespace User
                       ( player.NowMp( ) == player.MaxMp( ) ) && ( special.getSpecialType( ) == SpecialType::NOTSELECTED ),
                       int( special.getSpecialType( ) ) );
 
-            talk->Draw( Vec2f( 0, env.getWindowHeight( ) ) + Vec2f( 0, -360 ) );
-            description->Draw( Vec2f( 256, env.getWindowHeight( ) ) + Vec2f( 0, -360 ) );
+            talk->Draw( Vec2f( 0, env.getWindowHeight( ) ) + Vec2f( 0, -220 ) );
+
+            description->Draw( Vec2f( 230, env.getWindowHeight( ) ) + Vec2f( 0, -245 ) );
+
+            if ( TRData::guard.IsStopUpdate( ) )
+            {
+                gl::pushModelView( );
+                gl::translate( env.getWindowWidth( ) / 2 - bougyo->getWidth( ) / 2, 50 );
+                gl::draw( *bougyo );
+                gl::popModelView( );
+                handAnimation.drawGuard( Vec2f( 600, 50 ) );
+                TRData::guard.Draw( );
+            }
+            else if ( TRData::playerAttack.IsStopUpdate( ) )
+            {
+                gl::pushModelView( );
+                gl::translate( env.getWindowWidth( ) / 2 - kougeki->getWidth( ) / 2, 50 );
+                gl::draw( *kougeki );
+                gl::popModelView( );
+                handAnimation.drawAttack( Vec2f( 600, 50 ) );
+            }
+
+            mojiManager.Draw( env.getWindowCenter( ), 135 );
         }
 
         special.draw( );
-
-        if ( TRData::guard.IsStopUpdate( ) )
-        {
-            handAnimation.drawGuard( Vec2f( 600, 50 ) );
-        }
-        else if ( TRData::playerAttack.IsStopUpdate( ) )
-        {
-            handAnimation.drawAttack( Vec2f( 600, 50 ) );
-        }
-
-        if ( TRData::attackCircle.IsStopUpdate( ) || TRData::guard.IsStopUpdate( ) )
-        {
-            gl::pushModelView( );
-            gl::translate( env.getWindowWidth( ) / 2 - bougyo->getWidth( ) / 2, 50 );
-            gl::draw( *bougyo );
-            gl::popModelView( );
-            TRData::guard.Draw( );
-        }
-        else if ( TRData::playerAttack.IsStopUpdate( ) )
-        {
-            gl::pushModelView( );
-            gl::translate( env.getWindowWidth( ) / 2 - kougeki->getWidth( ) / 2, 50 );
-            gl::draw( *kougeki );
-            gl::popModelView( );
-        }
 
         gl::color( damageColor );
         gl::drawSolidRect( Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
 
         fusuma->drawFusuma( );
+
+        camera.DrawEditor( );
     }
     void SceneTutorial::endDrawUI( )
     {
         gl::popMatrices( );
     }
+
 }

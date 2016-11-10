@@ -20,9 +20,6 @@ namespace User
     {
         JsonTree params( app::loadAsset( path ) );
 
-        ground = &GData::FindTexture( "ground.jpg" );
-        skydome = std::make_shared<Skydome>( "skydome_1.bmp", 90.0F );
-
         int i = 0;
         for ( auto& obj : params["MeshObject"] )
         {
@@ -50,14 +47,6 @@ namespace User
 
     void Field::draw( cinder::CameraPersp const& camera )
     {
-        /*skydome->Draw( camera );
-
-        gl::pushModelView( );
-        gl::translate( Vec3f( -ground->getWidth( ) / 2, 0, -ground->getHeight( ) / 2 ) );
-        gl::rotate( Vec3f( 90, 0, 0 ) );
-        gl::draw( *ground );
-        gl::popModelView( );*/
-
         for ( auto itr = karakuriMeshObjects.begin( ); itr != karakuriMeshObjects.end( ); ++itr )
         {
             GlobalDraw::Insert( std::bind( &KarakuriActor::Draw, *itr ) );
@@ -72,6 +61,11 @@ namespace User
     {
         if ( isEnd ) return;
         isEnd = true;
+    }
+
+    bool Field::IsEnd( )
+    {
+        return isEnd;
     }
 
     bool Field::IsNextField( )

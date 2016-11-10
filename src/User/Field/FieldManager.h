@@ -14,6 +14,13 @@ namespace User
         int nowNumber;
         std::map<int, std::string> fieldName;
         FieldRef field;
+
+
+        cinder::gl::Texture* ground;
+        SkydomeRef skydome;
+
+        cinder::gl::Texture* sky;
+
     public:
         FieldManager( std::string const& path );
     public:

@@ -11,7 +11,7 @@ namespace User
 {
     using namespace cinder;
     EnemyBullet::EnemyBullet( cinder::Vec3f pos, const cinder::CameraPersp& camera )
-        : EnemyBase( pos, camera, Status( 4.0F, 4 ) )
+        : EnemyBase( pos, camera, Status( 6.0F, 4 ) )
     {
         int index = 1;
         ‘Ò‹@ = &GData::FindTexture( "Enemy/Bullet/Bullet (" + std::to_string( index++ ) + ").png" );
@@ -103,6 +103,7 @@ namespace User
         BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken.png" ) );
         EffectCreate( EffectBase( "Textures/Effect/effect4.png",
                                   camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) ),
+                                  camera.worldToEyeDepth( object.Position( ) ),
                                   Vec2f( 240, 240 ),
                                   Vec2f( 240, 240 ),
                                   EffectBase::Mode::CENTERCENTER

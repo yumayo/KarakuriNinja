@@ -28,6 +28,10 @@ namespace User
         std::string serif;
         std::function<void( )> serifBehavior;
         std::list<EnemyObject> objects;
+        cinder::Vec3f prevPosition = cinder::Vec3f::zero( );
+    private:
+        cinder::JsonTree jsonEnemys;
+        cinder::JsonTree::Iter jsonItr;
     private:
         cinder::gl::Texture* 待機;
         cinder::gl::Texture* 投げるモーション画像;
@@ -72,6 +76,7 @@ namespace User
         void 弾をもう一度投げるかの確認( cinder::CameraPersp const& camera );
     private:
         void 出現した時のセリフ( cinder::CameraPersp const& camera );
+        void 出現した時のセリフ2( cinder::CameraPersp const& camera );
         bool IsHalfHPSerif( );
         void HPが半分以下になった時のセリフ( cinder::CameraPersp const& camera );
         bool IsDeadSerif( );
@@ -89,11 +94,11 @@ namespace User
         // ランダムに決めた二点から中点を求める波状バレット攻撃
         void RandomWavyBulletFiring( cinder::CameraPersp const& camera );
         std::vector<Audio*> se;
-		int 弾を投げる回数 = 0;
-		int 弾を投げる上限回数 = 2;
+        int 弾を投げる回数 = 0;
+        int 弾を投げる上限回数 = 2;
         int 弾の上限回数 = 2;
         int 弾カウント = 0;
-		int 直接攻撃の上限回数 = 2;
-		int 直接攻撃カウント = 0;
+        int 直接攻撃の上限回数 = 2;
+        int 直接攻撃カウント = 0;
     };
 }
