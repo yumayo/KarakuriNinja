@@ -75,17 +75,9 @@ namespace User
         {
             /*nothing*/
         }
-        else if ( successFrame < 60 * 1 )
+        else
         {
-            font->Draw( u8"3", env.getWindowCenter( ) + cinder::Vec2f( 0, -380 / 2 ), cinder::Color::white( ), Fonts::Mode::CENTERUP );
-        }
-        else if ( successFrame < 60 * 2 )
-        {
-            font->Draw( u8"2", env.getWindowCenter( ) + cinder::Vec2f( 0, -380 / 2 ), cinder::Color::white( ), Fonts::Mode::CENTERUP );
-        }
-        else if ( successFrame < maxSuccessFrame )
-        {
-            font->Draw( u8"1", env.getWindowCenter( ) + cinder::Vec2f( 0, -380 / 2 ), cinder::Color::white( ), Fonts::Mode::CENTERUP );
+            font->Draw( std::to_string( maxSuccessFrame / 60 - successFrame / 60 ), env.getWindowCenter( ) + cinder::Vec2f( 0, -380 / 2 ), cinder::Color::white( ), Fonts::Mode::CENTERUP );
         }
     }
     void TutorialAttackCircle::TutorialStart( )

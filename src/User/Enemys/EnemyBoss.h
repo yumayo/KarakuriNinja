@@ -37,7 +37,7 @@ namespace User
         cinder::gl::Texture* 倒れるモーション;
 
     public:
-        EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera, std::string const& fieldName );
+        EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera );
         void update( cinder::CameraPersp const& camera ) override;
         void draw( ) override;
         void drawUI( const cinder::CameraPersp& camera ) override;
@@ -80,7 +80,11 @@ namespace User
         // ランダムに決めた二点から中点を求める波状バレット攻撃
         void RandomWavyBulletFiring( cinder::CameraPersp const& camera );
         std::vector<Audio*> se;
-        int 弾の上限回数 = 3;
-        int 弾カウント;
+		int 弾を投げる回数 = 0;
+		int 弾を投げる上限回数 = 2;
+        int 弾の上限回数 = 2;
+        int 弾カウント = 0;
+		int 直接攻撃の上限回数 = 2;
+		int 直接攻撃カウント = 0;
     };
 }

@@ -14,8 +14,8 @@ namespace User
 {
     using namespace cinder;
 
-    EnemyBoss::EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera, std::string const& fieldName )
-        : EnemyBase( pos, 1.0F, 30.0F, 5, camera, "EnemyBoss.png" )
+    EnemyBoss::EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera )
+        : EnemyBase( pos, camera, Status( 20.0F, 7 ) )
         , timer( )
         , isAttack( false )
         , isDeadStop( true )
@@ -24,16 +24,18 @@ namespace User
         , font( u8"メイリオ", 74 )
         , serif( u8"" )
         , serifDrawPosition( Vec2f::zero( ) )
-        , 待機( &GData::FindTexture( fieldName + "/EnemyBoss (1).png" ) )
-        , 投げるモーション画像( &GData::FindTexture( fieldName + "/EnemyBoss (2).png" ) )
-        , 投げる画像( &GData::FindTexture( fieldName + "/EnemyBoss (3).png" ) )
-        , 攻撃モーション画像( &GData::FindTexture( fieldName + "/EnemyBoss (4).png" ) )
-        , 攻撃画像( &GData::FindTexture( fieldName + "/EnemyBoss (5).png" ) )
-        , 左に移動( &GData::FindTexture( fieldName + "/EnemyBoss (6).png" ) )
-        , 右に移動( &GData::FindTexture( fieldName + "/EnemyBoss (7).png" ) )
-        , 倒れかけるモーション( &GData::FindTexture( fieldName + "/EnemyBoss (8).png" ) )
-        , 倒れるモーション( &GData::FindTexture( fieldName + "/EnemyBoss (9).png" ) )
     {
+        int index = 1;
+        待機 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+        投げるモーション画像 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+        投げる画像 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+        攻撃モーション画像 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+        攻撃画像 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+        左に移動 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+        右に移動 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+        倒れかけるモーション = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+        倒れるモーション = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+
         texture = 待機;
 
         timer.Advance( 180 ); // セリフを吐くフレーム
@@ -128,8 +130,11 @@ namespace User
     }
     void EnemyBoss::どっちの攻撃を出すかの確認( cinder::CameraPersp const & camera )
     {
-        if ( randBool( ) || ( 弾カウント >= 弾の上限回数 ) )
+        auto どちらの攻撃 = randBool( );
+        if ( どちらの攻撃 && ( 直接攻撃カウント < 直接攻撃の上限回数 ) )
         {
+            弾カウント = 0;
+
             auto cameraPos = camera.getEyePoint( ) + camera.getViewDirection( ) * camera.getNearClip( ) + camera.getViewDirection( );
             cameraPos.y = 0;
 
@@ -142,16 +147,27 @@ namespace User
             moveLeftRightSpeed = Vec3f::xAxis( ) * 0.5F;
 
             timer.Advance( 60 ); // 高速移動フレーム
+
+            直接攻撃カウント++;
             SetFunction( &EnemyBoss::左右に高速移動しながらカメラへ近づく );
-            弾カウント = 0;
             return;
         }
-        else
+        else if ( 弾カウント < 弾の上限回数 )
         {
-            timer.Advance( 60 ); // 弾を投げる動作
+            直接攻撃カウント = 0;
+
+            timer.Advance( 120 ); // 弾を投げる動作
             texture = 投げるモーション画像;
+
+            弾カウント++;
             SetFunction( &EnemyBoss::弾を投げるまでのモーション );
             return;
+        }
+        else // どちらとも出せない場合
+        {
+            弾カウント = 0;
+            直接攻撃カウント = 0;
+            どっちの攻撃を出すかの確認( camera );
         }
     }
     void EnemyBoss::左右に高速移動しながらカメラへ近づく( cinder::CameraPersp const& camera )
@@ -259,15 +275,15 @@ namespace User
     }
     void EnemyBoss::弾を投げる( cinder::CameraPersp const & camera )
     {
-        WavyBulletFiring( randFloat( 0, M_PI * 2 ), camera );
+        //WavyBulletFiring( randFloat( 0, M_PI * 2 ), camera );
+        RandomWavyBulletFiring( camera );
         for ( int i = 0; i < 3; i++ )
         {
             se[i]->Play( );
         }
         timer.Advance( 20 ); // 硬直フレーム
-        isBulletFiring = randBool( );
-        
-        弾カウント++;
+
+        弾を投げる回数++;
         SetFunction( &EnemyBoss::弾を投げた後の硬直 );
         return;
     }
@@ -275,19 +291,17 @@ namespace User
     {
         if ( timer.IsAction( ) )
         {
-            timer.Advance( 60 );
+            timer.Advance( 120 );
 
-            if ( isBulletFiring && ( 弾カウント < 弾の上限回数 ) )
-            {
-                texture = 投げるモーション画像;
-            }
             SetFunction( &EnemyBoss::弾をもう一度投げるかの確認 );
+            return;
         }
     }
     void EnemyBoss::弾をもう一度投げるかの確認( cinder::CameraPersp const & camera )
     {
-        if ( isBulletFiring && ( 弾カウント < 弾の上限回数 ) )
+        if ( 弾を投げる回数 < 弾を投げる上限回数 )
         {
+            texture = 投げるモーション画像;
             if ( timer.IsAction( ) )
             {
                 SetFunction( &EnemyBoss::弾を投げるまでのモーション );
@@ -300,13 +314,15 @@ namespace User
             timer.Advance( randInt( 180, 240 ) );
 
             texture = 待機;
+
+            弾を投げる回数 = 0;
             SetFunction( &EnemyBoss::タイマーが鳴るまで待機 );
             return;
         }
     }
     void EnemyBoss::出現した時のセリフ( cinder::CameraPersp const & camera )
     {
-        serifDrawPosition = camera.worldToScreen( object.Position( ) + Vec3f( 0, object.Size( ).y * 0.5, 0 ), env.getWindowWidth( ), env.getWindowHeight( ) );
+        serifDrawPosition = camera.worldToScreen( object.Position( ) + Vec3f( 0, object.Size( ).y, 0 ), env.getWindowWidth( ), env.getWindowHeight( ) );
         SetSerifFunction( u8"がっはっは、何用だ貴様", &EnemyBoss::セリフ );
 
         if ( timer.IsAction( ) )
@@ -320,7 +336,7 @@ namespace User
     {
         isHalfHPSerif = false;
 
-        serifDrawPosition = camera.worldToScreen( object.Position( ) + Vec3f( 0, object.Size( ).y * 0.5, 0 ), env.getWindowWidth( ), env.getWindowHeight( ) );
+        serifDrawPosition = camera.worldToScreen( object.Position( ) + Vec3f( 0, object.Size( ).y, 0 ), env.getWindowWidth( ), env.getWindowHeight( ) );
         SetSerifFunction( u8"なかなかやるな貴様", &EnemyBoss::セリフ );
 
         if ( timer.IsAction( ) )
@@ -334,7 +350,7 @@ namespace User
     {
         isDeadSerif = false;
 
-        serifDrawPosition = camera.worldToScreen( object.Position( ) + Vec3f( 0, object.Size( ).y * 0.5, 0 ), env.getWindowWidth( ), env.getWindowHeight( ) );
+        serifDrawPosition = camera.worldToScreen( object.Position( ) + Vec3f( 0, object.Size( ).y, 0 ), env.getWindowWidth( ), env.getWindowHeight( ) );
         SetSerifFunction( u8"っく、我は滅びぬ", &EnemyBoss::セリフ );
 
         if ( timer.IsAction( ) )
@@ -391,21 +407,21 @@ namespace User
             float u = 0.5F;
             float v = 0.5F;
             auto ray = camera.generateRay( u, v, env.getWindowAspectRatio( ) );
-            BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken3.png", attackPoint ) );
+            BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken.png", attackPoint ) );
         }
 
         {
             float u = direction.x * length / env.getWindowWidth( ) + 0.5F;
             float v = direction.y * length / env.getWindowHeight( ) + 0.5F;
             auto ray = camera.generateRay( u, v, env.getWindowAspectRatio( ) );
-            BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken3.png", attackPoint ) );
+            BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken.png", attackPoint ) );
         }
 
         {
             float u = direction.x * -length / env.getWindowWidth( ) + 0.5F;
             float v = direction.y * -length / env.getWindowHeight( ) + 0.5F;
             auto ray = camera.generateRay( u, v, env.getWindowAspectRatio( ) );
-            BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken3.png", attackPoint ) );
+            BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken.png", attackPoint ) );
         }
     }
     void EnemyBoss::RandomWavyBulletFiring( cinder::CameraPersp const & camera )
@@ -417,16 +433,16 @@ namespace User
         pos1.x = randFloat( env.getWindowWidth( )*0.25, env.getWindowWidth( )*0.4 ) / env.getWindowWidth( );
         pos1.y = randFloat( env.getWindowHeight( )*0.25, env.getWindowHeight( )*0.75 ) / env.getWindowHeight( );
         auto ray = camera.generateRay( pos1.x, pos1.y, env.getWindowAspectRatio( ) );
-        BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken3.png", attackPoint ) );
+        BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken.png", attackPoint ) );
 
         pos2.x = randFloat( env.getWindowWidth( )*0.6, env.getWindowWidth( )*0.75 ) / env.getWindowWidth( );
         pos2.y = randFloat( env.getWindowHeight( )*0.25, env.getWindowHeight( )*0.75 ) / env.getWindowHeight( );
         ray = camera.generateRay( pos2.x, pos2.y, env.getWindowAspectRatio( ) );
-        BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken3.png", attackPoint ) );
+        BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken.png", attackPoint ) );
 
         pos3.x = ( pos1.x + pos2.x ) / 2.0F;
         pos3.y = ( pos1.y + pos2.y ) / 2.0F;
         ray = camera.generateRay( pos3.x, pos3.y, env.getWindowAspectRatio( ) );
-        BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken3.png", attackPoint ) );
+        BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken.png", attackPoint ) );
     }
 }

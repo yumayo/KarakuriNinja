@@ -56,14 +56,31 @@ namespace User
         void SetAttackMotionOfTouch( uint32_t id, cinder::app::TouchEvent::Touch& touch );
         // どの位置で線を引き終えたのかを判断し、スラッシュの値をセットします。
         void MakeAttackMotionOfTouch( uint32_t id, cinder::app::TouchEvent::Touch& touch );
-    private:
-        // ZKOOでのアップデート
-        // 以下のスラッシュをアップデートします。
-        void UpdateAttackMotionOfZKOO( );
-        // どの位置をタッチしたのかを覚えさせます。
-        void SetAttackMotionOfZKOO( uint32_t id, ZKOOHand& hand );
-        // どの位置で線を引き終えたのかを判断し、スラッシュの値をセットします。
-        void MakeAttackMotionOfZKOO( uint32_t id, ZKOOHand& hand );
+    };
+
+    class SlashLine
+    {
+        Slash slashEffect;
+        Line line;
+        bool isActive;
+    public:
+        SlashLine( ) { }
+        SlashLine( ::Line line, Effect effect, int combo );
+        void Draw( ) { slashEffect.Draw( ); }
+        void Update( ) { slashEffect.Update( ); }
+        bool IsThisErase( ) { return slashEffect.Active( ); }
+        Line Line( ) { return line; }
+        void UsedLine( ) { isActive = false; }
+        bool IsActive( ) { return isActive; }
+    };
+
+    class MoveTouch
+    {
+    public:
+        MoveTouch( ) { }
+        MoveTouch( cinder::Vec2f pos );
+        bool isActive;
+        cinder::Vec2f prevPos;
     };
 
     class MoveInput
@@ -71,46 +88,34 @@ namespace User
         //============================================
         // この４つをスラッシュを発動させるために使います。
         //============================================
-        Slash slashEffect;
-        AttackFactory attackTask;
-        Line line;
-        bool isInput;
-        int frame;
-        int tickFrame;
-        cinder::Vec2f prevPos;
+        std::list<SlashLine> slashEffect;
+        std::map<uint32_t, MoveTouch> moveTouch;
         //============================================
-    public:
-        MoveInput( );
     public:
         // スラッシュのエフェクトを表示します。
         void Draw( );
         // Inputのbeginとendで囲まれた部分のみ、Inputの機能を扱えます。
-        void Begin( );
+        void Begin( int combo = 0 );
         // Inputのbeginとendで囲まれた部分のみ、Inputの機能を扱えます。
         void End( );
         // スラッシュとの当たり判定を取るオブジェクトを引数に入れてください。
         // CheckDefLineOfCircle のラップです。
         // Nomoto.hを参照。
         bool IsHitCircle( cinder::Vec2f pos, float size );
+        // 形成されている有効なラインを全て返します。
+        std::vector<Line> Lines( );
+        // 形成途中のラインを全て無効にします。
+        void InputInvalidation( );
     private:
-        void FrameUpdate( );
-        bool IsHandHighSpeedMove( cinder::Vec2f pos );
+        bool IsHandMove( uint32_t id, cinder::Vec2f pos );
     private:
         // スクリーンタッチでのアップデート
         // 以下のスラッシュをアップデートします。
-        void UpdateAttackMotionOfTouch( );
+        void UpdateAttackMotionOfTouch( int combo );
         // どの位置をタッチしたのかを覚えさせます。
         void SetAttackMotionOfTouch( uint32_t id, cinder::app::TouchEvent::Touch& touch );
         // どの位置で線を引き終えたのかを判断し、スラッシュの値をセットします。
-        void MakeAttackMotionOfTouch( uint32_t id, cinder::app::TouchEvent::Touch& touch );
-    private:
-        // ZKOOでのアップデート
-        // 以下のスラッシュをアップデートします。
-        void UpdateAttackMotionOfZKOO( );
-        // どの位置をタッチしたのかを覚えさせます。
-        void SetAttackMotionOfZKOO( uint32_t id, ZKOOHand& hand );
-        // どの位置で線を引き終えたのかを判断し、スラッシュの値をセットします。
-        void MakeAttackMotionOfZKOO( uint32_t id, ZKOOHand& hand );
+        void MakeAttackMotionOfTouch( uint32_t id, cinder::app::TouchEvent::Touch& touch, int combo );
     };
 
     class Fonts

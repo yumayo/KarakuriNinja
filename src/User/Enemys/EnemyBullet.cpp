@@ -10,18 +10,21 @@
 namespace User
 {
     using namespace cinder;
-    EnemyBullet::EnemyBullet( cinder::Vec3f pos, const cinder::CameraPersp& camera, std::string const& fieldName )
-        : EnemyBase( pos, camera, 1.0F )
-        , 待機( &GData::FindTexture( fieldName + "/EnemyBullet (1).png" ) )
-        , 攻撃モーション画像( &GData::FindTexture( fieldName + "/EnemyBullet (2).png" ) )
-        , 攻撃画像( &GData::FindTexture( fieldName + "/EnemyBullet (3).png" ) )
-        , 左に移動( &GData::FindTexture( fieldName + "/EnemyBullet (4).png" ) )
-        , 右に移動( &GData::FindTexture( fieldName + "/EnemyBullet (5).png" ) )
+    EnemyBullet::EnemyBullet( cinder::Vec3f pos, const cinder::CameraPersp& camera )
+        : EnemyBase( pos, camera, Status( 4.0F, 4 ) )
     {
+        int index = 1;
+        待機 = &GData::FindTexture( "Enemy/Bullet/Bullet (" + std::to_string( index++ ) + ").png" );
+        攻撃モーション画像 = &GData::FindTexture( "Enemy/Bullet/Bullet (" + std::to_string( index++ ) + ").png" );
+        攻撃画像 = &GData::FindTexture( "Enemy/Bullet/Bullet (" + std::to_string( index++ ) + ").png" );
+        左に移動 = &GData::FindTexture( "Enemy/Bullet/Bullet (" + std::to_string( index++ ) + ").png" );
+        右に移動 = &GData::FindTexture( "Enemy/Bullet/Bullet (" + std::to_string( index++ ) + ").png" );
+
         texture = 待機;
 
         SetFunction( &EnemyBullet::タイマーが鳴るまで待機 );
-        for ( int i = 0; i < 3; i++ ) {
+        for ( int i = 0; i < 3; i++ )
+        {
             se.push_back( &GData::FindAudio( "SE/shuri" + std::to_string( i ) + ".wav" ) );
         }
     }
@@ -88,7 +91,7 @@ namespace User
         auto u = randFloat( env.getWindowWidth( )*0.25, env.getWindowWidth( )*0.75 ) / env.getWindowWidth( );
         auto v = randFloat( env.getWindowHeight( )*0.25, env.getWindowHeight( )*0.75 ) / env.getWindowHeight( );
         auto ray = camera.generateRay( u, v, env.getWindowAspectRatio( ) );
-        BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken3.png" ) );
+        BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken.png" ) );
         EffectCreate( EffectBase( "Textures/Effect/effect4.png",
                                   camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) ),
                                   Vec2f( 240, 240 ),
@@ -125,7 +128,7 @@ namespace User
             object.PositionAdd( -direction * 0.05 );
 
             // タイマーをセットしてまた待機状態にします。
-            timer.Advance( randInt( 20, 30 ) );
+            timer.Advance( randInt( 30, 60 ) );
             texture = 右に移動;
             SetFunction( &EnemyBullet::右へ移動 );
         }
@@ -148,7 +151,6 @@ namespace User
         {
             object.PositionAdd( -direction * 0.05 );
 
-            // タイマーをセットしてまた待機状態にします。
             timer.Advance( randInt( 20, 30 ) );
             texture = 左に移動;
             SetFunction( &EnemyBullet::左へ移動 );
@@ -157,7 +159,7 @@ namespace User
         if ( timer.IsAction( ) )
         {
             // タイマーをセットしてまた待機状態にします。
-            timer.Advance( randInt( 60, 180 ) );
+            timer.Advance( randInt( 120, 200 ) );
             texture = 待機;
             SetFunction( &EnemyBullet::タイマーが鳴るまで待機 );
         }

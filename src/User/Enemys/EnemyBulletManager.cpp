@@ -99,11 +99,11 @@ namespace User
                         float b = line_.startPos.y - a * line_.startPos.x;
                         float pos_x = ( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 );
                         float pos_y = a*( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 ) + b;
-                        EffectCreate( EffectBase( "Textures/Effect/guard3.png",
+                        EffectCreate( EffectAlpha( "Textures/Effect/guard3.png",
                                                   Vec2f( pos_x, pos_y ),
                                                   Vec2f( 480, 480 ),
                                                   Vec2f( 480, 480 ),
-                                                  EffectBase::Mode::CENTERCENTER, true
+                                                  EffectBase::Mode::CENTERCENTER
                         ) );
                     }
                 }
@@ -129,6 +129,7 @@ namespace User
 
     void EnemyBulletManager::DrawBulletCircle( cinder::CameraPersp const & camera )
     {
+        glLineWidth( 4 );
         Each( [ &camera, this ] ( EnemyBulletBaseRef& bulletRef )
         {
             Vec2f vec = camera.worldToScreen( bulletRef->EndPosition( ), env.getWindowWidth( ), env.getWindowHeight( ) );
@@ -141,6 +142,7 @@ namespace User
             float time = 1.8 - 0.8 * bulletRef->NormalizedMoveTime( );
             gl::drawStrokedCircle( vec, radius * time, radius * time );
         } );
+        glLineWidth( 1 );
     }
 
     void EnemyBulletManager::Each( std::function<void( EnemyBulletBaseRef& )> func )

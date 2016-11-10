@@ -11,6 +11,7 @@
 # include "../Interfaces/Interface.h"
 # include "../Utilitys/Yumayo.h"
 # include "../Interfaces/Talk.h"
+# include "../Interfaces/Description.h"
 
 //Nomoto's include
 # include "../Player/Player.h"
@@ -42,9 +43,6 @@ namespace User
         void endDrawUI( );
     private:
         void UpdateDamage( );
-        void UpdatePlayerBegin( );
-        void UpdatePlayerBehavior( );
-        void UpdatePlayerEnd( );
         void UpdateColor( );
         void UpdateScore( );
         void UpdateCombo( );
@@ -70,6 +68,10 @@ namespace User
         int gameClearFrame;
         cinder::ColorA damageColor;
         TalkRef talk;
+        DescriptionRef description;
+        cinder::gl::Texture* kougeki;
+        cinder::gl::Texture* bougyo;
+        MoveInput moveInput;
         //=======================================
 
 
@@ -90,6 +92,10 @@ namespace User
 		int time;
 		Audio* mpmax;
 		bool ismpmax;
+		Audio* horagai;
+		bool isTutorialStart = false;
+		bool isTutorialEnd = false;
+		bool isGameStart = false;
 		//=======================================
     };
 }

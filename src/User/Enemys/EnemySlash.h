@@ -21,7 +21,7 @@ namespace User
         cinder::gl::Texture* ¶‚ÉˆÚ“®;
         cinder::gl::Texture* ‰E‚ÉˆÚ“®;
     public:
-        EnemySlash( cinder::Vec3f pos, const cinder::CameraPersp& camera, std::string const& fieldName );
+        EnemySlash( cinder::Vec3f pos, const cinder::CameraPersp& camera );
         void update( cinder::CameraPersp const& camera ) override;
         void draw( ) override;
         bool Attack( const cinder::CameraPersp& camera ) override;

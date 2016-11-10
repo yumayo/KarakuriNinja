@@ -121,7 +121,9 @@
     <ClCompile Include="..\src\User\Assets\Asstes.cpp" />
     <ClCompile Include="..\src\User\Attack\AttackFactory.cpp" />
     <ClCompile Include="..\src\User\Deffence\Deffence.cpp" />
+    <ClCompile Include="..\src\User\Effect\EffectAlpha.cpp" />
     <ClCompile Include="..\src\User\Effect\EffectBase.cpp" />
+    <ClCompile Include="..\src\User\Effect\EffectCombo.cpp" />
     <ClCompile Include="..\src\User\Effect\EffectManager.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyBoss.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyBullet.cpp" />
@@ -139,6 +141,7 @@
     <ClCompile Include="..\src\User\Field\KarakuriMeshObj.cpp" />
     <ClCompile Include="..\src\User\Field\KarakuriObject.cpp" />
     <ClCompile Include="..\src\User\Field\KarakuriRectObj.cpp" />
+    <ClCompile Include="..\src\User\Interfaces\Description.cpp" />
     <ClCompile Include="..\src\User\Interfaces\Interface.cpp" />
     <ClCompile Include="..\src\User\Interfaces\Talk.cpp" />
     <ClCompile Include="..\src\User\Networks\NetworkUDPP2PRecv.cpp" />
@@ -210,7 +213,9 @@
     <ClInclude Include="..\src\User\Attack\AttackFactory.h" />
     <ClInclude Include="..\src\User\Deffence\Deffence.h" />
     <ClInclude Include="..\src\User\Effect\EffectActor.hpp" />
+    <ClInclude Include="..\src\User\Effect\EffectAlpha.h" />
     <ClInclude Include="..\src\User\Effect\EffectBase.h" />
+    <ClInclude Include="..\src\User\Effect\EffectCombo.h" />
     <ClInclude Include="..\src\User\Effect\EffectManager.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyBoss.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyBullet.h" />
@@ -228,6 +233,7 @@
     <ClInclude Include="..\src\User\Field\KarakuriMeshObj.h" />
     <ClInclude Include="..\src\User\Field\KarakuriObject.h" />
     <ClInclude Include="..\src\User\Field\KarakuriRectObj.h" />
+    <ClInclude Include="..\src\User\Interfaces\Description.h" />
     <ClInclude Include="..\src\User\Interfaces\Interface.h" />
     <ClInclude Include="..\src\User\Interfaces\Talk.h" />
     <ClInclude Include="..\src\User\Networks\Network.h" />
@@ -283,20 +289,6 @@
     <ClInclude Include="..\src\User\ZKOO\ZKOO.h" />
     <ClInclude Include="..\src\User\ZKOO\ZKOOHand.h" />
     <ClInclude Include="..\src\User\ZKOO\ZKOOMaker.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\assets\JSON\Field0.json" />
-    <None Include="..\assets\JSON\Field1.json" />
-    <None Include="..\assets\JSON\Field2.json" />
-    <None Include="..\assets\JSON\Field3.json" />
-    <None Include="..\assets\JSON\GameMainField.json" />
-    <None Include="..\assets\JSON\TutorialField.json" />
-    <None Include="..\assets\JSON\Tutorial\AttackCircle.json" />
-    <None Include="..\assets\JSON\Tutorial\EnemyKill.json" />
-    <None Include="..\assets\JSON\Tutorial\Guard.json" />
-    <None Include="..\assets\JSON\Tutorial\PlayerAttack.json" />
-    <None Include="..\assets\JSON\Tutorial\Special.json" />
-    <None Include="..\assets\JSON\Tutorial\Spawn.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

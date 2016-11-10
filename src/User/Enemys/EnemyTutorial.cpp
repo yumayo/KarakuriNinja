@@ -14,16 +14,18 @@ namespace User
 {
     using namespace cinder;
 
-    EnemyTutorial::EnemyTutorial( cinder::Vec3f pos, const cinder::CameraPersp& camera, std::string const& fieldName )
-        : EnemyBase( pos, camera, 1.0F )
+    EnemyTutorial::EnemyTutorial( cinder::Vec3f pos, const cinder::CameraPersp& camera )
+        : EnemyBase( pos, camera, Status( 6.5F, 3 ) )
         , timer( )
         , isAttack( false )
         , prevMovePosition( Vec3f::zero( ) )
-        , 待機( &GData::FindTexture( fieldName + "/EnemySlash (1).png" ) )
-        , 攻撃モーション画像( &GData::FindTexture( fieldName + "/EnemySlash (2).png" ) )
-        , 攻撃画像( &GData::FindTexture( fieldName + "/EnemySlash (3).png" ) )
     {
         TRData::Reset( );
+
+        int index = 1;
+        待機 = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );
+        攻撃モーション画像 = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );
+        攻撃画像 = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );
 
         texture = 待機;
         SetFunction( &EnemyTutorial::タイマーが鳴るまで待機 );
@@ -87,7 +89,7 @@ namespace User
     }
     void EnemyTutorial::何もしない( cinder::CameraPersp const & camera )
     {
-        
+
     }
     void EnemyTutorial::タイマーが鳴るまで待機( cinder::CameraPersp const& camera )
     {

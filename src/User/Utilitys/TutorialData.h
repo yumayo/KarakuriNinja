@@ -44,14 +44,14 @@ namespace User
     {
         std::shared_ptr<Fonts> font;
         int successFrame = 0; // ガード出来ているフレームを保存します。
-        int maxSuccessFrame = 60 * 3; // ガードのチュートリアル終了までの時間
+        int maxSuccessFrame = 60 * 2; // ガードのチュートリアル終了までの時間
     public:
         void TutorialStart( ) override;
         void TutorialReset( ) override
         {
             TutorialBase::TutorialReset( );
             successFrame = 0;
-            maxSuccessFrame = 60 * 3;
+            maxSuccessFrame = 60 * 2;
         }
     public:
         void Update( bool success )

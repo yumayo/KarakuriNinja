@@ -85,6 +85,14 @@
 
   ],
   "Enemy": [
+    "Base",
+    "Base",
+    "Base",
+    "Base",
+    "Base",
+    "Base",
+    "Base",
+    "Base",
     "Slash"
   ]
 }

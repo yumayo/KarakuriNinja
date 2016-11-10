@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include <map>
+
 #include "cinder/Rand.h"
 
 #include "EnemyTutorial.h"
@@ -27,28 +29,32 @@ namespace User
 
         for ( auto& obj : params["Enemy"] )
         {
-            if ( obj.getValue( ) == "Tutorial" )
+            if ( obj.getValue( ) == "Base" )
             {
-                Create<EnemyTutorial>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera, getFilenameNoExt( path ) );
+                Create<EnemyBase>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( 0, 4 ) ), camera );
+            }
+            else if ( obj.getValue( ) == "Tutorial" )
+            {
+                Create<EnemyTutorial>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera );
             }
             else if ( obj.getValue( ) == "Bullet" )
             {
-                Create<EnemyBullet>( Vec3f( randFloat( -2.0F, 2.0F ), 2, randFloat( -2, 1 ) ), camera, getFilenameNoExt( path ) );
+                Create<EnemyBullet>( Vec3f( randFloat( -2.0F, 2.0F ), 2, randFloat( -2, 1 ) ), camera );
             }
             else if ( obj.getValue( ) == "Slash" )
             {
-                Create<EnemySlash>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera, getFilenameNoExt( path ) );
+                Create<EnemySlash>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera );
             }
             else if ( obj.getValue( ) == "Boss" )
             {
-                Create<EnemyBoss>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera, getFilenameNoExt( path ) );
+                Create<EnemyBoss>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera );
             }
         }
 
         gurad_se = &GData::FindAudio( "SE/guard.wav" );
         playerdamaged_se = &GData::FindAudio( "SE/damage.wav" );
         adddamage = &GData::FindAudio( "SE/adddamage.wav" );
-		dead = &GData::FindAudio("SE/dead.wav");
+        dead = &GData::FindAudio( "SE/dead.wav" );
     }
 
     void EnemyManager::update( cinder::CameraPersp const& camera )
@@ -88,7 +94,55 @@ namespace User
 
     int EnemyManager::PlayerToEnemyDamage( Line& line_, const cinder::CameraPersp& camera, float value )
     {
+        struct EnemyAndLength
+        {
+            EnemyAndLength( float length, EnemyBaseRef& enemyRef ) : length( length ), enemyRef( enemyRef ) { }
+            float length;
+            EnemyBaseRef& enemyRef;
+        };
+
+        std::multimap<float, EnemyAndLength> map;
+
+        Each( [ &map, &line_, &camera, this ] ( EnemyBaseRef& enemyRef )
+        {
+            Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+            Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+            float radius = Vec2f( size - vec ).length( ) / 2.0F * playerAttackColliedSize;
+            float length = CheckDefLineOfCircle( line_, vec, radius );
+            if ( length <= 1 )
+            {
+                map.insert( std::make_pair( camera.worldToEyeDepth( enemyRef->Position( ) ), EnemyAndLength( length, enemyRef ) ) );
+            }
+        } );
+
         int drainMp = 0;
+        if ( map.empty( ) ) return 0;
+        else
+        {
+            for ( auto itr = map.rbegin( ); itr != map.rend( ); ++itr )
+            {
+                auto& enemy = *itr->second.enemyRef;
+                auto length = itr->second.length;
+                if ( enemy.IsLive( ) )
+                {
+                    drainMp += enemy.Hit( length, value );
+                    break;
+                }
+                else
+                {
+                    drainMp += enemy.Hit( length, value );
+                }
+            }
+        }
+
+        if ( drainMp != 0 )
+        {
+            adddamage->Play( );
+        }
+        score += drainMp * 100;
+        return drainMp;
+
+        /*int drainMp = 0;
         Each( [ &drainMp, &line_, &camera, &value, this ] ( EnemyBaseRef& enemyRef )
         {
             Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
@@ -98,11 +152,11 @@ namespace User
             drainMp += enemyRef->Hit( length, value );
             if ( length < 1.0F )
             {
-                EffectCreate( EffectBase( "Textures/Effect/pipo-btleffect085.png",
-                                          vec,
-                                          Vec2f( vec - size ),
-                                          Vec2f( 240, 240 ),
-                                          EffectBase::Mode::CENTERCENTER, true
+                EffectCreate( EffectAlpha( "Textures/Effect/pipo-btleffect085.png",
+                                           vec,
+                                           Vec2f( vec - size ),
+                                           Vec2f( 240, 240 ),
+                                           EffectBase::Mode::CENTERCENTER
                 ) );
             }
         } );
@@ -111,7 +165,7 @@ namespace User
             adddamage->Play( );
         }
         score += drainMp * 100;
-        return drainMp;
+        return drainMp;*/
     }
 
     int EnemyManager::PlayerToEnemyAttackCheck( Line & line_, const cinder::CameraPersp & camera )
@@ -214,11 +268,11 @@ namespace User
                     float b = line_.startPos.y - a * line_.startPos.x;
                     float pos_x = ( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 );
                     float pos_y = a*( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 ) + b;
-                    EffectCreate( EffectBase( "Textures/Effect/guard3.png",
-                                              Vec2f( pos_x, pos_y ),
-                                              Vec2f( 480, 480 ),
-                                              Vec2f( 480, 480 ),
-                                              EffectBase::Mode::CENTERCENTER, true
+                    EffectCreate( EffectAlpha( "Textures/Effect/guard3.png",
+                                               Vec2f( pos_x, pos_y ),
+                                               Vec2f( 480, 480 ),
+                                               Vec2f( 480, 480 ),
+                                               EffectBase::Mode::CENTERCENTER
                     ) );
                 }
             }
@@ -251,6 +305,7 @@ namespace User
 
     void EnemyManager::DrawAttackCircle( cinder::CameraPersp const & camera )
     {
+        glLineWidth( 4 );
         Each( [ &camera, this ] ( EnemyBaseRef& enemyRef )
         {
             if ( !enemyRef->IsAttackMotion( ) ) return;
@@ -265,6 +320,7 @@ namespace User
             float time = 1.8 - 0.8 * enemyRef->NormalizedAttackFrame( );
             gl::drawStrokedCircle( vec, radius * time, radius * time );
         } );
+        glLineWidth( 1 );
     }
 
     EnemyBulletList EnemyManager::BulletsRecovery( )
@@ -312,13 +368,14 @@ namespace User
             {
                 Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
                 Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-                EffectCreate( EffectBase( "Textures/Effect/pipo-btleffect102c.png",
-                                          vec,
-                                          Vec2f( vec - size ) * 3.0F,
-                                          Vec2f( 240, 240 ),
-                                          EffectBase::Mode::CENTERCENTER, true
+                EffectCreate( EffectCombo( "Textures/Effect/pipo-btleffect102c.png",
+                                           vec,
+                                           Vec2f( vec - size ) * 3.0F,
+                                           Vec2f( 240, 240 ),
+                                           EffectBase::Mode::CENTERCENTER,
+                                           env.getWindowSize( ) + Vec2f( -80, -135 )
                 ) );
-				dead->Play();
+                dead->Play( );
                 score += 1000;
                 return true;
             }

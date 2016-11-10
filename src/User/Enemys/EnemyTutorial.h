@@ -19,7 +19,7 @@ namespace User
         cinder::gl::Texture* UŒ‚ƒ‚[ƒVƒ‡ƒ“‰æ‘œ;
         cinder::gl::Texture* UŒ‚‰æ‘œ;
     public:
-        EnemyTutorial( cinder::Vec3f pos, const cinder::CameraPersp& camera, std::string const& fieldName );
+        EnemyTutorial( cinder::Vec3f pos, const cinder::CameraPersp& camera );
         ~EnemyTutorial( );
         void update( cinder::CameraPersp const& camera ) override;
         void draw( ) override;

@@ -1,6 +1,8 @@
 # pragma once
 
 # include "EffectBase.h"
+# include "EffectAlpha.h"
+# include "EffectCombo.h"
 
 # include <list>
 # include <functional>

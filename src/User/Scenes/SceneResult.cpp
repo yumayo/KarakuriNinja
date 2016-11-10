@@ -116,7 +116,7 @@ namespace User
 
     SceneResult::~SceneResult( )
     {
-        // audio->Stop( );
+        bgm->Stop( );
     }
 
     void SceneResult::resize( )
@@ -149,9 +149,14 @@ namespace User
     void SceneResult::select( )
     {
 		if (isEnd) {
-			bgm->Stop();
 			create(new SceneTitle());
 		}
+
+        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_t ) )
+        {
+            create( new SceneTitle( ) );
+            return;
+        }
     }
 
     void SceneResult::UpdateLogoAlpha( )
@@ -256,7 +261,7 @@ namespace User
     {
         if ( t_[TS::HONOO] >= 1.0f )
             Easing::tCount( t_[TS::NINJA], 1.f );
-        ninjasize = Vec2f( env.getWindowWidth( ) / 2.7f, env.getWindowHeight( ) / 1.5f );
+        ninjasize = Vec2f( env.getWindowWidth( ) / 1.5f, env.getWindowHeight( ) / 1.5f );
         ninjapos.x = Easing::getEasing[Easing::SineOut]( t_[TS::NINJA], -env.getWindowWidth( ) / 2.f, env.getWindowWidth( ) / 4.f );
         ninjapos.y = env.getWindowHeight( ) - ninjasize.y / 2 * 1.1f;
 

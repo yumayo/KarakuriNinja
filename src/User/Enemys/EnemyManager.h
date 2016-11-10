@@ -27,7 +27,7 @@ namespace User
         Audio* gurad_se;
         Audio* playerdamaged_se;
         Audio* adddamage;
-		Audio* dead;
+        Audio* dead;
     private:
         EnemyList enemyList;
     private:
@@ -42,9 +42,6 @@ namespace User
         // エネミーの作成を行います。
         template <class Ty>
         void Create( cinder::Vec3f position, const cinder::CameraPersp& camera );
-        // エネミーの作成を行います。
-        template <class Ty>
-        void Create( cinder::Vec3f position, const cinder::CameraPersp& camera, std::string const& fieldName );
         // エネミーが一体でも攻撃していたら true になります。
         bool IsAttack( const cinder::CameraPersp& camera );
         // プレイヤーからエネミーへのダメージラインとの当たり判定も込み
@@ -93,12 +90,6 @@ namespace User
     inline void EnemyManager::Create( cinder::Vec3f position, const cinder::CameraPersp& camera )
     {
         enemyList.emplace_back( std::make_shared<Ty>( position, camera ) );
-    }
-
-    template<class Ty>
-    inline void EnemyManager::Create( cinder::Vec3f position, const cinder::CameraPersp& camera, std::string const& fieldName )
-    {
-        enemyList.emplace_back( std::make_shared<Ty>( position, camera, fieldName ) );
     }
 
     template<class Ty>

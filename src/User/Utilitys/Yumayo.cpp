@@ -46,16 +46,16 @@ namespace User
 
     SlashInput::SlashInput( )
         : isInput( false )
+        , slashEffect( 0 )
     {
     }
     void SlashInput::Begin( )
     {
         UpdateAttackMotionOfTouch( );
-        UpdateAttackMotionOfZKOO( );
-        slashEffect.Update( );
     }
     void SlashInput::Draw( )
     {
+        slashEffect.Update( );
         slashEffect.Draw( );
     }
     void SlashInput::End( )
@@ -133,247 +133,109 @@ namespace User
             attackTask.Reset( );
         }
     }
-    void SlashInput::UpdateAttackMotionOfZKOO( )
+
+    SlashLine::SlashLine( ::Line line, Effect effect, int combo )
+        : isActive( true )
+        , slashEffect( combo )
     {
-        // 新しいZKOOのマクロを使用して動かします。
-        // 内部でスクリーンタッチと同じ扱いができるようにしているので、こちらも同じような処理になっています。
-        auto ids = inputzkoo.GetHandleIDs( );
-        auto hand = inputzkoo.hand( );
-        for ( auto id : ids )
-        {
-            SetAttackMotionOfZKOO( id, hand );
-            MakeAttackMotionOfZKOO( id, hand );
-        }
-    }
-    void SlashInput::SetAttackMotionOfZKOO( uint32_t id, ZKOOHand& hand )
-    {
-        if ( inputzkoo.isPress( id, hand ) )
-        {
-            attackTask.Update( );
-
-            if ( slashEffect.Active( ) == true )
-            {
-                return;
-            }
-
-            //Motionに入っていない場合
-            if ( attackTask.IsMotioning( ) == false && slashEffect.Active( ) == false )
-            {
-                attackTask.ShiftIsMotioning( );
-            }
-
-            //Slashの開始時間になったら右手の位置を描画の最初の位置に入れます
-            if ( attackTask.IsStarted( ) == true )
-            {
-                attackTask.SetStartPos( hand.Position( ) );
-                attackTask.ShiftIsStarted( );
-            }
-        }
-    }
-    void SlashInput::MakeAttackMotionOfZKOO( uint32_t id, ZKOOHand& hand )
-    {
-        if ( inputzkoo.isPull( id, hand ) )
-        {
-            //終了していいなら
-            if ( attackTask.IsEnded( ) == true )
-            {
-                attackTask.SetEndPos( hand.Position( ) );
-                attackTask.ShiftIsEnded( );
-
-                //Lineが判定のために必要な最低基準を超えたら
-                if ( CheckLineDef( attackTask.HitLine( ) ) )
-                {
-                    line = attackTask.HitLine( );
-                    Effect effect = MakeAttackEffect( line.startPos, line.endPos );
-                    slashEffect.Set( effect.pos, effect.size, effect.angle );
-                    isInput = true;
-                }
-                //値の初期化
-                attackTask.Reset( );
-
-            }
-            attackTask.Reset( );
-        }
-        auto ids = inputzkoo.GetHandleIDs( );
-        //例外処理
-        //ex) 急に画面外にいったら など
-        if ( attackTask.IsMotioning( ) == true && static_cast<int>( ids.size( ) ) == 0 )
-        {
-            attackTask.Reset( );
-        }
+        this->line = line;
+        slashEffect.Set( effect.pos, effect.size, effect.angle );
     }
 
-    MoveInput::MoveInput( )
-        : isInput( false )
-        , tickFrame( 40 )
-        , frame( tickFrame )
+    MoveTouch::MoveTouch( cinder::Vec2f pos )
+        : isActive( true )
+        , prevPos( pos )
     {
     }
-    void MoveInput::Begin( )
+
+    void MoveInput::Begin( int combo )
     {
-        UpdateAttackMotionOfTouch( );
-        UpdateAttackMotionOfZKOO( );
-        FrameUpdate( );
-        slashEffect.Update( );
+        UpdateAttackMotionOfTouch( combo );
+
+        slashEffect.remove_if( [ ] ( SlashLine& slashLine ) { return !slashLine.IsThisErase( ); } );
+        for ( auto& obj : slashEffect ) obj.Update( );
     }
     void MoveInput::Draw( )
     {
-        slashEffect.Draw( );
+        for ( auto& obj : slashEffect ) obj.Draw( );
     }
     void MoveInput::End( )
     {
-        isInput = false;
+        for ( auto& obj : slashEffect )
+        {
+            obj.UsedLine( );
+        }
     }
     bool MoveInput::IsHitCircle( cinder::Vec2f pos, float size )
     {
-        return CheckDefLineOfCircle( line, pos, size ) < 1.0F && isInput;
+        bool isHit = false;
+        for ( auto& obj : slashEffect )
+        {
+            if ( obj.IsActive( ) )
+            {
+                isHit = isHit && ( CheckDefLineOfCircle( obj.Line( ), pos, size ) < 1.0F );
+            }
+        }
+        return isHit;
     }
-    void MoveInput::FrameUpdate( )
+    std::vector<Line> MoveInput::Lines( )
     {
-        if ( frame == 0 ) frame = tickFrame;
-        frame = std::max( frame - 1, 0 );
+        std::vector<Line> lines;
+        for ( auto& obj : slashEffect )
+        {
+            if ( obj.IsActive( ) )
+            {
+                lines.emplace_back( obj.Line( ) );
+            }
+        }
+        return lines;
     }
-    bool MoveInput::IsHandHighSpeedMove( cinder::Vec2f pos )
+    void MoveInput::InputInvalidation( )
     {
-        CONSOLE << prevPos.distance( pos ) << std::endl;
-        return 50 < prevPos.distance( pos );
+        moveTouch.clear( );
     }
-    void MoveInput::UpdateAttackMotionOfTouch( )
+    bool MoveInput::IsHandMove( uint32_t id, cinder::Vec2f pos )
+    {
+        return 300 < moveTouch[id].prevPos.distance( pos );
+    }
+    void MoveInput::UpdateAttackMotionOfTouch( int combo )
     {
         auto touch = inputs.touch( );
         auto ids = inputs.GetTouchHandleIDs( );
         for ( auto id : ids )
         {
             SetAttackMotionOfTouch( id, touch );
-            MakeAttackMotionOfTouch( id, touch );
+            MakeAttackMotionOfTouch( id, touch, combo );
         }
     }
     void MoveInput::SetAttackMotionOfTouch( uint32_t id, cinder::app::TouchEvent::Touch& touch )
     {
-        if ( frame == tickFrame && inputs.isPressTouch( id, touch ) )
+        if ( inputs.isPushTouch( id, touch ) )
         {
-            attackTask.Update( );
+            moveTouch.insert( std::make_pair( id, MoveTouch( touch.getPos( ) ) ) );
+        }
 
-            if ( slashEffect.Active( ) == true )
-            {
-                return;
-            }
-
-            //Motionに入っていない場合
-            if ( attackTask.IsMotioning( ) == false && slashEffect.Active( ) == false )
-            {
-                attackTask.ShiftIsMotioning( );
-            }
-
-            //Slashの開始時間になったら右手の位置を描画の最初の位置に入れます
-            if ( attackTask.IsStarted( ) == true )
-            {
-                attackTask.SetStartPos( touch.getPos( ) );
-                prevPos = touch.getPos( );
-                attackTask.ShiftIsStarted( );
-            }
+        if ( inputs.isPullTouch( id, touch ) )
+        {
+            moveTouch.erase( id );
         }
     }
-    void MoveInput::MakeAttackMotionOfTouch( uint32_t id, cinder::app::TouchEvent::Touch& touch )
+    void MoveInput::MakeAttackMotionOfTouch( uint32_t id, cinder::app::TouchEvent::Touch& touch, int combo )
     {
-        if ( frame == 0 && inputs.isPressTouch( id, touch ) && IsHandHighSpeedMove( touch.getPos( ) ) )
+        auto findItr = moveTouch.find( id );
+        if ( findItr == moveTouch.end( ) ) return;
+
+        auto& moveTouch = findItr->second;
+        if ( !moveTouch.isActive ) return;
+
+        if ( inputs.isPressTouch( id, touch ) && IsHandMove( id, touch.getPos( ) ) )
         {
-            //終了していいなら
-            if ( attackTask.IsEnded( ) == true )
-            {
-                attackTask.SetEndPos( touch.getPos( ) );
-                attackTask.ShiftIsEnded( );
+            Line line;
+            line.startPos = moveTouch.prevPos;
+            line.endPos = touch.getPos( );
 
-                //Lineが判定のために必要な最低基準を超えたら
-                if ( CheckLineDef( attackTask.HitLine( ) ) )
-                {
-                    line = attackTask.HitLine( );
-                    Effect effect = MakeAttackEffect( line.startPos, line.endPos );
-                    slashEffect.Set( effect.pos, effect.size, effect.angle );
-                    isInput = true;
-                }
-                //値の初期化
-                attackTask.Reset( );
-
-            }
-            attackTask.Reset( );
-        }
-        auto ids = inputs.GetTouchHandleIDs( );
-        //例外処理
-        //ex) 急に画面外にいったら など
-        if ( attackTask.IsMotioning( ) == true && static_cast<int>( ids.size( ) ) == 0 )
-        {
-            attackTask.Reset( );
-        }
-    }
-    void MoveInput::UpdateAttackMotionOfZKOO( )
-    {
-        // 新しいZKOOのマクロを使用して動かします。
-        // 内部でスクリーンタッチと同じ扱いができるようにしているので、こちらも同じような処理になっています。
-        auto ids = inputzkoo.GetHandleIDs( );
-        auto hand = inputzkoo.hand( );
-        for ( auto id : ids )
-        {
-            SetAttackMotionOfZKOO( id, hand );
-            MakeAttackMotionOfZKOO( id, hand );
-        }
-    }
-    void MoveInput::SetAttackMotionOfZKOO( uint32_t id, ZKOOHand& hand )
-    {
-        if ( frame == tickFrame && inputzkoo.isRecognition( id, hand ) )
-        {
-            attackTask.Update( );
-
-            if ( slashEffect.Active( ) == true )
-            {
-                return;
-            }
-
-            //Motionに入っていない場合
-            if ( attackTask.IsMotioning( ) == false && slashEffect.Active( ) == false )
-            {
-                attackTask.ShiftIsMotioning( );
-            }
-
-            //Slashの開始時間になったら右手の位置を描画の最初の位置に入れます
-            if ( attackTask.IsStarted( ) == true )
-            {
-                attackTask.SetStartPos( hand.Position( ) );
-                prevPos = hand.Position( );
-                attackTask.ShiftIsStarted( );
-            }
-        }
-    }
-    void MoveInput::MakeAttackMotionOfZKOO( uint32_t id, ZKOOHand& hand )
-    {
-        if ( frame == 0 && inputzkoo.isRecognition( id, hand ) && IsHandHighSpeedMove( hand.Position( ) ) )
-        {
-            //終了していいなら
-            if ( attackTask.IsEnded( ) == true )
-            {
-                attackTask.SetEndPos( hand.Position( ) );
-                attackTask.ShiftIsEnded( );
-
-                //Lineが判定のために必要な最低基準を超えたら
-                if ( CheckLineDef( attackTask.HitLine( ) ) )
-                {
-                    line = attackTask.HitLine( );
-                    Effect effect = MakeAttackEffect( line.startPos, line.endPos );
-                    slashEffect.Set( effect.pos, effect.size, effect.angle );
-                    isInput = true;
-                }
-                //値の初期化
-                attackTask.Reset( );
-
-            }
-            attackTask.Reset( );
-        }
-        auto ids = inputzkoo.GetHandleIDs( );
-        //例外処理
-        //ex) 急に画面外にいったら など
-        if ( attackTask.IsMotioning( ) == true && static_cast<int>( ids.size( ) ) == 0 )
-        {
-            attackTask.Reset( );
+            moveTouch.isActive = false;
+            slashEffect.emplace_back( line, MakeAttackEffect( line.startPos, line.endPos ), combo );
         }
     }
 
@@ -474,4 +336,5 @@ namespace User
     {
         return static_cast<double>( frame ) / elapseFrame;
     }
+
 }

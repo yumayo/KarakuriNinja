@@ -21,9 +21,12 @@
 class Slash
 {
 public:
-    Slash( ) : isActive( false ), maxactiveTime( 30 ),
+    Slash( int combo = 0 ) : isActive( false ), maxactiveTime( 30 ),
         activeTime( 0 )
     {
+        float color_ = std::max(0.f,1-float(combo)/5.f );
+        color = cinder::Color( 1, color_, color_ );
+
         using namespace cinder;
         tex = &GData::FindTexture( "slash.png" );
         delete_t = 0.0f;
@@ -50,6 +53,7 @@ private:
     ci::Vec2f size;
     ci::Vec2f realsize;
     ci::Vec2f realpos;
+    cinder::Color color;
     std::vector<User::Audio*> slash_ses;
     float angle;
     float delete_t;

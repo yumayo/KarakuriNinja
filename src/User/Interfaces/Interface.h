@@ -26,6 +26,7 @@ namespace User
 		int comboFrame;
 	public:
 		Combo();
+        int ComboNumber( ) { return comboNumber; }
 		int MaxComboNumber() { return maxComboNumber; }
 		void Update(bool isSuccess);
 		void Draw(cinder::Vec2f position);
@@ -39,6 +40,7 @@ namespace User
 		void update(bool isAttackSuccess);
 		void AddScore(int score) { scorePoint += score; }
 		int Score() { return scorePoint; }
+        int ComboNumber( ) { return combo.ComboNumber( ); }
 		int MaxComboNumber() { return combo.MaxComboNumber(); }
 	private:
 		cinder::gl::Texture* APEdge;

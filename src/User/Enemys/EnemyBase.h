@@ -47,20 +47,35 @@ namespace User
 
     class EnemyBase
     {
+    public:
+        class Status
+        {
+        public:
+            Status( )
+                : maxHP( 1 )
+                , HP( maxHP )
+                , attackPoint( 0 )
+            { }
+            Status( float HP, int attackPoint )
+                : maxHP( HP )
+                , HP( maxHP )
+                , attackPoint( attackPoint )
+            { }
+            float maxHP;
+            float HP;
+            int attackPoint;
+        };
     protected:
         EnemyObject object;
         EnemyObject initObject;
         bool isLanding;
         cinder::gl::Texture* texture;
         AttackTime attackTime;
-		Audio* umareru;
     private:
-        float maxHP;
-        float HP;
         cinder::Color hitColor;
         bool isLive;
         int deadTime;
-        int attackPoint;
+        Status status;
     private:
         EnemyBulletList bulletList;
         EffectList effectList;
@@ -68,13 +83,9 @@ namespace User
         // 発射した弾を全て回収します。この関数を呼ぶとこのクラスが持っている弾を全てクリアします。
         EnemyBulletList BulletsRecovery( );
         EffectList EffectRecovery( );
-    protected: // 画像を作成しないコンストラクタ
+    public:
         EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp& camera );
-        EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp& camera, float sizeScale );
-    public: // 画像を作成するコンストラクタ
-        EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp& camera, std::string const& path );
-        EnemyBase( cinder::Vec3f pos, float sizeScale, const cinder::CameraPersp& camera, std::string const& path );
-        EnemyBase( cinder::Vec3f pos, float sizeScale, float HP, int attackPoint, const cinder::CameraPersp& camera, std::string const& path );
+        EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp& camera, Status status, float scale = 1.0F );
         virtual void update( cinder::CameraPersp const& camera );
         virtual void draw( );
         virtual void drawUI( cinder::CameraPersp const& camera );
@@ -84,10 +95,10 @@ namespace User
     public: // ゲッター
         cinder::Vec3f Position( ) { return object.Position( ); }
         cinder::Vec3f Size( ) { return object.Size( ); }
-        int AttackPoint( ) { return attackPoint; }
+        int AttackPoint( ) { return status.attackPoint; }
         bool IsLive( ) { return isLive; }
         cinder::Color HitColor( ) { return hitColor; }
-        float NormalizedHitPoint( ) { return HP / maxHP; }
+        float NormalizedHitPoint( ) { return status.HP / status.maxHP; }
     public:
         bool IsAttackMotion( ) { return attackTime.IsAttackMotion( ); }
         bool IsAttackOneFramePrev( ) { return attackTime.IsAttackOneFramePrev( ); }

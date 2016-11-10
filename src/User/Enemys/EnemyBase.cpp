@@ -13,86 +13,31 @@ namespace User
 
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera )
         : object( pos, Vec3f( 1.7, 1.7, 0.01 ), Vec3f::zero( ) )
-        , maxHP( 5.0F )
-        , HP( maxHP )
+        , texture( &GData::FindTexture( "Enemy/Base/Base (1).png" ) )
         , hitColor( Color::white( ) )
         , isLanding( true )
         , isLive( true )
-        , attackPoint( 3 )
         , deadTime( 60 )
+        , status( )
     {
         update( camera );
         initObject = object;
         SpawnEffect( camera );
-		umareru = &GData::FindAudio("SE/umareru.wav");
-		umareru->Play();
+        GData::FindAudio( "SE/umareru.wav" ).Play( );
     }
-    EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, float sizeScale )
+    EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, Status status, float sizeScale )
         : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
-        , maxHP( 5.0F )
-        , HP( maxHP )
+        , texture( &GData::FindTexture( "Enemy/Base/Base (1).png" ) )
         , hitColor( Color::white( ) )
         , isLanding( true )
         , isLive( true )
-        , attackPoint( 3 )
         , deadTime( 60 )
+        , status( status )
     {
         update( camera );
         initObject = object;
         SpawnEffect( camera );
-		umareru = &GData::FindAudio("SE/umareru.wav");
-		umareru->Play();
-    }
-    EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, std::string const & path )
-        : object( pos, Vec3f( 1.7, 1.7, 0.01 ), Vec3f::zero( ) )
-        , texture( &GData::FindTexture( path ) )
-        , maxHP( 5.0F )
-        , HP( maxHP )
-        , hitColor( Color::white( ) )
-        , isLanding( true )
-        , isLive( true )
-        , attackPoint( 3 )
-        , deadTime( 60 )
-    {
-        update( camera );
-        initObject = object;
-        SpawnEffect( camera );
-		umareru = &GData::FindAudio("SE/umareru.wav");
-		umareru->Play();
-    }
-    EnemyBase::EnemyBase( cinder::Vec3f pos, float sizeScale, const cinder::CameraPersp & camera, std::string const & path )
-        : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
-        , texture( &GData::FindTexture( path ) )
-        , maxHP( 5.0F )
-        , HP( maxHP )
-        , hitColor( Color::white( ) )
-        , isLanding( true )
-        , isLive( true )
-        , attackPoint( 3 )
-        , deadTime( 60 )
-    {
-        update( camera );
-        initObject = object;
-        SpawnEffect( camera );
-		umareru = &GData::FindAudio("SE/umareru.wav");
-		umareru->Play();
-    }
-    EnemyBase::EnemyBase( cinder::Vec3f pos, float sizeScale, float HP, int attackPoint, const cinder::CameraPersp & camera, std::string const & path )
-        : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
-        , texture( &GData::FindTexture( path ) )
-        , maxHP( HP )
-        , HP( maxHP )
-        , hitColor( Color::white( ) )
-        , isLanding( true )
-        , isLive( true )
-        , attackPoint( attackPoint )
-        , deadTime( 60 )
-    {
-        update( camera );
-        initObject = object;
-        SpawnEffect( camera );
-		umareru = &GData::FindAudio("SE/umareru.wav");
-		umareru->Play();
+        GData::FindAudio( "SE/umareru.wav" ).Play( );
     }
     void EnemyBase::update( cinder::CameraPersp const& camera )
     {
@@ -161,19 +106,19 @@ namespace User
     {
         if ( length <= 0.2F )
         {
-            HP = std::max( HP - 3.0F * value, 0.0F );
+            status.HP = std::max( status.HP - 3.0F * value, 0.0F );
             hitColor = Color( 1, 0, 0 );
             return 7;
         }
         else if ( length <= 0.5F )
         {
-            HP = std::max( HP - 2.5F * value, 0.0F );
+            status.HP = std::max( status.HP - 2.5F * value, 0.0F );
             hitColor = Color( 1, 0.3, 0.3 );
             return 5;
         }
         else if ( length <= 1.0F )
         {
-            HP = std::max( HP - 1.5F * value, 0.0F );
+            status.HP = std::max( status.HP - 1.5F * value, 0.0F );
             hitColor = Color( 1, 0.6, 0.6 );
             return 2;
         }
@@ -182,14 +127,14 @@ namespace User
     int EnemyBase::Damage( int damage )
     {
         if ( damage < 0 ) return 0;
-        HP = std::max( HP - damage, 0.0F );
+        status.HP = std::max( status.HP - damage, 0.0F );
         hitColor = Color( 1, 0, 0 );
 
         return 2;
     }
     void EnemyBase::Kill( )
     {
-        HP = 0.0F;
+        status.HP = 0.0F;
         hitColor = Color( 1, 0, 0 );
     }
     bool EnemyBase::IsActive( )
@@ -269,7 +214,7 @@ namespace User
     void EnemyBase::LiveCheck( )
     {
         if ( isLive == false ) return;
-        isLive = 0.0F < HP;
+        isLive = 0.0F < status.HP;
     }
     void EnemyBase::Dying( )
     {
@@ -301,11 +246,11 @@ namespace User
     {
         Vec2f vec = camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
         Vec2f size = camera.worldToScreen( object.Position( ) + object.Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-        EffectCreate( EffectBase( "Textures/Effect/kumo2.png",
+        EffectCreate( EffectAlpha( "Textures/Effect/kumo2.png",
                                   vec,
                                   Vec2f( vec - size ) * 2.5F,
                                   Vec2f( 600, 300 ),
-                                  EffectBase::Mode::CENTERCENTER, true
+                                  EffectBase::Mode::CENTERCENTER
         ) );
     }
 }
