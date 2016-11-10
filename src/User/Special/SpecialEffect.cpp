@@ -54,10 +54,10 @@ void SpecialEffect::pushNames()
 		return;
 	}
 	if (names.size() == 0) {
-			names.push_back(SpecialName(texs[names.size()], Vec2f((names.size())*namesize.x+ app::getWindowWidth()/2-3*namesize.x, end_y_pos), namesize,namecolor_));
+			names.push_back(SpecialName(texs[names.size()], Vec2f((names.size())*namesize.x+ app::getWindowWidth()/2-3*namesize.x, end_y_pos), namesize,namecolor_,&inse_));
 	}else {
 		if (names[names.size() - 1].getT() > 0.6f) {
-				names.push_back(SpecialName(texs[names.size()], Vec2f((names.size())*namesize.x + app::getWindowWidth() / 2 - 3 * namesize.x, end_y_pos), namesize, namecolor_));
+				names.push_back(SpecialName(texs[names.size()], Vec2f((names.size())*namesize.x + app::getWindowWidth() / 2 - 3 * namesize.x, end_y_pos), namesize, namecolor_, &inse_));
 		}
 	}
 }
@@ -69,19 +69,19 @@ void SpecialEffect::pushEffect()
 	case SpecialType::FIRE:
 		if (names.size() == 7 && fire.size() == 0) {
 			if (names[names.size() - 1].getT() >= 1.0f)
-			fire.push_back(Fire(effect[0], effect[1]));
+			fire.push_back(Fire(effect[0], effect[1],&effectse_[0]));
 		}
 		break;
 	case SpecialType::WATER:
 		if (names.size() == 7 && water.size() == 0) {
 			if (names[names.size() - 1].getT() >= 1.0f)
-			water.push_back(Water(effect[0], effect[1]));
+			water.push_back(Water(effect[0], effect[1], &effectse_[0] ));
 		}
 		break;
 	case SpecialType::TREE:
 		if (names.size() == 7 && tree.size() == 0) {
 			if (names[names.size() - 1].getT() >= 1.0f)
-			tree.push_back(Tree(effect[0], effect[1]));
+			tree.push_back(Tree(effect[0], effect[1], &effectse_[0]));
 		}
 		break;
 	default:

@@ -7,6 +7,10 @@ void SpecialName::update()
 	pos_.y = Easing::getEasing[Easing::QuintIn](t_, 250, endpos_.y);
 	size_.x = Easing::getEasing[Easing::QuintIn](t_, 500, endsize_.x);
 	size_.y = Easing::getEasing[Easing::QuintIn](t_, 500,endsize_.y);
+	if ((!seend_)&&t_ > 0.5f) {
+		seend_ = true;
+		se->Play();
+	}
 }
 
 void SpecialName::draw()

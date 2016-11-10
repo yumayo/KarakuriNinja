@@ -12,6 +12,8 @@ void Cinder::setup( )
     Lib::Environment::Geti( ).setup( this );
 
     scene.setup( );
+
+    setFullScreen( true );
 }
 
 void Cinder::prepareSettings( cinder::app::AppNative::Settings *settings )

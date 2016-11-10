@@ -36,6 +36,8 @@ namespace User
             }
         }
         gurad_se.push_back( Audio( "SE/guard.wav" ) );
+        playerdamaged_se.push_back( Audio( "SE/damage.wav" ) );
+        adddamage.push_back( Audio( "SE/adddamage.wav" ) );
     }
 
     void EnemyManager::update( cinder::CameraPersp const& camera )
@@ -47,9 +49,19 @@ namespace User
         EnemyBulletsRecovery( );
     }
 
-    void EnemyManager::draw( )
+    void EnemyManager::draw( cinder::CameraPersp const& camera )
     {
-        Each( [ ] ( EnemyBaseRef& enemyRef ) { enemyRef->draw( ); } );
+        std::map<float, EnemyBaseRef> enemyMap;
+
+        for ( auto itr = enemyList.begin( ); itr != enemyList.end( ); ++itr )
+        {
+            enemyMap.insert( std::make_pair( camera.worldToEyeDepth( ( *itr )->Position( ) ), *itr ) );
+        }
+
+        for ( auto& obj : enemyMap )
+        {
+            obj.second->draw( );
+        }
     }
 
     void EnemyManager::drawUI( )
@@ -78,6 +90,7 @@ namespace User
             float radius = Vec3f( size - vec ).length( ) / 2.0F * colliedSize;
             drainMp += enemyRef->Hit( CheckDefLineOfCircle( line_, vec, radius ) );
         } );
+        if ( drainMp != 0 )adddamage[0].Play( );
         score += drainMp * 100;
         return drainMp;
     }
@@ -96,10 +109,13 @@ namespace User
     int EnemyManager::EnemyToPlayerDamage( const cinder::CameraPersp& camera )
     {
         int damage = 0;
-        Each( [ &damage, &camera ] ( EnemyBaseRef& enemyRef )
+        Each( [ &damage, &camera ,this] ( EnemyBaseRef& enemyRef )
         {
-            if ( enemyRef->Attack( camera ) == true )
+            if ( enemyRef->Attack( camera ) == true ) {
                 damage += enemyRef->AttackPoint( );
+                playerdamaged_se[0].Play( );
+            }
+             
         } );
 
         return damage;
@@ -117,6 +133,7 @@ namespace User
                 float radius = Vec3f( size - vec ).length( ) / 2.0F;
                 if ( CheckDefLineOfCircle( line_, vec, radius + 50 ) > 1.0f ) {
                     totalDamage += enemyRef->AttackPoint( );
+                    playerdamaged_se[0].Play( );
                 }
                 else {
                     gurad_se[0].Play( );
@@ -158,8 +175,8 @@ namespace User
 
     void EnemyManager::EnemyEraser( )
     {
-        auto eraceList = std::remove_if( enemyList.begin( ), enemyList.end( ), [ this ] ( EnemyBaseRef& enemyRef ) 
-        { 
+        auto eraceList = std::remove_if( enemyList.begin( ), enemyList.end( ), [ this ] ( EnemyBaseRef& enemyRef )
+        {
             if ( !enemyRef->IsActive( ) )
             {
                 score += 1000;

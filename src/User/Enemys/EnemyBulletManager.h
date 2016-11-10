@@ -42,6 +42,8 @@ namespace User
         void Each( std::function<void( EnemyBulletBaseRef& )> func );
         void BulletEraser( );
 		std::vector<Audio> guard_se;
+        std::vector<Audio> playerdamaged_se;
+        std::vector<Audio> adddamage;
     };
 
     using EnemyBulletManagerRef = std::shared_ptr<EnemyBulletManager>;

@@ -9,7 +9,7 @@ namespace User
 {
     using namespace cinder;
     EnemyBullet::EnemyBullet( cinder::Vec3f pos, const cinder::CameraPersp& camera, std::string const& fieldName )
-        : EnemyBase( pos, camera )
+        : EnemyBase( pos, camera, 2.0F )
         , ‘Ò‹@( std::make_shared<gl::Texture>( loadImage( app::loadAsset( fieldName + "/EnemyBullet (1).png" ) ) ) )
         , UŒ‚ƒ‚[ƒVƒ‡ƒ“‰æ‘œ( std::make_shared<gl::Texture>( loadImage( app::loadAsset( fieldName + "/EnemyBullet (2).png" ) ) ) )
         , UŒ‚‰æ‘œ( std::make_shared<gl::Texture>( loadImage( app::loadAsset( fieldName + "/EnemyBullet (3).png" ) ) ) )
@@ -83,8 +83,8 @@ namespace User
     }
     void EnemyBullet::UŒ‚( cinder::CameraPersp const & camera )
     {
-        auto u = randFloat( 0 + 100, env.getWindowWidth( ) - 100 ) / env.getWindowWidth( );
-        auto v = randFloat( 0 + 100, env.getWindowHeight( ) - 300 ) / env.getWindowHeight( );
+        auto u = randFloat(env.getWindowWidth()*0.25, env.getWindowWidth()*0.75 ) / env.getWindowWidth( );
+        auto v = randFloat( env.getWindowHeight( )*0.25, env.getWindowHeight( )*0.75 ) / env.getWindowHeight( );
         auto ray = camera.generateRay( u, v, env.getWindowAspectRatio( ) );
         BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken2.png" ) );
 

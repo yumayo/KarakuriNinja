@@ -63,10 +63,12 @@ namespace User
 		Player player;
         //
 
+
         // 大ちゃんが管理するもののインスタンス化。
 
         Special special;
-        //
 		std::vector<Audio> mainbgm;
+        gl::Texture handtex[4];
+        //
 	};
 }

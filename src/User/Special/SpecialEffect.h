@@ -13,12 +13,13 @@
 #include"Fire.h"
 #include"Water.h"
 #include"Tree.h"
+#include"../Utilitys/Audio.h"
 using namespace cinder;
 
 class SpecialEffect : public SpecialSceneBase {
 public:
-	SpecialEffect(){}
-	SpecialEffect(SpecialType type){
+	SpecialEffect() :inse_(User::Audio("SE/namesound2.wav")) {}
+	SpecialEffect(SpecialType type) :inse_(User::Audio("SE/namesound2.wav")) {
 		specialtype_ = type;
 		camera_move_ = false;
 		go_next_ = false;
@@ -29,6 +30,7 @@ public:
 		effect[0]= loadImage(app::loadAsset("Textures/Effect/effect"+std::to_string(2*int(type))+".png"));
 		effect[1] = loadImage(app::loadAsset("Textures/Effect/effect" + std::to_string(2*int(type)+1) + ".png"));
 		makimono= loadImage(app::loadAsset("Textures/makimono.png"));
+		effectse_.push_back(User::Audio("SE/ineffect"+std::to_string(0)+".wav"));
 	}
 	void draw() override;
 	void update() override;
@@ -58,6 +60,7 @@ private:
 	std::vector<Fire> fire;
 	std::vector<Water> water;
 	std::vector<Tree> tree;
+	std::vector<User::Audio> effectse_;
 	void pushEffect();
 	void goShift();
 	void drawMakimono();
@@ -65,4 +68,5 @@ private:
 	Vec2f namepos[7];
 	Vec2f namesize;
 	void roadTex();
+	User::Audio inse_;
 };

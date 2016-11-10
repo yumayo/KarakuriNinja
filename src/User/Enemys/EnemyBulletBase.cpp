@@ -62,7 +62,7 @@ namespace User
         if ( length <= 1.0F )
         {
             Erase( );
-            return 10;
+            return 5;
         }
         return 0;
     }

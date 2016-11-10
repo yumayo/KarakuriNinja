@@ -7,6 +7,8 @@ namespace User
     EnemyBulletManager::EnemyBulletManager( )
     {
 		guard_se.push_back(Audio("SE/guard.wav"));
+        playerdamaged_se.push_back(Audio( "SE/damage.wav" ) );
+        adddamage.push_back( Audio( "SE/adddamage.wav" ) );
     }
 
     void EnemyBulletManager::update( )
@@ -35,6 +37,8 @@ namespace User
             float radius = Vec3f( size - vec ).length( ) / 2.0F;
             drainMp += bulletRef->Hit( CheckDefLineOfCircle( line_, vec, radius ) );
         } );
+        if(drainMp!=0)
+            adddamage[0].Play();
         score += drainMp * 100;
         return drainMp;
     }
@@ -53,12 +57,13 @@ namespace User
     int EnemyBulletManager::EnemyToPlayerDamage( const cinder::CameraPersp& camera )
     {
         int damage = 0;
-        Each( [ &damage, &camera ] ( EnemyBulletBaseRef& bulletRef )
+        Each( [ &damage, &camera, this ] ( EnemyBulletBaseRef& bulletRef )
         {
             if ( bulletRef->Attack( camera ) == true )
             {
                 damage += bulletRef->AttackPoint( );
                 bulletRef->Erase( );
+                playerdamaged_se[0].Play( );
             }
         } );
         return damage;
@@ -76,6 +81,9 @@ namespace User
                 float radius = Vec3f( size - vec ).length( ) / 2.0F;
 				if (CheckDefLineOfCircle(line_, vec, radius + 50) > 1.0f) {
                     damage += bulletRef->AttackPoint();
+                    if ( bulletRef->NormalizedMoveTime( ) == 1 ) {
+                        playerdamaged_se[0].Play( );
+                    }
 				}
 				else {
 					if (bulletRef->NormalizedMoveTime() == 1) {
@@ -127,12 +135,7 @@ namespace User
     {
         auto eraceList = std::remove_if( bulletList.begin( ), bulletList.end( ), [ this ] ( EnemyBulletBaseRef& bulletRef ) 
         {
-            if ( !bulletRef->IsActive( ) )
-            {
-                score += 1000;
-                return true;
-            }
-            return false;
+            return !bulletRef->IsActive( );
         } );
         bulletList.erase( eraceList, bulletList.end( ) );
     }

@@ -6,17 +6,19 @@
 #include "cinder/gl/gl.h"
 #include "cinder/ImageIo.h"
 #include "cinder/gl/Texture.h"
+#include"../Utilitys/Audio.h"
 using namespace cinder;
 
 class SpecialName {
 public:
 	SpecialName() {}
-	SpecialName(gl::Texture tex,Vec2f endpos,Vec2f endsize, ColorA color) {
+	SpecialName(gl::Texture tex,Vec2f endpos,Vec2f endsize, ColorA color,User::Audio* _se) :se(_se){
 		tex_ = tex;
 		color_ = color;
 		endsize_ = endsize;
 		endpos_ = endpos;
 		t_ = 0.f;
+		seend_ = false;
 	}
 	void update();
 	void draw();
@@ -31,4 +33,6 @@ private:
 	gl::Texture tex_;
 	ColorA color_;
 	float t_;
+	bool seend_;
+	User::Audio* se;
 };

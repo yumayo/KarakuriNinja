@@ -9,13 +9,14 @@
 #include"../Special/Circle.h"
 #include"../Special/InObject.h"
 #include"../Special/Gage.h"
+#include"../Utilitys/Audio.h"
 #include"ZKOO.hpp"
 using namespace cinder;
 class SpecialMinigame : public SpecialSceneBase {
 public:
-	SpecialMinigame(){
+	SpecialMinigame() :inpush(User::Audio("SE/insound2.wav")) {
 	}
-	SpecialMinigame(SpecialType type) {
+	SpecialMinigame(SpecialType type):inpush(User::Audio("SE/insound2.wav")) {
 		success_count_ = 0;
 		step_ = 0;
 		go_next_ = false;
@@ -27,7 +28,8 @@ public:
 		endt_ = 0.0f;
 		backimage_ = loadImage(app::loadAsset("minihaikei.png"));
 		cursor_= loadImage(app::loadAsset("awasero.png"));
-		backninja_ = loadImage(app::loadAsset("backninja.png"));
+		backninja_ = loadImage(app::loadAsset("Textures/backninja.png"));
+		charge_se_.push_back(User::Audio("SE/charge.wav"));
 		start_angle_t_ = 0.0f;
 		ispush_back_circles_ = false;
 		endflash = false;
@@ -94,4 +96,6 @@ private:
 	bool startend() {
 		return start_t_y_ >= 1.0f;
 	}
+	User::Audio inpush;
+	std::vector< User::Audio> charge_se_;
 };

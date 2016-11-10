@@ -25,6 +25,7 @@ namespace User
         EnemyBulletList bulletList; // 一時的に弾をエネミーに保存しておくだけなのでprivate.
     protected: // 画像を作成しないコンストラクタ
         EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp& camera );
+        EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp& camera, float sizeScale );
     public: // 画像を作成するコンストラクタ
         EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp& camera, std::string const& path );
         EnemyBase( cinder::Vec3f pos, float sizeScale, const cinder::CameraPersp& camera, std::string const& path );

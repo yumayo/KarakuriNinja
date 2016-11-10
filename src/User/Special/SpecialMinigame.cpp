@@ -58,12 +58,24 @@ void SpecialMinigame::update()
 	if (circles.size() == 2) {
 		if (circles[0].getMoveStart() && circles[1].getMoveStart()) {
 			gage_.setisCount(circles[0].getIsRealSafe()&& circles[1].getIsRealSafe());
+			if (circles[0].getIsRealSafe() && circles[1].getIsRealSafe()) {
+				charge_se_[0].Looping(true);
+				if(!charge_se_[0].IsPlaying())
+				charge_se_[0].Play();
+			}
+			else {
+				charge_se_[0].Stop();
+			}
 		}
 		if (circles[0].getClear() && circles[1].getClear()) {
-			inobject.push_back(getInObject());
+			inobject.push_back(InObject(getInObject(),&inpush));
 			gage_.setisCount(false);
 			clearCircles();
 		}
+	}
+	else
+	{
+		charge_se_[0].Stop();
 	}
 	if (inobject.size() == 1) {
 		if (inobject[0].Mydelete() == true) {
@@ -178,10 +190,10 @@ void SpecialMinigame::drawInfo()
 }
 void SpecialMinigame::drawBackninja()
 {
-	Vec2f size = Vec2f(200,200);
+	Vec2f size = Vec2f(500,250);
 	gl::pushModelView();
-	gl::translate(Vec2f(app::getWindowWidth() / 2, app::getWindowHeight()/2+100));
-	gl::color(ColorA(1, 1, 1, infoalfa_/2));
+	gl::translate(Vec2f(app::getWindowWidth() / 2, app::getWindowHeight()/2+70));
+	gl::color(ColorA(1, 1, 1, infoalfa_/1.2f));
 	backninja_.enableAndBind();
 	gl::drawSolidRect(ci::Rectf(-size,size));
 	backninja_.disable();

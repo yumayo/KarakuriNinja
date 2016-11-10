@@ -242,4 +242,7 @@ void Player::Update()
 	if (inputs.isPushKey(Key::KEY_m) && inputs.isPressKey(Key::KEY_LCTRL)) {
 		nowMp = maxMp;
 	}
+    if ( inputs.isPushKey( Key::KEY_h ) && inputs.isPressKey( Key::KEY_LCTRL ) ) {
+        nowHp = maxHp;
+    }
 }

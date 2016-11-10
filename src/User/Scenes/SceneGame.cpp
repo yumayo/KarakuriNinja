@@ -29,6 +29,10 @@ namespace User
         mainbgm[0].Looping( true );
         mainbgm[0].Gain( 0.4 );
         mainbgm[0].Play( );
+        handtex[0] = loadImage( app::loadAsset( "ZKOO/Left_OpenHand.png" ) );
+        handtex[1] = loadImage( app::loadAsset( "ZKOO/Left_CloseHand.png" ) );
+        handtex[2] = loadImage( app::loadAsset( "ZKOO/Right_OpenHand.png" ) );
+        handtex[3] = loadImage( app::loadAsset( "ZKOO/Right_CloseHand.png" ) );
     }
     SceneGame::~SceneGame( )
     {
@@ -220,7 +224,7 @@ namespace User
 
         fieldManager->Draw( );
 
-        enemyManager->draw( );
+        enemyManager->draw( camera );
         enemyBulletManager->draw( );
     }
     void SceneGame::endDrawMain( )
@@ -277,25 +281,73 @@ namespace User
         auto hand = inputzkoo.hand( );
         for ( auto& i : inputzkoo.GetHandleIDs( ) )
         {
-            if ( inputzkoo.isRecognition( i, hand ) )
+            if ( i == 1 )
             {
-                gl::color( Color( 1, 1, 0 ) );
-                gl::drawSolidCircle( hand.Position( ), 100, 50 );
-            }
-            if ( inputzkoo.isPress( i, hand ) )
-            {
-                gl::color( Color( 1, 1, 1 ) );
-                gl::drawSolidCircle( hand.Position( ), 50, 50 );
-            }
-            if ( inputzkoo.isPush( i, hand ) )
-            {
-                if ( !inputzkoo.IsActive( ) )
+                if ( inputzkoo.isPress( i, hand ) )
                 {
-                    if ( inputzkoo.IsHandsActive( ) ) inputzkoo.Resumption( );
+                    gl::color( Color( 1, 1, 1 ) );
+                    gl::pushModelView( );
+                    gl::translate( hand.Position( ) + Vec2f( -handtex[1].getWidth( ) / 2.0F, -handtex[1].getHeight( ) / 2.0F ) );
+                    gl::draw( handtex[1] );
+                    gl::popModelView( );
+                    //gl::color( Color( 1, 1, 1 ) );
+                    //gl::drawSolidCircle( hand.Position( ), 50, 50 );
+                }
+                else
+                if ( inputzkoo.isRecognition( i, hand ) )
+                {
+                    gl::color( Color( 1, 1, 1 ) );
+                    gl::pushModelView( );
+                    gl::translate( hand.Position( ) );
+                    gl::scale( handtex[0].getSize( ) );
+                    handtex[0].enableAndBind( );
+                    gl::drawSolidRect( Rectf( Vec2f( -0.5, -0.5 ), Vec2f( 0.5, 0.5 ) ) );
+                    handtex[0].disable( );
+                    gl::popModelView( );
+                    //gl::color( Color( 1, 1, 0 ) );
+                    //gl::drawSolidCircle( hand.Position( ), 100, 50 );
+                }
+                if ( inputzkoo.isPush( i, hand ) )
+                {
+                    if ( !inputzkoo.IsActive( ) )
+                    {
+                        if ( inputzkoo.IsHandsActive( ) ) inputzkoo.Resumption( );
+                    }
+                }
+            }
+            else
+            {
+                if ( inputzkoo.isPress( i, hand ) )
+                {
+                    gl::color( Color( 1, 1, 1 ) );
+                    gl::pushModelView( );
+                    gl::translate( hand.Position( ) + Vec2f( -handtex[3].getWidth( ) / 2.0F, -handtex[3].getHeight( ) / 2.0F ) );
+                    gl::draw( handtex[3] );
+                    gl::popModelView( );
+                    //gl::color( Color( 1, 1, 1 ) );
+                    //gl::drawSolidCircle( hand.Position( ), 50, 50 );
+                }
+                else
+                if ( inputzkoo.isRecognition( i, hand ) )
+                {
+                    gl::color( Color( 1, 1, 1 ) );
+                    gl::pushModelView( );
+                    gl::translate( hand.Position( ) + Vec2f( -handtex[2].getWidth( ) / 2.0F, -handtex[2].getHeight( ) / 2.0F ) );
+                    gl::draw( handtex[2] );
+                    gl::popModelView( );
+                    //gl::color( Color( 1, 1, 0 ) );
+                    //gl::drawSolidCircle( hand.Position( ), 100, 50 );
+                }
+                if ( inputzkoo.isPush( i, hand ) )
+                {
+                    if ( !inputzkoo.IsActive( ) )
+                    {
+                        if ( inputzkoo.IsHandsActive( ) ) inputzkoo.Resumption( );
+                    }
                 }
             }
         }
-}
+    }
     void SceneGame::endDrawUI( )
     {
         gl::popMatrices( );

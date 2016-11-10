@@ -24,6 +24,21 @@ namespace User
         object.Direction( cameraEyePos - object.Position( ) );
         initObject = object;
     }
+    EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, float sizeScale )
+        : object( pos, Vec3f( 0.5 * sizeScale, 0.8 * sizeScale, 0.01 ), Vec3f::zero( ) )
+        , maxHP( 5.0F )
+        , HP( maxHP )
+        , hitColor( Color::white( ) )
+        , isLanding( true )
+        , isLive( true )
+        , attackPoint( 3 )
+        , deadTime( 60 )
+    {
+        auto cameraEyePos = camera.getEyePoint( );
+        cameraEyePos.y = object.Position( ).y;
+        object.Direction( cameraEyePos - object.Position( ) );
+        initObject = object;
+    }
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, std::string const & path )
         : object( pos, Vec3f( 0.5, 0.8, 0.01 ), Vec3f::zero( ) )
         , textureRef( std::make_shared<gl::Texture>( loadImage( app::loadAsset( path ) ) ) )
@@ -84,7 +99,8 @@ namespace User
         Dying( );// 死んでいても実行します。
 
         // デバッグダメージ
-        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_0 ) ) Kill( );
+        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_0 ) )
+            Kill( );
     }
     void EnemyBase::draw( )
     {

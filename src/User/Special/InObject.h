@@ -6,14 +6,16 @@
 #include "cinder/gl/gl.h"
 #include "cinder/ImageIo.h"
 #include "cinder/gl/Texture.h"
+#include"../Utilitys/Audio.h"
 using namespace cinder;
 
 class InObject {
 public:
 	InObject(){}
-	InObject(int texnumber) {
+	InObject(int texnumber,User::Audio* se):se_(se) {
 		tex = loadImage(app::loadAsset("Textures/In/in"+std::to_string(texnumber)+".png"));
 		pos_ = Vec2f(app::getWindowWidth() / 2, 300);
+		se_end_ = false;
 		flash_al_ = 0.0f;
 		angle_ = 0.0f;
 		angle_t_ = 0.0f;
@@ -51,6 +53,7 @@ public:
 			size_.y = Easing::getEasing[Easing::EasingType::Linear](angle_t_, 200.f, 500.f);
 			angle_ = Easing::getEasing[Easing::EasingType::Linear](angle_t_,180,0.f);
 			alfa_= Easing::getEasing[Easing::EasingType::Linear](angle_t_, 0, 1.f);
+	
 		}
 		if (angle_t_ >=1.0f&&size_t_<1.0f)
 		{
@@ -58,6 +61,10 @@ public:
 			flash_al_ = Easing::getEasing[Easing::EasingType::Return](size_t_, 0, 1.f);
 			size_.x= Easing::getEasing[Easing::EasingType::BackOut](size_t_, 500.f, 800.f);
 			size_.y = Easing::getEasing[Easing::EasingType::BackOut](size_t_, 500.f, 800.f);
+			if ((!se_end_)) {
+				se_end_ = true;
+				se_->Play();
+			}
 		}
 		if(size_t_>=1.0f){
 			end_t_ += 1.0f / (60.0f*0.5f);
@@ -73,6 +80,7 @@ public:
 	}
 private:
 	gl::Texture tex;
+	User::Audio* se_;
 	Vec2f pos_;
 	Vec2f size_;
 	float angle_;
@@ -81,5 +89,6 @@ private:
 	float size_t_;
 	float end_t_;
 	float alfa_;
+	bool se_end_;
 	bool isdelete_;
 };

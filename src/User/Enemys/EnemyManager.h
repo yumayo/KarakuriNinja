@@ -15,14 +15,14 @@ namespace User
 
     class EnemyManager
     {
-        float colliedSize = 1.5F;
+        float colliedSize = 1.0F;
         EnemyList enemyList;
         EnemyBulletList bulletList;
         int score = 0;
     public:
         EnemyManager( const cinder::CameraPersp& camera, std::string const& path );
         void update( cinder::CameraPersp const& camera );
-        void draw( );
+        void draw( cinder::CameraPersp const& camera );
         void drawUI( );
     public:
         // エネミーの作成を行います。
@@ -54,6 +54,8 @@ namespace User
         // 各エネミーの弾を回収します。
         void EnemyBulletsRecovery( );
 		std::vector<Audio> gurad_se;
+        std::vector<Audio> playerdamaged_se;
+        std::vector<Audio> adddamage;
     };
 
     using EnemyManagerRef = std::shared_ptr<EnemyManager>;
