@@ -50,9 +50,6 @@ namespace User
         int mutekiFrame;
         int maxMutekiFrame;
 
-    private:
-        Audio* guard_se;
-
     private: EnemyList enemyList;
     public: EnemyList EnemyRecovery( );
     protected:  template <class Ty>
@@ -80,7 +77,6 @@ namespace User
         virtual bool Attack( const cinder::CameraPersp& camera );
         // 生きているかの状態
         virtual bool IsLive( ) { return isLive; }
-        
     public: // ゲッター
         cinder::Vec3f Position( ) { return object.Position( ); }
         cinder::Vec3f Size( ) { return object.Size( ); }
@@ -93,14 +89,14 @@ namespace User
         bool IsAttackOneFramePrev( ) { return attackTime.IsAttackOneFramePrev( ); }
         float NormalizedAttackFrame( ) { return attackTime.NormalizedAttackFrame( ); }
     public:
-        // 敵を強制的に殺す関数
-        void Kill( );
-        // エネミーを消していいかの確認
-        bool IsActive( );
         // 引数 : あたった時の中心からの距離(正規化済み) : 0.0 ~ 1.0(半径)
         int Hit( cinder::CameraPersp const& camera, float length, int scoreRate, float value = 1.0F );
         // 強制的にダメージを与える関数
         int Damage( cinder::CameraPersp const& camera, int damage, int scoreRate );
+        // 敵を強制的に殺す関数
+        void Kill( );
+        // エネミーを消していいかの確認
+        bool IsActive( );
     protected:
         bool IsJumping( );
         // 地面の中にいるかどうか。
@@ -132,8 +128,6 @@ namespace User
         void Jump( cinder::Vec3f jumpPower );
     private:
         void SpawnEffect( cinder::CameraPersp const& camera );
-    protected:
-        void DrawSlashGuardEffect( cinder::CameraPersp const& camera );
     };
 
     template<class Ty>

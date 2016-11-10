@@ -35,15 +35,13 @@ namespace User
         // 弾全てと線分が当たっているかの判定
         int PlayerToEnemyDamage( Line& line_, const cinder::CameraPersp& camera );
         // プレイヤーのスペシャル攻撃して、全弾消す処理
-        int PlayerSpecialAttackToEnemyDamage( const cinder::CameraPersp & camera );
+        int PlayerSpecialAttackToEnemyDamage( );
         // プレイヤーからエネミーへの攻撃（直接ダメージを通します）
         int EnemyToPlayerDamage( const cinder::CameraPersp& camera );
         // エネミーからプレイヤーへの攻撃（プレイヤーがガードをしている時の判定に使います）
         int EnemyToPlayerDamage( Line& line_, const cinder::CameraPersp& camera );
         // プレイヤーがエネミーからの攻撃を防いだかの判定をします。
         int EnemyToPlayerGuardCheck( Line& line, cinder::CameraPersp const& camera );
-        // プレイヤーがエネミーからの攻撃を防いだかの判定をします。
-        int EnemyToPlayerSlashGuardCheck( Line& line, cinder::CameraPersp const& camera );
         // スコアを回収します。回収したら、中身はクリアします。
         int ScoreRecovery( ) { auto temp = score; score = 0; return temp; }
         // 弾が当たる場所を描画します。
@@ -58,8 +56,6 @@ namespace User
     public: EffectList EffectRecovery( );
     private: template <class Ty>
         void EffectCreate( Ty const& instans );
-    private:
-        void DrawSlashGuardEffect( cinder::CameraPersp const& camera, cinder::Vec3f pos );
     };
 
     using EnemyBulletManagerRef = std::shared_ptr<EnemyBulletManager>;

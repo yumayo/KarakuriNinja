@@ -169,7 +169,7 @@ namespace User
         gl::color( ColorA( 0, 0, 0, 0.5F ) );
         gl::drawSolidRect( Rectf( Vec2f( 0, 200 + 100 ), Vec2f( env.getWindowWidth( ), env.getWindowHeight( ) - 200 - 100 ) ) );
         gl::color( Color( 1, 0, 0 ) );
-        gl::draw( tex, Rectf( Vec2f( 0, 200 + 100 ), Vec2f( env.getWindowWidth( ), env.getWindowHeight( ) - 200 - 100 ) ) );
+        //gl::draw( tex, Rectf( Vec2f( 0, 200 + 100 ), Vec2f( env.getWindowWidth( ), env.getWindowHeight( ) - 200 - 100 ) ) );
         gl::popModelView( );
     }
 

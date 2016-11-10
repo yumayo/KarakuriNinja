@@ -13,8 +13,8 @@ public:
     void prepareSettings( cinder::app::AppNative::Settings *settings ) override;
     void shutdown( ) override;
 public:
-    void resize( ) override;
     void update( ) override;
+    void resize( ) override;
     void draw( ) override;
 public:
     void mouseDown( cinder::app::MouseEvent event ) override;

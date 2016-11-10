@@ -37,6 +37,7 @@ namespace User
         cinder::gl::Texture* makimono;
         Fonts font;
         Fonts touchfont;
+        Fonts specialfont;
         int scorePoint;
 
         Combo combo;

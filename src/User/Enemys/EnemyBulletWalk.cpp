@@ -5,7 +5,7 @@ namespace User
     using namespace cinder;
 
     EnemyBulletWalk::EnemyBulletWalk( cinder::Vec3f pos, const cinder::CameraPersp & camera )
-        : EnemyBase( pos, camera, Status( 8.0F, 0 ) )
+        : EnemyBase( pos, camera, Status( 1.0F, 0 ) )
     {
         ‘Ò‹@ = &GData::FindTexture( "Enemy/BulletWalk/BulletWalk (1).png" );
 

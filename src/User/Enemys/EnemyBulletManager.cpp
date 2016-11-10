@@ -38,53 +38,31 @@ namespace User
 
     int EnemyBulletManager::PlayerToEnemyDamage( Line & line_, const cinder::CameraPersp & camera )
     {
-        int drainMp = 0;
-        Each( [ &drainMp, &line_, &camera, this ] ( EnemyBulletBaseRef& bulletRef )
-        {
-            Vec2f vec = camera.worldToScreen( bulletRef->EndPosition( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            Vec2f size = camera.worldToScreen( bulletRef->EndPosition( ) + bulletRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            float radius = Vec3f( size - vec ).length( ) / 2.0F * colliedSize;
-
-            if ( auto mp = bulletRef->Hit( CheckDefLineOfCircle( line_, vec, radius ) ) )
-            {
-                DrawSlashGuardEffect( camera, bulletRef->Position( ) );
-                drainMp += mp;
-            }
-        } );
-
-        if ( drainMp != 0 )
-        {
-            score += drainMp * 500;
-        }
-
-        return drainMp;
+        //int drainMp = 0;
+        //Each( [ &drainMp, &line_, &camera ] ( EnemyBulletBaseRef& bulletRef )
+        //{
+        //    Vec2f vec = camera.worldToScreen( bulletRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+        //    Vec2f size = camera.worldToScreen( bulletRef->Position( ) + bulletRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+        //    float radius = Vec3f( size - vec ).length( ) / 2.0F;
+        //    drainMp += bulletRef->Hit( CheckDefLineOfCircle( line_, vec, radius ) );
+        //} );
+        //if ( drainMp != 0 )
+        //    adddamage->Play( );
+        //score += drainMp * 100;
+        //return drainMp;
+        return 0;
     }
 
-    int EnemyBulletManager::PlayerSpecialAttackToEnemyDamage( const cinder::CameraPersp & camera )
+    int EnemyBulletManager::PlayerSpecialAttackToEnemyDamage( )
     {
-        int drainMp = 0;
-        Vec2f bulletPos;
-        Each( [ &bulletPos, &drainMp, &camera ] ( EnemyBulletBaseRef& bulletRef )
-        {
-            bulletPos = camera.worldToScreen( bulletRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            drainMp += bulletRef->Kill( );
-        } );
-
-        if ( drainMp != 0 )
-        {
-            EffectCreate( EffectBase( "Textures/Effect/guard3.png",
-                                      bulletPos,
-                                      0.0F,
-                                      Vec2f( 480, 480 ),
-                                      Vec2f( 480, 480 ),
-                                      EffectBase::Mode::CENTERCENTER
-            ) );
-
-            guard_se->Play( );
-            score += drainMp * 500;
-        }
-
-        return drainMp;
+        //int drainMp = 0;
+        //Each( [ &drainMp ] ( EnemyBulletBaseRef& bulletRef )
+        //{
+        //    drainMp += bulletRef->Kill( );
+        //} );
+        //score += drainMp * 100;
+        //return drainMp;
+        return 0;
     }
 
     int EnemyBulletManager::EnemyToPlayerDamage( const cinder::CameraPersp& camera )
@@ -169,24 +147,6 @@ namespace User
         return guardNum;
     }
 
-    int EnemyBulletManager::EnemyToPlayerSlashGuardCheck( Line & line, cinder::CameraPersp const & camera )
-    {
-        int guardNum = 0;
-        Each( [ &guardNum, &line, &camera, this ] ( EnemyBulletBaseRef& bulletRef )
-        {
-            Vec2f vec = camera.worldToScreen( bulletRef->EndPosition( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            Vec2f size = camera.worldToScreen( bulletRef->EndPosition( ) + bulletRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            float radius = Vec3f( size - vec ).length( ) / 2.0F * colliedSize;
-
-            if ( CheckDefLineOfCircle( line, vec, radius ) <= 1.0F )
-            {
-                guardNum += 1;
-            }
-        } );
-
-        return guardNum;
-    }
-
     void EnemyBulletManager::DrawCollisionCircle( cinder::CameraPersp const & camera )
     {
         Each( [ &camera ] ( EnemyBulletBaseRef& bulletRef )
@@ -240,17 +200,5 @@ namespace User
         auto ret = effectList;
         effectList.clear( );
         return ret;
-    }
-    void EnemyBulletManager::DrawSlashGuardEffect( cinder::CameraPersp const & camera, cinder::Vec3f pos )
-    {
-        EffectCreate( EffectBase( "Textures/Effect/guard3.png",
-                                  camera.worldToScreen( pos, env.getWindowWidth( ), env.getWindowHeight( ) ),
-                                  0.0F,
-                                  Vec2f( 480, 480 ),
-                                  Vec2f( 480, 480 ),
-                                  EffectBase::Mode::CENTERCENTER
-        ) );
-
-        guard_se->Play( );
     }
 }

@@ -34,7 +34,7 @@ public:
             icon.pos = icon.startpos;
             icon.endpos = Vec2f( app::getWindowWidth( ) / 2 + float( ( i - 1 )*450.f ), app::getWindowHeight( ) / 2 );
             icon.shiftpos = icon.startpos;
-            icon.size = Vec2f( 250.f, 250.f );
+            icon.size = Vec2f( 300.f, 300.f );
             icon.angle_t = 0.0f;
             icon.startangle = 5.f;
             icon.opened = false;

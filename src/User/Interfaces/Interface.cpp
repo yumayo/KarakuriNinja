@@ -20,6 +20,7 @@ namespace User
         , makimono( &GData::FindTexture( "Textures/makimono.png" ) )
         , font( u8"HG行書体", 120 )
         , touchfont( u8"HG行書体", 30 )
+        , specialfont( u8"HG行書体", 80 )
         , scorePoint( 0 )
         , count( 0 )
         , maxcount( 0 )
@@ -175,7 +176,7 @@ namespace User
         gl::translate( leftDown + Vec2f( 120, -140 ) );
         gl::scale( Vec2f( texsize.x / ( specialeffect->getSize( ).x / CUTNUM ), texsize.y / specialeffect->getSize( ).y ) );
         cinder::ColorA color;
-        float alfa = ( count < ( 60 * 25 ) ) ? 0.7f : 0.35 + 0.35*sin( float( count ) / 2.f );
+        float alfa = ( count < (60 * 25) ) ? 0.7f : 0.35 + 0.35*sin( float( count ) / 2.f );
         switch ( specialsubtime )
         {
         case 0:
@@ -235,13 +236,13 @@ namespace User
         auto rightDown = env.getWindowSize( );
         std::string str;
         cinder::ColorA color;
-        float alfa = ( count < ( 60 * 25 ) ) ? 1.f : 0.5 + 0.5*sin( float( count ) / 1.5f );
-        Vec2f size = Vec2f( 225, 75 );
-        Vec2f pos = leftDown + Vec2f( 320, -210 + 5 * sin( ( float( count ) ) / 10.f ) );
+        float alfa = ( count < (60 * 25) ) ? 1.f : 0.5 + 0.5*sin( float( count ) / 1.5f );
+        Vec2f size = Vec2f( 225, 75 )*2.5;
+        Vec2f pos = leftDown + Vec2f( 470, -160 + 5 * sin( ( float( count ) ) / 10.f ) );
 
         gl::pushModelView( );
         makimono->enableAndBind( );
-        gl::translate( pos + Vec2f( -4, 7 ) );
+        gl::translate( pos + Vec2f( -4, 10 )*2.5 );
         gl::color( ColorA( 1, 1, 1, alfa ) );
         gl::drawSolidRect( cinder::Rectf( -size / 2, size / 2 ) );
         makimono->disable( );
@@ -266,14 +267,14 @@ namespace User
         }
         //color = ColorA(0, 0, 0, alfa);
 
-        touchfont.Draw( str, pos, color, Fonts::Mode::CENTERUP );
+        specialfont.Draw( str, pos, color, Fonts::Mode::CENTERUP );
     }
     void Interface::drawchargeInfo( bool _ismpmax )
     {
         if ( !_ismpmax ) {//何も選ばれていない
             return;
         }
-        /* auto leftDown = Vec2f( 0, env.getWindowHeight( ) );
+       /* auto leftDown = Vec2f( 0, env.getWindowHeight( ) );
         auto rightDown = env.getWindowSize( );
         std::string str;
         cinder::ColorA color;

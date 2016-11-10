@@ -11,9 +11,9 @@ namespace User
 {
     using namespace cinder;
     EnemyBullet::EnemyBullet( cinder::Vec3f pos, const cinder::CameraPersp& camera )
-        : EnemyBase( pos, camera, Status( 8.0F, 4 ), true )
+        : EnemyBase( pos, camera, Status( 10, 4 ), true )
     {
-        timer.Advance( randInt( 120, 200 ) );
+        timer.Advance( randInt( 60, 120 ) );
 
         int index = 1;
         待機 = &GData::FindTexture( "Enemy/Bullet/Bullet (" + std::to_string( index++ ) + ").png" );
@@ -87,12 +87,12 @@ namespace User
             if ( randInt( 0, 3 ) != 0 )
             {
                 texture = 攻撃モーション画像;
-                timer.Advance( 60 );
+                timer.Advance( 90 );
                 SetFunction( &EnemyBullet::攻撃モーション );
             }
             else
             {
-                timer.Advance( randInt( 30, 60 ) );
+                timer.Advance( randInt( 60, 90 ) );
                 if ( randBool( ) )
                 {
                     texture = 左に移動;
@@ -131,7 +131,7 @@ namespace User
         ) );
 
         // タイマーをセットしてまた待機状態にします。
-        timer.Advance( 10 );
+        timer.Advance( 20 );
         SetFunction( &EnemyBullet::攻撃後硬直 );
         se[randInt( 3 )]->Play( );
 
@@ -142,7 +142,7 @@ namespace User
         if ( timer.IsAction( ) )
         {
             // タイマーをセットしてまた待機状態にします。
-            timer.Advance( randInt( 120, 300 ) );
+            timer.Advance(randInt(110, 130));
             texture = 待機;
             SetFunction( &EnemyBullet::タイマーが鳴るまで待機 );
             return;
@@ -159,7 +159,7 @@ namespace User
             object.PositionAdd( -direction * 0.1 );
 
             // タイマーをセットしてまた待機状態にします。
-            timer.Advance( randInt( 30, 60 ) );
+            timer.Advance( randInt( 60, 80 ) );
             texture = 右に移動;
             SetFunction( &EnemyBullet::右へ移動 );
         }
@@ -167,7 +167,7 @@ namespace User
         if ( timer.IsAction( ) )
         {
             // タイマーをセットしてまた待機状態にします。
-            timer.Advance( randInt( 60, 180 ) );
+            timer.Advance(randInt(60, 80));
             texture = 待機;
             SetFunction( &EnemyBullet::タイマーが鳴るまで待機 );
         }
@@ -190,7 +190,7 @@ namespace User
         if ( timer.IsAction( ) )
         {
             // タイマーをセットしてまた待機状態にします。
-            timer.Advance( randInt( 120, 200 ) );
+            timer.Advance(randInt(60, 90));
             texture = 待機;
             SetFunction( &EnemyBullet::タイマーが鳴るまで待機 );
         }

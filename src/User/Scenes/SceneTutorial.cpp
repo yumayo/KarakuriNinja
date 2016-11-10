@@ -31,10 +31,10 @@ namespace User
         mainbgm->Looping( true );
         mainbgm->Gain( bgmGain );
         mainbgm->Play( );
-        hagurumas.push_back( Haguruma( Vec2f( env.getWindowWidth( )*0.1f, env.getWindowHeight( )*0.15f ),
-                                       Vec2f( 350, 350 ), 1.5f, 0.3f, 5.f, HagurumaType::LEFTHAGURUMA ) );
-        hagurumas.push_back( Haguruma( Vec2f( env.getWindowWidth( )*0.9f, env.getWindowHeight( )*0.15f ),
-                                       Vec2f( 350, 350 ), 1.5f, 0.3f, 5.f, HagurumaType::RIGHTHAGURUMA ) );
+		hagurumas.push_back(Haguruma(Vec2f(env.getWindowWidth()*0.05f, env.getWindowHeight()*0.05f),
+			Vec2f(300, 300), 1.5f, 0.3f, 5.f, HagurumaType::LEFTHAGURUMA));
+		hagurumas.push_back(Haguruma(Vec2f(env.getWindowWidth()*0.95f, env.getWindowHeight()*0.05f),
+			Vec2f(300, 300), 1.5f, 0.3f, 5.f, HagurumaType::RIGHTHAGURUMA));
     }
     SceneTutorial::~SceneTutorial( )
     {
@@ -56,12 +56,41 @@ namespace User
             player.TranseNowHp( -damage );
         }
 
+        // プレイヤーがガード状態なら
+        if ( player.Command( ) == CommandType::GUARD )
+        {
+            int damage = 0;
+            damage += enemyManager->EnemyToPlayerDamage( player.GuardLine( ), enemyCamera->GetCamera( ) );
+            damage += enemyBulletManager->EnemyToPlayerDamage( player.GuardLine( ), enemyCamera->GetCamera( ) );
+            player.TranseNowHp( -damage );
+        }
+
         for ( auto& obj : moveInput.Lines( ) )
         {
             int AP = 0;
-            if ( fieldManager->GetFieldNumber( ) != 1 ) AP += enemyManager->PlayerToEnemyDamage( obj, enemyCamera->GetCamera( ) );
+            AP += enemyManager->PlayerToEnemyDamage( obj, enemyCamera->GetCamera( ) );
             AP += enemyBulletManager->PlayerToEnemyDamage( obj, enemyCamera->GetCamera( ) );
             player.TranseNowMp( AP );
+        }
+    }
+    void SceneTutorial::UpdateCombo( )
+    {
+        if ( moveInput.Lines( ).empty( ) ) return;
+
+        int attackSuccessNum = 0;
+        for ( auto& obj : moveInput.Lines( ) )
+        {
+            if ( 0 != enemyManager->PlayerToEnemyAttackCheck( obj, enemyCamera->GetCamera( ) ) )
+            {
+                attackSuccessNum += 1;
+            }
+        }
+
+        combo += attackSuccessNum;
+
+        if ( attackSuccessNum == 0 )
+        {
+            combo = 0;
         }
     }
     void SceneTutorial::UpdateNextStage( )
@@ -148,10 +177,10 @@ namespace User
     }
     void SceneTutorial::UpdateGuardSucceed( )
     {
-        for ( auto& obj : moveInput.Lines( ) )
+        // ガードに成功したら
+        if ( player.Command( ) == CommandType::GUARD )
         {
-            // ガードに成功したら
-            if ( 0 < enemyBulletManager->EnemyToPlayerSlashGuardCheck( obj, enemyCamera->GetCamera( ) ) )
+            if ( 0 < enemyBulletManager->EnemyToPlayerGuardCheck( player.GuardLine( ), enemyCamera->GetCamera( ) ) )
             {
                 tutorialManager.BougyoPlayerGuardSucceed( );
             }
@@ -163,14 +192,17 @@ namespace User
 
         player.Update( );
 
-        enemyManager->update( enemyCamera->GetCamera( ) );
+        // これを呼ぶことでガードができる。
+        if ( fieldManager->GetFieldNumber( ) == 1 ) player.UpdateDeffenceOfTouch( );
 
-        UpdateGuardSucceed( );
+        enemyManager->update( enemyCamera->GetCamera( ) );
         enemyBulletManager->BulletRegister( enemyManager->BulletRecovery( ) );
         enemyBulletManager->update( );
 
         UpdateDamage( );
+        UpdateCombo( );
         UpdateEnemySpawn( );
+        UpdateGuardSucceed( );
 
         effectManager->EffectRegister( enemyManager->EffectRecovery( ) );
         effectManager->EffectRegister( enemyBulletManager->EffectRecovery( ) );
@@ -181,6 +213,9 @@ namespace User
         UpdateCamera( );
 
         moveInput.Begin( combo );
+
+        // プレイヤーがguard状態の時はmoveInputを無効にします。
+        if ( player.Command( ) == GUARD || fieldManager->GetFieldNumber( ) == 1 ) moveInput.InputInvalidation( );
 
         UpdateAllInstans( );
 

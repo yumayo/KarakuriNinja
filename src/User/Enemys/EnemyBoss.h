@@ -46,8 +46,6 @@ namespace User
         cinder::gl::Texture* オーラ2;
         cinder::gl::Texture* auraTex;
         void DrawAura( );
-    private:
-        float prevAttackHP = 0.0F;
     public:
         EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera );
         void update( cinder::CameraPersp const& camera ) override;
@@ -58,13 +56,10 @@ namespace User
     private:
         // 重力をかけます。
         void Gravitate( );
-        // 残像をつけます。
         void DrawAfterimage( EnemyObject& object, int index );
     private:
         void タイマーが鳴るまで待機( cinder::CameraPersp const& camera );
         void どっちの攻撃を出すかの確認( cinder::CameraPersp const& camera );
-        void 直接攻撃選択( cinder::CameraPersp const& camera );
-        void 間接攻撃選択( cinder::CameraPersp const& camera );
     private:
         void 左右に高速移動しながらカメラへ近づく( cinder::CameraPersp const& camera );
         void 攻撃モーション( cinder::CameraPersp const& camera );
@@ -78,6 +73,7 @@ namespace User
         void 弾を投げるまでのモーション( cinder::CameraPersp const& camera );
         void 弾を投げる( cinder::CameraPersp const& camera );
         void 弾を投げた後の硬直( cinder::CameraPersp const& camera );
+        void 弾をもう一度投げるかの確認( cinder::CameraPersp const& camera );
     private:
         void ボス出現のエフェクトが終了するまで待機( cinder::CameraPersp const& camera );
         void 出現した時にエネミーをスポーンさせる( cinder::CameraPersp const& camera );
@@ -100,6 +96,8 @@ namespace User
         // ランダムに決めた二点から中点を求める波状バレット攻撃
         void RandomWavyBulletFiring( cinder::CameraPersp const& camera );
         std::vector<Audio*> se;
+        int 弾を投げる回数 = 0;
+        int 弾を投げる上限回数 = 2;
         int 弾の上限回数 = 2;
         int 弾カウント = 0;
         int 直接攻撃の上限回数 = 2;

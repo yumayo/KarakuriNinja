@@ -107,7 +107,7 @@ namespace User
         Audio* mpmax;
         bool ismpmax;
         Audio* horagai;
-
+        
         std::vector<Haguruma> hagurumas;
         float bgmGain = 0.6;
         //=======================================

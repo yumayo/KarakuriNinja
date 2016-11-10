@@ -15,6 +15,8 @@ namespace User
     SceneGame::SceneGame( )
         : mainBGMfadeOut( 100 )
     {
+
+
         TRData::Reset( );
 
         // ユーマヨが管理するものを作成。
@@ -28,8 +30,8 @@ namespace User
         timer.Off( );
         damageColor = ColorA( 1, 0, 0, 0 );
         talk = std::make_shared<Talk>( );
-        mojiManager.Setup( "JSON/GameStart.json" );
         production = &GData::FindTexture( "Production.png" );
+        mojiManager.Setup( "JSON/GameStart.json" );
 
         // 野本が管理するものを作成。
         player = Player( 100, 100 );
@@ -49,10 +51,10 @@ namespace User
         horagai = &GData::FindAudio( "SE/gamestart.wav" );
         horagai->Play( );
         gameClearSE = &GData::FindAudio( "SE/j_26.wav" );
-        hagurumas.push_back( Haguruma( Vec2f( env.getWindowWidth( )*0.1f, env.getWindowHeight( )*0.15f ),
-                                       Vec2f( 350, 350 ), 1.5f, 0.3f, 5.f, HagurumaType::LEFTHAGURUMA ) );
-        hagurumas.push_back( Haguruma( Vec2f( env.getWindowWidth( )*0.9f, env.getWindowHeight( )*0.15f ),
-                                       Vec2f( 350, 350 ), 1.5f, 0.3f, 5.f, HagurumaType::RIGHTHAGURUMA ) );
+        hagurumas.push_back( Haguruma( Vec2f( env.getWindowWidth( )*0.05f, env.getWindowHeight( )*0.05f ),
+                                       Vec2f( 300, 300 ), 1.5f, 0.3f, 5.f, HagurumaType::LEFTHAGURUMA ) );
+        hagurumas.push_back( Haguruma( Vec2f( env.getWindowWidth( )*0.95f, env.getWindowHeight( )*0.05f ),
+                                       Vec2f( 300, 300 ), 1.5f, 0.3f, 5.f, HagurumaType::RIGHTHAGURUMA ) );
 
         for ( auto& obj : hagurumas ) obj.set_anglescale_t( 1 );
 
@@ -95,6 +97,15 @@ namespace User
             damage += enemyManager->EnemyToPlayerDamage( enemyCamera->GetCamera( ) ) * 無敵じゃない;
             damage += enemyBulletManager->EnemyToPlayerDamage( enemyCamera->GetCamera( ) ) * 無敵じゃない;
             player.TranseNowHp( -damage );
+        }
+
+        // プレイヤーがガード状態なら
+        if ( player.Command( ) == CommandType::GUARD )
+        {
+            int damage = 0;
+            damage += enemyManager->EnemyToPlayerDamage( player.GuardLine( ), enemyCamera->GetCamera( ) );
+            damage += enemyBulletManager->EnemyToPlayerDamage( player.GuardLine( ), enemyCamera->GetCamera( ) );
+            player.TranseNowHp( -damage * !( special.getSpecialType( ) == SpecialType::TREE ) );
         }
 
         if ( playerHP != player.NowHp( ) )
@@ -209,6 +220,7 @@ namespace User
              !TRData::special.IsStopUpdate( ) )
         {
             player.Update( );
+            player.UpdateDeffenceOfTouch( );
         }
 
         if ( !special.getIsSpecial( ) &&
@@ -234,6 +246,7 @@ namespace User
             UpdateColor( );
             UpdateScore( );
             UpdateCombo( );
+
         }
 
         if ( !special.getIsSpecial( ) )
@@ -295,7 +308,7 @@ namespace User
         {
             const float damagevalue = 10.0F;
             player.TranseNowMp( enemyManager->PlayerSpecialAttackToEnemyDamage( special.getspecialPower( ) * damagevalue, enemyCamera->GetCamera( ), special.getSpecialType( ), UI->ComboNumber( ) ) );
-            player.TranseNowMp( enemyBulletManager->PlayerSpecialAttackToEnemyDamage( enemyCamera->GetCamera( ) ) );
+            player.TranseNowMp( enemyBulletManager->PlayerSpecialAttackToEnemyDamage( ) );
         }
     }
     void SceneGame::UpdateGameEnd( )
@@ -367,13 +380,21 @@ namespace User
 
         enemyCamera->Update( );
 
+        if ( 演出中 )
+        {
+            player.Reset( );
+        }
+
         if ( !special.getIsSpecial( ) &&
              !TRData::bossSpawn.IsStopUpdate( ) &&
              !TRData::bossSerif.IsStopUpdate( ) &&
              !TRData::special.IsStopUpdate( ) )
         {
             moveInput.Begin( UI->ComboNumber( ) );
-            player.Reset( );
+        }
+        if ( player.Command( ) == GUARD )
+        {
+            moveInput.InputInvalidation( );
         }
         if ( TRData::bossSpawn.IsStopUpdate( ) )
         {

@@ -20,14 +20,13 @@ namespace User
         , isLive( true )
         , deadTime( 60 )
         , mutekiFrame( 0 )
-        , maxMutekiFrame( 120 )
+        , maxMutekiFrame( 30 )
         , status( )
     {
         update( camera );
         initObject = object;
         SpawnEffect( camera );
         GData::FindAudio( "SE/umareru.wav" ).Play( );
-        guard_se = &GData::FindAudio( "SE/guard.wav" );
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, Status status, bool bullet )
         : object( pos, Vec3f( 1.7, 1.7, 0.01 ), Vec3f::zero( ) )
@@ -38,13 +37,12 @@ namespace User
         , isLive( true )
         , deadTime( 60 )
         , mutekiFrame( 0 )
-        , maxMutekiFrame( 120 )
+        , maxMutekiFrame( 30 )
         , status( status )
     {
         initObject = object;
         SpawnEffect( camera );
         GData::FindAudio( "SE/umareru.wav" ).Play( );
-        guard_se = &GData::FindAudio( "SE/guard.wav" );
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, Status status, float sizeScale )
         : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
@@ -55,14 +53,13 @@ namespace User
         , isLive( true )
         , deadTime( 60 )
         , mutekiFrame( 0 )
-        , maxMutekiFrame( 120 )
+        , maxMutekiFrame( 30 )
         , status( status )
     {
         update( camera );
         initObject = object;
         SpawnEffect( camera );
         GData::FindAudio( "SE/umareru.wav" ).Play( );
-        guard_se = &GData::FindAudio( "SE/guard.wav" );
     }
     void EnemyBase::update( cinder::CameraPersp const& camera )
     {
@@ -140,33 +137,41 @@ namespace User
         gl::popModelView( );
 
         gl::enable( GL_CULL_FACE );
-        }
+    }
     void EnemyBase::drawUI( cinder::CameraPersp const& camera )
     {
-       /* Vec2f pos( camera.worldToScreen( object.Position( ) + Vec3f( 0, object.Size( ).y / 2, 0 ), env.getWindowWidth( ), env.getWindowHeight( ) ) );
-        Rectf rect( Vec2f( -100, -10 ), Vec2f( 100, 10 ) );
-        gl::pushModelView( );
-        gl::translate( pos );
-        gl::color( Color::white( ) );
-        gl::drawStrokedRect( rect );
-        gl::color( Color::black( ) );
-        gl::drawSolidRect( rect );
-        gl::color( Color( 1, 0, 0 ) );
-        gl::drawSolidRect( Rectf( Vec2f( rect.x1, rect.y1 ), Vec2f( rect.x2 * ( NormalizedHitPoint( ) * 2 - 1 ), rect.y2 ) ) );
-        gl::popModelView( );*/
+
     }
     int EnemyBase::Hit( cinder::CameraPersp const& camera, float length, int scoreRate, float value )
     {
         int drainMP = 0;
 
-        if ( length <= 1.0F )
+        if ( IsMuteki( ) )
+        {
+            //status.HP = std::max( status.HP - 1.0F * value, 0.0F );
+            drainMP = 1;
+        }
+        else if ( length <= 0.2F )
+        {
+            status.HP = std::max( status.HP - 3.0F * value, 0.0F );
+            hitColor = ColorA( 1, 0.1, 0.1, hitColor.a );
+            drainMP = 7;
+        }
+        else if ( length <= 0.5F )
         {
             status.HP = std::max( status.HP - 2.5F * value, 0.0F );
             hitColor = ColorA( 1, 0.2, 0.2, hitColor.a );
+            drainMP = 5;
+        }
+        else if ( length <= 1.0F )
+        {
+            status.HP = std::max( status.HP - 1.5F * value, 0.0F );
+            hitColor = ColorA( 1, 0.3, 0.3, hitColor.a );
+            drainMP = 2;
+        }
 
-            // ƒXƒRƒA• 0.5F ~ 16.5F
-            drainMP = ( 1.1F - length ) * 10 * ( !IsMuteki( ) + 0.5F );
-
+        if ( drainMP != 0 )
+        {
             Vec2f vec = camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
 
             vec.x = randFloat( vec.x - 100, vec.x + 100 );
@@ -175,8 +180,6 @@ namespace User
             if ( !IsMuteki( ) ) mutekiFrame = maxMutekiFrame;
 
             EffectCreate( EffectScore( vec, drainMP * scoreRate ) );
-
-            DrawSlashGuardEffect( camera );
         }
 
         if ( !isLive ) hitColor = ColorA( 1, 0, 0, hitColor.a );
@@ -200,8 +203,6 @@ namespace User
         int drainMP = 2;
 
         EffectCreate( EffectScore( vec, drainMP * scoreRate ) );
-
-        DrawSlashGuardEffect( camera );
 
         return drainMP;
     }
@@ -249,7 +250,7 @@ namespace User
     bool EnemyBase::IsInTheScreen( cinder::CameraPersp const & camera )
     {
         Vec2f ScreenPosition = camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-        return Utl::Colli2D::rectPoint( Vec2f::zero( ) + Vec2f( 100, 100 ), env.getWindowSize( ) - Vec2f( 100, 100 ), ScreenPosition );
+        return Utl::Colli2D::rectPoint( Vec2f::zero( ), env.getWindowSize( ), ScreenPosition );
     }
     bool EnemyBase::IsInField( )
     {
@@ -363,20 +364,4 @@ namespace User
                                    EffectBase::Mode::CENTERCENTER
         ) );
     }
-    void EnemyBase::DrawSlashGuardEffect( cinder::CameraPersp const & camera )
-    {
-        if ( !IsAttackMotion( ) ) return;
-
-        attackTime.AttackFrame( 0 );
-
-        EffectCreate( EffectBase( "Textures/Effect/guard3.png",
-                                  camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) ),
-                                  0.0F,
-                                  Vec2f( 480, 480 ),
-                                  Vec2f( 480, 480 ),
-                                  EffectBase::Mode::CENTERCENTER
-        ) );
-
-        guard_se->Play( );
-    }
-    }
+}

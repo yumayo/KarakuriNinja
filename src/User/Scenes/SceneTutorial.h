@@ -44,6 +44,7 @@ namespace User
         void endDrawUI( );
     private:
         void UpdateDamage( );
+        void UpdateCombo( );
         void UpdateNextStage( );
         void UpdateCamera( );
         void UpdateAllInstans( );

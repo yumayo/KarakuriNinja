@@ -13,12 +13,12 @@ namespace User
     using namespace cinder;
 
     EnemySlash::EnemySlash( cinder::Vec3f pos, const cinder::CameraPersp& camera )
-        : EnemyBase( pos, camera, Status( 8.0F, 3 ) )
+        : EnemyBase( pos, camera, Status( 12.f, 6 ) )
         , timer( )
         , isAttack( false )
         , prevMovePosition( Vec3f::zero( ) )
     {
-        timer.Advance( randInt( 200, 300 ) );
+        timer.Advance( randInt( 120, 180 ) );
 
         int index = 1;
         待機 = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );
@@ -118,11 +118,10 @@ namespace User
 
         if ( timer.IsAction( ) )
         {
-            timer.Advance( 60 ); // 攻撃モーションフレームを代入
-            attackTime.AttackFrame( 60 );
-            prevAttackHP = status.HP;
+            timer.Advance( 40 ); // 攻撃モーションフレームを代入
+            attackTime.AttackFrame( 40 );
             texture = 攻撃モーション画像;
-            SetFunction( &EnemySlash::攻撃モーション );
+			SetFunction(&EnemySlash::攻撃モーション);
             return;
         }
     }
@@ -133,14 +132,6 @@ namespace User
         {
             texture = 攻撃画像;
             SetFunction( &EnemySlash::攻撃 );
-            return;
-        }
-
-        if ( prevAttackHP != status.HP )
-        {
-            texture = 待機;
-            timer.Advance( 10 ); // 硬直10フレーム
-            SetFunction( &EnemySlash::攻撃後硬直 );
             return;
         }
     }
@@ -182,7 +173,7 @@ namespace User
             // スピードは0にします。滑っちゃうので。
             object.Speed( Vec3f::zero( ) );
             // 次の攻撃までのフレームを代入。
-            timer.Advance( randInt( 60, 240 ) );
+            timer.Advance(randInt(30, 60));
             SetFunction( &EnemySlash::タイマーが鳴るまで待機 );
             return;
         }
@@ -207,7 +198,7 @@ namespace User
         if ( timer.IsAction( ) )
         {
             // タイマーをセットしてまた待機状態にします。
-            timer.Advance( randInt( 60, 180 ) );
+            timer.Advance( randInt( 30, 60 ) );
             texture = 待機;
             SetFunction( &EnemySlash::タイマーが鳴るまで待機 );
         }
@@ -231,7 +222,7 @@ namespace User
         if ( timer.IsAction( ) )
         {
             // タイマーをセットしてまた待機状態にします。
-            timer.Advance( randInt( 60, 180 ) );
+            timer.Advance(randInt(30, 60));
             texture = 待機;
             SetFunction( &EnemySlash::タイマーが鳴るまで待機 );
         }

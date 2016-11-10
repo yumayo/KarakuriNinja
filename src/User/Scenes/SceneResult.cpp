@@ -352,7 +352,7 @@ namespace User
     void SceneResult::drawBeginScore( )
     {
         float rate = 1.17f;
-        float time = 0.3f;
+        float time = 0.6f;
         if ( t_[TS::TABLE] < 1.0f )return;
         soundplay( taiko1, s_end[SPE::E_SCORE] );
         Easing::tCount( t_[TS::SCORE], time );
@@ -388,7 +388,7 @@ namespace User
 
         if ( t_[TS::LASTSCORE] < 1.0f )return;
         soundplay( taiko2, s_end[SPE::E_RANKING] );
-        Easing::tCount( t_[TS::RANKING], 1.5f );
+        Easing::tCount( t_[TS::RANKING], 2.5f );
         Vec2f rankingpos = Vec2f( scorepos.x, scorepos.y + TABLEFONTSIZE*rate * 5 );
         tables.Draw( std::to_string( ranking ) + u8"ˆÊ/" + std::to_string( datanum ) + u8"l", rankingpos, ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
     }
@@ -532,17 +532,17 @@ namespace User
             float beginpos = -icons[0].size.y*1.15f * ( float( icons.size( ) ) + 0.5f );
             float endpos = 0;
             if ( t_[TS::RANKING] < 1 )return;
-            Easing::tCount( camera_t, 2.5f );
+            Easing::tCount( camera_t, 4.5f );
             iconcamera = Easing::getEasing[Easing::QuintInOut]( camera_t, beginpos, endpos );
         }
         else {
             float beginpos = -icons[0].size.y*1.15f * ( float( icons.size( ) ) + 0.5f );
             float endpos = -myrankpos_ + env.getWindowHeight( ) / 2;
             if ( t_[TS::RANKING] < 1 )return;
-            Easing::tCount( camera_t, 1.5f );
+            Easing::tCount( camera_t, 2.5f );
             iconcamera = Easing::getEasing[Easing::CubicInOut]( camera_t, beginpos, endpos );
             if ( ( camera_t >= 1.0f ) && ( delay_t < 1.0f ) ) {
-                Easing::tCount( move_t, 0.5f );
+                Easing::tCount( move_t, 1.0f );
                 if ( move_t >= 1.0f )
                     Easing::tCount( delay_t, 1.0f );
             }
@@ -550,7 +550,7 @@ namespace User
                 beginpos = -myrankpos_ + env.getWindowHeight( ) / 2;
                 endpos = 0;
                 iconcamera = Easing::getEasing[Easing::CubicInOut]( myrank_camera_t, beginpos, endpos );
-                Easing::tCount( myrank_camera_t, 1.0f );
+                Easing::tCount( myrank_camera_t, 2.0f );
             }
         }
     }
