@@ -6,6 +6,8 @@
 
 # include "cinder/app/App.h"
 
+# include "cinder/gl/TextureFont.h"
+
 namespace User
 {
     using namespace cinder;
@@ -401,6 +403,19 @@ namespace User
         }
     }
 
+    Rectf Fonts::BoundingBox( std::string const & string )
+    {
+        // cinder/gl/gl.cpp‚æ‚è
+
+        if ( string.empty( ) ) return Rectf( );
+
+        float baselineOffset;
+
+        gl::Texture tex( renderString( string, font, Color::white( ), &baselineOffset ) );
+
+        return Rectf( 0, 0, tex.getWidth( ), tex.getHeight( ) - baselineOffset );
+    }
+
     Timer::Timer( )
         : frame( 0 )
         , elapseFrame( randInt( 60, 120 ) )
@@ -421,14 +436,18 @@ namespace User
     {
         return isCount && isActive;
     }
+    bool Timer::IsActionOnePrevFrame( )
+    {
+        return elapseFrame == frame + 1 && isActive;
+    }
     bool Timer::IsAction( )
     {
-        return elapseFrame < frame && isActive;
+        return elapseFrame == frame && isActive;
     }
     void Timer::Update( )
     {
-        frame += static_cast<int>( isActive );
-        isCount = !( elapseFrame < frame - 1 );
+        frame = std::min( frame + static_cast<int>( isActive ), elapseFrame );
+        isCount = !( elapseFrame != frame );
     }
     void Timer::Advance( )
     {

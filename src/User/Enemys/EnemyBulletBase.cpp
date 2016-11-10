@@ -44,11 +44,18 @@ namespace User
         gl::pushModelView( );
         gl::translate( object.Position( ) );
         gl::multModelView( object.Quaternion( ).toMatrix44( ) );
-        gl::drawCube( Vec3f::zero( ), object.Size( ) );
+
+        gl::pushModelView( );
+        gl::rotate( Vec3f( 0, 180, 180 ) );
+        gl::color( Color::white( ) );
+        gl::drawSolidRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
+        gl::popModelView( );
+
     #ifdef _DEBUG
         gl::color( Color::white( ) );
-        gl::drawStrokedCube( Vec3f::zero( ), object.Size( ) );
+        gl::drawStrokedRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
     #endif // _DEBUG
+
         gl::popModelView( );
     }
 

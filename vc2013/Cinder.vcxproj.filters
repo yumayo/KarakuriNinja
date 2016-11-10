@@ -67,6 +67,12 @@
     <Filter Include="User\ZKOO">
       <UniqueIdentifier>{5f9e654a-3936-4371-af76-966dd74fce80}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Asset\JSON">
+      <UniqueIdentifier>{ec5fd3b4-9223-41b8-a0ef-1d8378853f0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Asset\JSON\Tutorial">
+      <UniqueIdentifier>{056c1d37-8809-41fd-91ba-e9f8203a41c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -185,9 +191,6 @@
     </ClInclude>
     <ClInclude Include="..\src\User\Utilitys\Yumayo.h">
       <Filter>User\Utilitys</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\User\Field\KarakuriBase.h">
-      <Filter>User\Field</Filter>
     </ClInclude>
     <ClInclude Include="..\src\User\Utilitys\Hirasawa.h">
       <Filter>User\Utilitys</Filter>
@@ -315,6 +318,39 @@
     <ClInclude Include="..\src\User\Scenes\SceneTutorial.h">
       <Filter>User\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\TutorialData.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\TutorialData.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\ObjRender.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\Skydome.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Field\KarakuriMeshObj.h">
+      <Filter>User\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Field\KarakuriActor.h">
+      <Filter>User\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Field\KarakuriRectObj.h">
+      <Filter>User\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\GlobalEditor.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\GlobalDraw.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Enemys\EnemyTutorial.h">
+      <Filter>User\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Interfaces\Talk.h">
+      <Filter>User\Interfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -426,9 +462,6 @@
     <ClCompile Include="..\src\User\Utilitys\Yumayo.cpp">
       <Filter>User\Utilitys</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\User\Field\KarakuriBase.cpp">
-      <Filter>User\Field</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\User\Utilitys\Hirasawa.cpp">
       <Filter>User\Utilitys</Filter>
     </ClCompile>
@@ -528,22 +561,73 @@
     <ClCompile Include="..\src\User\Scenes\SceneTutorial.cpp">
       <Filter>User\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\TutorialData.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\ObjRender.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\Skydome.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Field\KarakuriMeshObj.cpp">
+      <Filter>User\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Field\KarakuriActor.cpp">
+      <Filter>User\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Field\KarakuriRectObj.cpp">
+      <Filter>User\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\GlobalEditor.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\GlobalDraw.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Enemys\EnemyTutorial.cpp">
+      <Filter>User\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Interfaces\Talk.cpp">
+      <Filter>User\Interfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\assets\Field1.json">
-      <Filter>Asset</Filter>
+    <None Include="..\assets\JSON\TutorialField.json">
+      <Filter>Asset\JSON</Filter>
     </None>
-    <None Include="..\assets\Field2.json">
-      <Filter>Asset</Filter>
+    <None Include="..\assets\JSON\Field1.json">
+      <Filter>Asset\JSON</Filter>
     </None>
-    <None Include="..\assets\Field3.json">
-      <Filter>Asset</Filter>
+    <None Include="..\assets\JSON\Field2.json">
+      <Filter>Asset\JSON</Filter>
     </None>
-    <None Include="..\assets\Field4.json">
-      <Filter>Asset</Filter>
+    <None Include="..\assets\JSON\Field3.json">
+      <Filter>Asset\JSON</Filter>
     </None>
-    <None Include="..\assets\Field5.json">
-      <Filter>Asset</Filter>
+    <None Include="..\assets\JSON\GameMainField.json">
+      <Filter>Asset\JSON</Filter>
+    </None>
+    <None Include="..\assets\JSON\Field0.json">
+      <Filter>Asset\JSON</Filter>
+    </None>
+    <None Include="..\assets\JSON\Tutorial\Spawn.json">
+      <Filter>Asset\JSON\Tutorial</Filter>
+    </None>
+    <None Include="..\assets\JSON\Tutorial\Special.json">
+      <Filter>Asset\JSON\Tutorial</Filter>
+    </None>
+    <None Include="..\assets\JSON\Tutorial\PlayerAttack.json">
+      <Filter>Asset\JSON\Tutorial</Filter>
+    </None>
+    <None Include="..\assets\JSON\Tutorial\Guard.json">
+      <Filter>Asset\JSON\Tutorial</Filter>
+    </None>
+    <None Include="..\assets\JSON\Tutorial\AttackCircle.json">
+      <Filter>Asset\JSON\Tutorial</Filter>
+    </None>
+    <None Include="..\assets\JSON\Tutorial\EnemyKill.json">
+      <Filter>Asset\JSON\Tutorial</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -21,8 +21,12 @@ namespace User
         void Draw( cinder::CameraPersp const& camera );
         void End( );
         bool IsChange( );
+        // ステージが動いているならtrueを返します。
+        bool IsMoveing( );
+        // もしステージを変えてもいいなら次のステージをインスタンス化します。
         void ChangeField( );
         bool IsLastField( );
+        // 現在のフィールド情報の入ったJSONファイルのパスを返します。
         std::string FieldDataPath( );
     private:
         void NextField( );

@@ -5,7 +5,7 @@
 # include <memory>
 
 # include "cinder/gl/Texture.h"
-
+#include"../Utilitys/Hirasawa.h"
 namespace User
 {
     // Effect‚Í‰æ‘œ‚Ì¶ã‚ğŠî“_‚Æ‚µ‚Ä•\¦‚³‚ê‚Ü‚·B
@@ -23,12 +23,14 @@ namespace User
         int speed;
         cinder::Vec2f position;
         cinder::Vec2f cutSize;
+        cinder::Vec2f size_;
         int maxIndex;
         Mode mode;
+        bool alfamode;
     private:
         bool isActive;
     public:
-        EffectBase( std::string const& path, cinder::Vec2f position, cinder::Vec2f cutSize, Mode mode = Mode::LEFTUP );
+        EffectBase( std::string const& path, cinder::Vec2f position, cinder::Vec2f size, cinder::Vec2f cutSize, Mode mode = Mode::LEFTUP, bool alfa_m = false );
     public:
         virtual void Update( ) override;
         virtual void Draw( cinder::CameraPersp const& camera ) override;

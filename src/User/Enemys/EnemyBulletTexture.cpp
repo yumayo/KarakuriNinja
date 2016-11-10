@@ -27,17 +27,20 @@ namespace User
         gl::pushModelView( );
         gl::translate( object.Position( ) );
         gl::multModelView( object.Quaternion( ).toMatrix44( ) );
-        texture->bind( );
+
         gl::pushModelView( );
-        gl::rotate( Vec3f( 0, 0, 180 ) );
+        gl::rotate( Vec3f( 0, 180, 180 ) );
         gl::color( Color::white( ) );
-        gl::drawCube( Vec3f::zero( ), object.Size( ) );
-        gl::popModelView( );
+        texture->bind( );
+        gl::drawSolidRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
         texture->unbind( );
+        gl::popModelView( );
+
     #ifdef _DEBUG
         gl::color( Color::white( ) );
-        gl::drawStrokedCube( Vec3f::zero( ), object.Size( ) );
+        gl::drawStrokedRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
     #endif // _DEBUG
+
         gl::popModelView( );
     }
 }

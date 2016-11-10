@@ -132,11 +132,15 @@
     <ClCompile Include="..\src\User\Enemys\EnemyManager.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyObject.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemySlash.cpp" />
+    <ClCompile Include="..\src\User\Enemys\EnemyTutorial.cpp" />
     <ClCompile Include="..\src\User\Field\Field.cpp" />
     <ClCompile Include="..\src\User\Field\FieldManager.cpp" />
+    <ClCompile Include="..\src\User\Field\KarakuriActor.cpp" />
+    <ClCompile Include="..\src\User\Field\KarakuriMeshObj.cpp" />
     <ClCompile Include="..\src\User\Field\KarakuriObject.cpp" />
-    <ClCompile Include="..\src\User\Field\KarakuriBase.cpp" />
+    <ClCompile Include="..\src\User\Field\KarakuriRectObj.cpp" />
     <ClCompile Include="..\src\User\Interfaces\Interface.cpp" />
+    <ClCompile Include="..\src\User\Interfaces\Talk.cpp" />
     <ClCompile Include="..\src\User\Networks\NetworkUDPP2PRecv.cpp" />
     <ClCompile Include="..\src\User\Networks\NetworkUDPP2PSend.cpp" />
     <ClCompile Include="..\src\User\Player\Player.cpp" />
@@ -167,9 +171,14 @@
     <ClCompile Include="..\src\User\Utilitys\FileIO.cpp" />
     <ClCompile Include="..\src\User\Utilitys\fileUtil.cpp" />
     <ClCompile Include="..\src\User\Utilitys\GlobalData.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\GlobalDraw.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\GlobalEditor.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Hirasawa.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Nomoto.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\ObjRender.cpp" />
     <ClCompile Include="..\src\User\Utilitys\SearchSystem.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\Skydome.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\TutorialData.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Yumayo.cpp" />
     <ClCompile Include="..\src\User\ZKOO\InputZKOO.cpp" />
     <ClCompile Include="..\src\User\ZKOO\ZKOO.cpp" />
@@ -181,6 +190,7 @@
     <ClInclude Include="..\include\GlobalData.hpp" />
     <ClInclude Include="..\include\Resources.h" />
     <ClInclude Include="..\include\Scene.hpp" />
+    <ClInclude Include="..\include\TutorialData.hpp" />
     <ClInclude Include="..\include\Utilitys.hpp" />
     <ClInclude Include="..\include\ZKOO.hpp" />
     <ClInclude Include="..\src\Cinder.h" />
@@ -208,11 +218,15 @@
     <ClInclude Include="..\src\User\Enemys\EnemyManager.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyObject.h" />
     <ClInclude Include="..\src\User\Enemys\EnemySlash.h" />
+    <ClInclude Include="..\src\User\Enemys\EnemyTutorial.h" />
     <ClInclude Include="..\src\User\Field\Field.h" />
     <ClInclude Include="..\src\User\Field\FieldManager.h" />
+    <ClInclude Include="..\src\User\Field\KarakuriActor.h" />
+    <ClInclude Include="..\src\User\Field\KarakuriMeshObj.h" />
     <ClInclude Include="..\src\User\Field\KarakuriObject.h" />
-    <ClInclude Include="..\src\User\Field\KarakuriBase.h" />
+    <ClInclude Include="..\src\User\Field\KarakuriRectObj.h" />
     <ClInclude Include="..\src\User\Interfaces\Interface.h" />
+    <ClInclude Include="..\src\User\Interfaces\Talk.h" />
     <ClInclude Include="..\src\User\Networks\Network.h" />
     <ClInclude Include="..\src\User\Networks\NetworkDefines.h" />
     <ClInclude Include="..\src\User\Networks\UnionChar.h" />
@@ -250,9 +264,14 @@
     <ClInclude Include="..\src\User\Utilitys\FileIO.h" />
     <ClInclude Include="..\src\User\Utilitys\fileUtil.hpp" />
     <ClInclude Include="..\src\User\Utilitys\GlobalData.h" />
+    <ClInclude Include="..\src\User\Utilitys\GlobalDraw.h" />
+    <ClInclude Include="..\src\User\Utilitys\GlobalEditor.h" />
     <ClInclude Include="..\src\User\Utilitys\Hirasawa.h" />
     <ClInclude Include="..\src\User\Utilitys\Nomoto.h" />
+    <ClInclude Include="..\src\User\Utilitys\ObjRender.h" />
     <ClInclude Include="..\src\User\Utilitys\SearchSystem.h" />
+    <ClInclude Include="..\src\User\Utilitys\Skydome.h" />
+    <ClInclude Include="..\src\User\Utilitys\TutorialData.h" />
     <ClInclude Include="..\src\User\Utilitys\Yumayo.h" />
     <ClInclude Include="..\src\User\ZKOO\InputZKOO.h" />
     <ClInclude Include="..\src\User\ZKOO\ZKOO.h" />
@@ -260,11 +279,18 @@
     <ClInclude Include="..\src\User\ZKOO\ZKOOMaker.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\assets\Field1.json" />
-    <None Include="..\assets\Field2.json" />
-    <None Include="..\assets\Field3.json" />
-    <None Include="..\assets\Field4.json" />
-    <None Include="..\assets\Field5.json" />
+    <None Include="..\assets\JSON\Field0.json" />
+    <None Include="..\assets\JSON\Field1.json" />
+    <None Include="..\assets\JSON\Field2.json" />
+    <None Include="..\assets\JSON\Field3.json" />
+    <None Include="..\assets\JSON\GameMainField.json" />
+    <None Include="..\assets\JSON\TutorialField.json" />
+    <None Include="..\assets\JSON\Tutorial\AttackCircle.json" />
+    <None Include="..\assets\JSON\Tutorial\EnemyKill.json" />
+    <None Include="..\assets\JSON\Tutorial\Guard.json" />
+    <None Include="..\assets\JSON\Tutorial\PlayerAttack.json" />
+    <None Include="..\assets\JSON\Tutorial\Special.json" />
+    <None Include="..\assets\JSON\Tutorial\Spawn.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

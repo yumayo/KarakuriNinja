@@ -5,6 +5,8 @@
 # include "cinder/Rand.h"
 
 # include "GlobalData.hpp"
+# include "../Utilitys/GlobalEditor.h"
+# include "../Utilitys/GlobalDraw.h"
 
 namespace User
 {
@@ -13,11 +15,11 @@ namespace User
     SceneGame::SceneGame( )
     {
         // ユーマヨが管理するものを作成。
-        cameraEyePosition = Vec3f( 0, 0.7, -5 );
-        camera.lookAt( cameraEyePosition, Vec3f( 0, 0.7, 0 ) );
+        cameraEyePosition = Vec3f( 0, 1.0, -5 );
+        camera.lookAt( cameraEyePosition, Vec3f( 0, 1.0, 0 ) );
         camera.setWorldUp( Vec3f( 0, 1, 0 ) );
         camera.setPerspective( 60.0F, env.getWindowAspectRatio( ), 1.0F, 100.0F );
-        fieldManager = std::make_shared<FieldManager>( "GameMainField.json" );
+        fieldManager = std::make_shared<FieldManager>( "JSON/GameMainField.json" );
         enemyManager = std::make_shared<EnemyManager>( camera, fieldManager->FieldDataPath( ) );
         enemyBulletManager = std::make_shared<EnemyBulletManager>( );
         effectManager = std::make_shared<EffectManager>( );
@@ -31,9 +33,7 @@ namespace User
 
         // 大ちゃんが管理するものを作成。
         mainbgm.push_back( &GData::FindAudio( "BGM/mainbgm0.wav" ) );
-        mainbgm[0]->Looping( true );
-        mainbgm[0]->Gain( 0.4 );
-        mainbgm[0]->Play( );
+
     }
     SceneGame::~SceneGame( )
     {
@@ -137,6 +137,7 @@ namespace User
             enemyBulletManager->BulletRegister( enemyManager->BulletsRecovery( ) );
             enemyBulletManager->update( );
             effectManager->EffectRegister( enemyManager->EffectRecovery( ) );
+            effectManager->EffectRegister( enemyBulletManager->EffectRecovery( ) );
             effectManager->Update( );
             UpdatePlayer( );
             UpdateColor( );
@@ -221,9 +222,10 @@ namespace User
     #endif // _DEBUG
 
         fieldManager->Draw( camera );
-
         enemyManager->draw( camera );
-        enemyBulletManager->draw( );
+        enemyBulletManager->draw( camera );
+
+        GlobalDraw::Draw( );
     }
     void SceneGame::endDrawMain( )
     {
@@ -269,6 +271,8 @@ namespace User
 
         gl::color( damageColor );
         gl::drawSolidRect( Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
+
+        GlobalEditor::editor->draw( );
     }
     void SceneGame::endDrawUI( )
     {

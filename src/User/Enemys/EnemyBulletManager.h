@@ -5,7 +5,7 @@
 #include <functional>
 
 #include "EnemyBulletBase.h"
-
+#include "../Effect/EffectManager.h"
 #include "cinder/Camera.h"
 #include "../Utilitys/Nomoto.h"
 #include"../Utilitys/Audio.h"
@@ -23,10 +23,11 @@ namespace User
         Audio* adddamage;
     private:
         EnemyBulletList bulletList;
+        EffectList effectList;
     public:
         EnemyBulletManager( );
         void update( );
-        void draw( );
+        void draw( cinder::CameraPersp const& camera );
     public:
         void BulletRegister( EnemyBulletList& bulletList );
         // 弾全てと線分が当たっているかの判定
@@ -41,13 +42,22 @@ namespace User
         int ScoreRecovery( ) { auto temp = score; score = 0; return temp; }
         // 弾が当たる場所を描画します。
         void DrawBulletCircle( cinder::CameraPersp const & camera );
+        EffectList EffectRecovery( );
     public:
         // 弾の当たり判定域を描画します。（デバッグ用）
         void DrawCollisionCircle( cinder::CameraPersp const& camera );
     private:
         void Each( std::function<void( EnemyBulletBaseRef& )> func );
         void BulletEraser( );
+        template <class Ty>
+        void EffectCreate( Ty const& instans );
     };
 
     using EnemyBulletManagerRef = std::shared_ptr<EnemyBulletManager>;
+
+    template<class Ty>
+    inline void EnemyBulletManager::EffectCreate( Ty const & instans )
+    {
+        effectList.emplace_back( std::make_shared<Ty>( Ty( instans ) ) );
+    }
 }

@@ -124,6 +124,7 @@ namespace User
         Fonts( std::string const& path = u8"メイリオ", float size = 24.0F );
         void SetFont( std::string const& path = u8"メイリオ", float size = 24.0F );
         void Draw( std::string const& string, cinder::Vec2f position, cinder::ColorA color = cinder::ColorA::white( ), Mode mode = Mode::LEFTUP );
+        cinder::Rectf BoundingBox( std::string const& string );
     };
 
     class Timer
@@ -139,6 +140,7 @@ namespace User
         void Update( );
     public:
         bool IsCount( );
+        bool IsActionOnePrevFrame( );
         bool IsAction( );
     public:
         void Advance( );

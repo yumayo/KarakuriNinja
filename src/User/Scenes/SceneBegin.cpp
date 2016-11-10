@@ -1,6 +1,7 @@
 # include "SceneBegin.h"
 
 # include "GlobalData.hpp"
+# include "../Utilitys/GlobalEditor.h"
 # include "SceneTitle.h"
 
 using namespace cinder;
@@ -8,11 +9,12 @@ using namespace cinder;
 namespace User
 {
     SceneBegin::SceneBegin( )
-        : nowLoading( loadImage( app::loadAsset( "load.png" ) ) )
-        , loadBar( loadImage( app::loadAsset( "Textures/spgage.png" ) ) )
-        , kuriko( loadImage( app::loadAsset( "Textures/backninja.png" ) ) )
+        : nowLoading( loadImage( app::loadAsset( "TEXTURE/load.png" ) ) )
+        , loadBar( loadImage( app::loadAsset( "TEXTURE/Textures/spgage.png" ) ) )
+        , kuriko( loadImage( app::loadAsset( "TEXTURE/Textures/backninja.png" ) ) )
         , font( u8"ÉÅÉCÉäÉI", 32 )
     {
+        GlobalEditor::editor = params::InterfaceGl::create( "Edit Parameter", Vec2i( 400, 600 ) );
         timer.Advance( 0 );
         timer.Off( );
     }

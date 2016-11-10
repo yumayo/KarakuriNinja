@@ -9,6 +9,9 @@
 #include "../Utilitys/Nomoto.h"
 #include"../Utilitys/Audio.h"
 
+#include "cinder/ObjLoader.h"        // OBJ形式を読み込む
+#include "cinder/TriMesh.h"          // 三角ポリゴンの集合体
+
 namespace User
 {
     using EnemyBaseRef = std::shared_ptr<EnemyBase>;
@@ -42,13 +45,17 @@ namespace User
         // エネミーが一体でも攻撃していたら true になります。
         bool IsAttack( const cinder::CameraPersp& camera );
         // プレイヤーからエネミーへのダメージラインとの当たり判定も込み
-        int PlayerToEnemyDamage( Line& line_, const cinder::CameraPersp& camera );
+        int PlayerToEnemyDamage( Line& line_, const cinder::CameraPersp& camera, float value = 1.0F );
+        // プレイヤーからの攻撃が何体のエネミーに当たったのかを判定します。
+        int PlayerToEnemyAttackCheck( Line& line_, const cinder::CameraPersp& camera );
         // プレイヤーの必殺技をエネミーへと与えます。
         int PlayerSpecialAttackToEnemyDamage( int damage );
         // エネミーからプレイヤーへの攻撃（直接ダメージを通します）
         int EnemyToPlayerDamage( const cinder::CameraPersp& camera );
         // エネミーからプレイヤーへの攻撃（プレイヤーがガードをしている時の判定に使います）
         int EnemyToPlayerDamage( Line& line_, const cinder::CameraPersp& camera );
+        // エネミーからプレイヤーへの攻撃を防いでいるかの判定をします。(主にチュートリアルに使います)
+        bool EnemyToPlayerGuardCheck( Line& line_, const cinder::CameraPersp& camera );
         // エネミーがいないかどうか
         bool IsEmpty( );
         // スコアを回収します。回収したら、中身はクリアします。
@@ -59,6 +66,8 @@ namespace User
         EnemyBulletList BulletsRecovery( );
         // エフェクトを全て回収します。この関数を呼ぶとこのクラスが持っているエフェクトを全てクリアします。
         EffectList EffectRecovery( );
+        template <class Ty>
+        void EffectCreate( Ty const& instans );
     public:
         // エネミーの当たり判定域を描画します。(デバッグ用)
         void DrawCollisionCircle( cinder::CameraPersp const& camera );
@@ -69,8 +78,10 @@ namespace User
         void EnemyEraser( );
         // 各エネミーの弾を回収します。
         void EnemyBulletsRecovery( );
-		
+
         void EnemyEffectsRecovery( );
+    private:
+        bool IsDamage( Line line_, cinder::Vec2f pos_, float size_ );
     };
 
     using EnemyManagerRef = std::shared_ptr<EnemyManager>;
@@ -85,5 +96,11 @@ namespace User
     inline void EnemyManager::Create( cinder::Vec3f position, const cinder::CameraPersp& camera, std::string const& fieldName )
     {
         enemyList.emplace_back( std::make_shared<Ty>( position, camera, fieldName ) );
+    }
+
+    template<class Ty>
+    inline void EnemyManager::EffectCreate( Ty const & instans )
+    {
+        effectList.emplace_back( std::make_shared<Ty>( Ty( instans ) ) );
     }
 }

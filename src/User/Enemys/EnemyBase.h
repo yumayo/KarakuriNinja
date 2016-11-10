@@ -41,6 +41,7 @@ namespace User
             }
         }
         bool IsAttackMotion( ) { return isAttackMotion; }
+        bool IsAttackOneFramePrev( ) { return maxAttackFrame == attackFrame + 1; }
         float NormalizedAttackFrame( ) { return static_cast<float>( attackFrame ) / maxAttackFrame; }
     };
 
@@ -86,11 +87,13 @@ namespace User
         bool IsLive( ) { return isLive; }
         cinder::Color HitColor( ) { return hitColor; }
         float NormalizedHitPoint( ) { return HP / maxHP; }
+    public:
         bool IsAttackMotion( ) { return attackTime.IsAttackMotion( ); }
+        bool IsAttackOneFramePrev( ) { return attackTime.IsAttackOneFramePrev( ); }
         float NormalizedAttackFrame( ) { return attackTime.NormalizedAttackFrame( ); }
     public:
         // ˆø” : ‚ ‚½‚Á‚½‚Ì’†S‚©‚ç‚Ì‹——£(³‹K‰»Ï‚İ) : 0.0 ~ 1.0(”¼Œa)
-        int Hit( float length );
+        int Hit( float length, float value = 1.0F );
         // ‹­§“I‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚éŠÖ”
         int Damage( int damage );
         // “G‚ğ‹­§“I‚ÉE‚·ŠÖ”

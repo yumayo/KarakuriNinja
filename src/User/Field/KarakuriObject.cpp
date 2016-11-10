@@ -17,13 +17,14 @@ namespace User
     using namespace cinder;
 
     KarakuriObject::KarakuriObject( cinder::JsonTree const & params )
-        : begin( getVec3f( params["begin"] ) )
+        : beginCount( params.getValueForKey<int>( "beginCount" ) )
+        , moveCount( params.getValueForKey<int>( "moveCount" ) == 0 ? 1 : params.getValueForKey<int>( "moveCount" ) )
+        , begin( getVec3f( params["begin"] ) )
         , end( getVec3f( params["end"] ) )
         , position( begin )
-        , beginCount( params.getValueForKey<float>( "beginCount" ) )
-        , moveCount( params.getValueForKey<float>( "moveCount" ) )
-        , size( getVec3f( params["size"] ) )
-        , texture( &GData::FindTexture( params.getValueForKey<std::string>( "path" ) ) )
+        , scale( getVec3f( params["scale"] ) )
+        , rotate( getVec3f( params["rotate"] ) )
+        , texture( &GData::FindTexture( params.getValueForKey<std::string>( "texture" ) ) )
     {
 
     }

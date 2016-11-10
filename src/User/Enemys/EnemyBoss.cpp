@@ -15,7 +15,7 @@ namespace User
     using namespace cinder;
 
     EnemyBoss::EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera )
-        : EnemyBase( pos, 2.5F, 30.0F, 5, camera, "EnemyBoss.png" )
+        : EnemyBase( pos, 1.5F, 30.0F, 5, camera, "EnemyBoss.png" )
         , timer( )
         , isAttack( false )
         , isDeadStop( true )
@@ -46,7 +46,7 @@ namespace User
             behavior( camera );
             // タイマー処理
             timer.Update( );
-            
+
         }
 
         // 以下 EnemyBaseUpdate
@@ -60,6 +60,7 @@ namespace User
             attackTime.Update( );
         }
         CollideGround( ); // 死んでいても実行します。
+        //CollideField( );// 死んでいても実行します。
         if ( isDeadStop == false ) // ここで、死ぬと判断されることを遅らせています。
             Dying( );
 
@@ -139,7 +140,7 @@ namespace User
     }
     void EnemyBoss::左右に高速移動しながらカメラへ近づく( cinder::CameraPersp const& camera )
     {
-        if ( !IsInField( ) )
+        if ( !IsInTheScreen( camera ) )
         {
             moveLeftRightSpeed *= -1;
             object.PositionAdd( moveLeftRightSpeed );
@@ -215,7 +216,7 @@ namespace User
     }
     void EnemyBoss::弾を投げる( cinder::CameraPersp const & camera )
     {
-        RandomWavyBulletFiring( camera );
+        WavyBulletFiring( randFloat( 0, M_PI * 2 ), camera );
         for ( int i = 0; i < 3; i++ )
         {
             se[i]->Play( );

@@ -12,7 +12,7 @@ namespace User
     using namespace cinder;
 
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera )
-        : object( pos, Vec3f( 0.5, 0.8, 0.01 ), Vec3f::zero( ) )
+        : object( pos, Vec3f( 1.7, 1.7, 0.01 ), Vec3f::zero( ) )
         , maxHP( 5.0F )
         , HP( maxHP )
         , hitColor( Color::white( ) )
@@ -21,13 +21,17 @@ namespace User
         , attackPoint( 3 )
         , deadTime( 60 )
     {
-        auto cameraEyePos = camera.getEyePoint( );
-        cameraEyePos.y = object.Position( ).y;
-        object.Direction( cameraEyePos - object.Position( ) );
+        update( camera );
         initObject = object;
+        EffectCreate( EffectBase( "Textures/Effect/kemuri2.png",
+                                  camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) ),
+                                  Vec2f( 240, 240 ),
+                                  Vec2f( 300, 400 ),
+                                  EffectBase::Mode::CENTERCENTER, true
+        ) );
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, float sizeScale )
-        : object( pos, Vec3f( 0.5 * sizeScale, 0.8 * sizeScale, 0.01 ), Vec3f::zero( ) )
+        : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
         , maxHP( 5.0F )
         , HP( maxHP )
         , hitColor( Color::white( ) )
@@ -36,13 +40,17 @@ namespace User
         , attackPoint( 3 )
         , deadTime( 60 )
     {
-        auto cameraEyePos = camera.getEyePoint( );
-        cameraEyePos.y = object.Position( ).y;
-        object.Direction( cameraEyePos - object.Position( ) );
+        update( camera );
         initObject = object;
+        EffectCreate( EffectBase( "Textures/Effect/kemuri2.png",
+                                  camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) ),
+                                  Vec2f( 240, 240 ),
+                                  Vec2f( 300, 400 ),
+                                  EffectBase::Mode::CENTERCENTER, true
+        ) );
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, std::string const & path )
-        : object( pos, Vec3f( 0.5, 0.8, 0.01 ), Vec3f::zero( ) )
+        : object( pos, Vec3f( 1.7, 1.7, 0.01 ), Vec3f::zero( ) )
         , texture( &GData::FindTexture( path ) )
         , maxHP( 5.0F )
         , HP( maxHP )
@@ -52,13 +60,17 @@ namespace User
         , attackPoint( 3 )
         , deadTime( 60 )
     {
-        auto cameraEyePos = camera.getEyePoint( );
-        cameraEyePos.y = object.Position( ).y;
-        object.Direction( cameraEyePos - object.Position( ) );
+        update( camera );
         initObject = object;
+        EffectCreate( EffectBase( "Textures/Effect/kemuri2.png",
+                                  camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) ),
+                                  Vec2f( 240, 240 ),
+                                  Vec2f( 300, 400 ),
+                                  EffectBase::Mode::CENTERCENTER, true
+        ) );
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, float sizeScale, const cinder::CameraPersp & camera, std::string const & path )
-        : object( pos, Vec3f( 0.5 * sizeScale, 0.8 * sizeScale, 0.01 ), Vec3f::zero( ) )
+        : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
         , texture( &GData::FindTexture( path ) )
         , maxHP( 5.0F )
         , HP( maxHP )
@@ -68,12 +80,17 @@ namespace User
         , attackPoint( 3 )
         , deadTime( 60 )
     {
-        CameraSee( camera );
-
+        update( camera );
         initObject = object;
+        EffectCreate( EffectBase( "Textures/Effect/kemuri2.png",
+                                  camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) ),
+                                  Vec2f( 240, 240 ),
+                                  Vec2f( 300, 400 ),
+                                  EffectBase::Mode::CENTERCENTER, true
+        ) );
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, float sizeScale, float HP, int attackPoint, const cinder::CameraPersp & camera, std::string const & path )
-        : object( pos, Vec3f( 0.5 * sizeScale, 0.8 * sizeScale, 0.01 ), Vec3f::zero( ) )
+        : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
         , texture( &GData::FindTexture( path ) )
         , maxHP( HP )
         , HP( maxHP )
@@ -83,9 +100,14 @@ namespace User
         , attackPoint( attackPoint )
         , deadTime( 60 )
     {
-        CameraSee( camera );
-
+        update( camera );
         initObject = object;
+        EffectCreate( EffectBase( "Textures/Effect/kemuri2.png",
+                                  camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) ),
+                                  Vec2f( 240, 240 ),
+                                  Vec2f( 300, 400 ),
+                                  EffectBase::Mode::CENTERCENTER, true
+        ) );
     }
     void EnemyBase::update( cinder::CameraPersp const& camera )
     {
@@ -117,13 +139,13 @@ namespace User
         gl::translate( object.Position( ) );
         gl::multModelView( object.Quaternion( ).toMatrix44( ) );
 
-        texture->bind( );
         gl::pushModelView( );
-        gl::rotate( Vec3f( 0, 0, 180 ) );
+        gl::rotate( Vec3f( 0, 180, 180 ) );
         gl::color( HitColor( ) );
-        gl::drawCube( Vec3f::zero( ), object.Size( ) );
-        gl::popModelView( );
+        texture->bind( );
+        gl::drawSolidRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
         texture->unbind( );
+        gl::popModelView( );
 
     #ifdef _DEBUG
         gl::color( Color::white( ) );
@@ -131,28 +153,28 @@ namespace User
     #endif // _DEBUG
 
         gl::popModelView( );
-}
+    }
     void EnemyBase::drawUI( )
     {
         /*nothing*/
     }
-    int EnemyBase::Hit( float length )
+    int EnemyBase::Hit( float length, float value )
     {
         if ( length <= 0.2F )
         {
-            HP = std::max( HP - 3.0F, 0.0F );
+            HP = std::max( HP - 3.0F * value, 0.0F );
             hitColor = Color( 1, 0, 0 );
             return 7;
         }
         else if ( length <= 0.5F )
         {
-            HP = std::max( HP - 2.5F, 0.0F );
+            HP = std::max( HP - 2.5F * value, 0.0F );
             hitColor = Color( 1, 0.3, 0.3 );
             return 5;
         }
         else if ( length <= 1.0F )
         {
-            HP = std::max( HP - 1.5F, 0.0F );
+            HP = std::max( HP - 1.5F * value, 0.0F );
             hitColor = Color( 1, 0.6, 0.6 );
             return 2;
         }
@@ -167,7 +189,8 @@ namespace User
     }
     void EnemyBase::Kill( )
     {
-        Damage( HP );
+        HP = 0.0F;
+        hitColor = Color( 1, 0, 0 );
     }
     bool EnemyBase::IsActive( )
     {

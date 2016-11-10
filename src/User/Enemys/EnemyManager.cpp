@@ -4,6 +4,7 @@
 
 #include "cinder/Rand.h"
 
+#include "EnemyTutorial.h"
 #include "EnemySlash.h"
 #include "EnemyBullet.h"
 #include "EnemyBoss.h"
@@ -15,6 +16,8 @@
 
 #include "GlobalData.hpp"
 
+# include "../Utilitys/GlobalDraw.h"
+
 namespace User
 {
     using namespace cinder;
@@ -24,15 +27,19 @@ namespace User
 
         for ( auto& obj : params["Enemy"] )
         {
-            if ( obj.getValue( ) == "Bullet" )
+            if ( obj.getValue( ) == "Tutorial" )
+            {
+                Create<EnemyTutorial>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera, getFilenameNoExt( path ) );
+            }
+            else if ( obj.getValue( ) == "Bullet" )
             {
                 Create<EnemyBullet>( Vec3f( randFloat( -2.0F, 2.0F ), 2, randFloat( -2, 1 ) ), camera, getFilenameNoExt( path ) );
             }
-            if ( obj.getValue( ) == "Slash" )
+            else if ( obj.getValue( ) == "Slash" )
             {
                 Create<EnemySlash>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera, getFilenameNoExt( path ) );
             }
-            if ( obj.getValue( ) == "Boss" )
+            else if ( obj.getValue( ) == "Boss" )
             {
                 Create<EnemyBoss>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera );
             }
@@ -56,16 +63,9 @@ namespace User
 
     void EnemyManager::draw( cinder::CameraPersp const& camera )
     {
-        std::map<float, EnemyBaseRef> enemyMap;
-
         for ( auto itr = enemyList.begin( ); itr != enemyList.end( ); ++itr )
         {
-            enemyMap.insert( std::make_pair( camera.worldToEyeDepth( ( *itr )->Position( ) ), *itr ) );
-        }
-
-        for ( auto& obj : enemyMap )
-        {
-            obj.second->draw( );
+            GlobalDraw::InsertAlphaObject( std::make_pair( camera.worldToEyeDepth( ( *itr )->Position( ) ), std::bind( &EnemyBase::draw, *itr ) ) );
         }
     }
 
@@ -85,19 +85,40 @@ namespace User
         return isAttack;
     }
 
-    int EnemyManager::PlayerToEnemyDamage( Line& line_, const cinder::CameraPersp& camera )
+    int EnemyManager::PlayerToEnemyDamage( Line& line_, const cinder::CameraPersp& camera, float value )
     {
         int drainMp = 0;
-        Each( [ &drainMp, &line_, &camera, this ] ( EnemyBaseRef& enemyRef )
+        Each( [ &drainMp, &line_, &camera, &value, this ] ( EnemyBaseRef& enemyRef )
         {
             Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
             Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
             float radius = Vec3f( size - vec ).length( ) / 2.0F * playerAttackColliedSize;
-            drainMp += enemyRef->Hit( CheckDefLineOfCircle( line_, vec, radius ) );
+            drainMp += enemyRef->Hit( CheckDefLineOfCircle( line_, vec, radius ), value );
         } );
         if ( drainMp != 0 )adddamage->Play( );
         score += drainMp * 100;
         return drainMp;
+    }
+
+    int EnemyManager::PlayerToEnemyAttackCheck( Line & line_, const cinder::CameraPersp & camera )
+    {
+        std::vector<bool> success;
+        Each( [ &success, &line_, &camera, this ] ( EnemyBaseRef& enemyRef )
+        {
+            Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+            Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+            float radius = Vec3f( size - vec ).length( ) / 2.0F * enemyAttackColliedSize;
+
+            success.emplace_back( CheckDefLineOfCircle( line_, vec, radius ) < 1.0F );
+        } );
+
+        int successNum = 0;
+        for ( auto& obj : success )
+        {
+            successNum += static_cast<int>( obj );
+        }
+
+        return successNum;
     }
 
     int EnemyManager::PlayerSpecialAttackToEnemyDamage( int damage )
@@ -136,16 +157,50 @@ namespace User
                 Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
                 Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
                 float radius = Vec3f( size - vec ).length( ) / 2.0F * enemyAttackColliedSize;
-                if ( CheckDefLineOfCircle( line_, vec, radius ) > 1.0f ) {
+                if ( IsDamage( line_, vec, radius ) ) {
                     totalDamage += enemyRef->AttackPoint( );
                     playerdamaged_se->Play( );
                 }
                 else {
                     gurad_se->Play( );
+                    Vec2f enemypos = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+                    float a = ( line_.startPos.y - line_.endPos.y ) / ( line_.startPos.x - line_.endPos.x );
+                    float b = line_.startPos.y - a * line_.startPos.x;
+                    float pos_x = ( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 );
+                    float pos_y = a*( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 ) + b;
+                    EffectCreate( EffectBase( "Textures/Effect/guard3.png",
+                                              Vec2f( pos_x, pos_y ),
+                                              Vec2f( 240, 240 ),
+                                              Vec2f( 480, 480 ),
+                                              EffectBase::Mode::CENTERCENTER, true
+                    ) );
                 }
             }
         } );
         return totalDamage;
+    }
+
+    bool EnemyManager::EnemyToPlayerGuardCheck( Line & line_, const cinder::CameraPersp & camera )
+    {
+        std::vector<bool> success;
+        Each( [ &success, &line_, &camera, this ] ( EnemyBaseRef& enemyRef )
+        {
+            if ( !enemyRef->IsAttackMotion( ) ) return;
+
+            Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+            Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+            float radius = Vec3f( size - vec ).length( ) / 2.0F * enemyAttackColliedSize;
+
+            success.emplace_back( !IsDamage( line_, vec, radius ) );
+        } );
+
+        bool allSuccess = true;
+        for ( auto& obj : success )
+        {
+            allSuccess = allSuccess && obj;
+        }
+
+        return allSuccess;
     }
 
     void EnemyManager::DrawAttackCircle( cinder::CameraPersp const & camera )
@@ -233,5 +288,9 @@ namespace User
         {
             effectList.splice( effectList.end( ), enemyRef->EffectRecovery( ) );
         } );
+    }
+    bool EnemyManager::IsDamage( Line line_, cinder::Vec2f pos_, float size_ )
+    {
+        return 1.0F < CheckDefLineOfCircle( line_, pos_, size_ );
     }
 }

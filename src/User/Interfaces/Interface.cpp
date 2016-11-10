@@ -2,16 +2,18 @@
 #include "Framework.hpp"
 #include "cinder/ImageIo.h"
 
+#include "GlobalData.hpp"
+
 namespace User
 {
     using namespace cinder;
 
     Interface::Interface( )
-        : APEdge( loadImage( app::loadAsset( "UI/APEdge.png" ) ) )
-        , HPEdge( loadImage( app::loadAsset( "UI/HPEdge.png" ) ) )
-        , score( loadImage( app::loadAsset( "UI/Score.png" ) ) )
-        , APEdgeBase( loadImage( app::loadAsset( "UI/APEdgeBase.png" ) ) )
-        , HPEdgeBase( loadImage( app::loadAsset( "UI/HPEdgeBase.png" ) ) )
+        : APEdge( &GData::FindTexture( "UI/APEdge.png" ) )
+        , HPEdge( &GData::FindTexture( "UI/HPEdge.png" ) )
+        , score( &GData::FindTexture( "UI/Score.png" ) )
+        , APEdgeBase( &GData::FindTexture( "UI/APEdgeBase.png" ) )
+        , HPEdgeBase( &GData::FindTexture( "UI/HPEdgeBase.png" ) )
         , font( u8"ƒƒCƒŠƒI", 85 )
         , scorePoint( 0 )
     { }
@@ -24,17 +26,17 @@ namespace User
         gl::color( Color::white( ) );
 
         auto translateScorePosition = Vec2f( -11, -26 );
-        textureDraw( score, rightDown + Vec2f( -score.getWidth( ), 0 ) + translateScorePosition );
-        font.Draw( std::to_string( scorePoint ), rightDown + Vec2f( -score.getWidth( ) / 2.0F + 32, -score.getHeight( ) / 2.0F - 32 ) + translateScorePosition, Color::white( ), Fonts::Mode::RIGHTUP );
+        textureDraw( *score, rightDown + Vec2f( -score->getWidth( ), 0 ) + translateScorePosition );
+        font.Draw( std::to_string( scorePoint ), rightDown + Vec2f( -score->getWidth( ) / 2.0F + 32, -score->getHeight( ) / 2.0F - 32 ) + translateScorePosition, Color::white( ), Fonts::Mode::RIGHTUP );
 
-        textureDraw( HPEdge, leftDown );
-        textureDraw( HPEdgeBase, leftDown,
-                     Area( 225, 0, 639, HPEdgeBase.getHeight( ) ), HPNormalized );
+        textureDraw( *HPEdge, leftDown );
+        textureDraw( *HPEdgeBase, leftDown,
+                     Area( 225, 0, 639, HPEdgeBase->getHeight( ) ), HPNormalized );
 
         auto translateAPEdgePosition = Vec2f( 226, -101 );
-        textureDraw( APEdge, leftDown + translateAPEdgePosition );
-        textureDraw( APEdgeBase, leftDown + translateAPEdgePosition,
-                     Area( 15, 0, 340, APEdgeBase.getHeight( ) ), APNormalized );
+        textureDraw( *APEdge, leftDown + translateAPEdgePosition );
+        textureDraw( *APEdgeBase, leftDown + translateAPEdgePosition,
+                     Area( 15, 0, 340, APEdgeBase->getHeight( ) ), APNormalized );
 
     }
 

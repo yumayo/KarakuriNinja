@@ -10,6 +10,7 @@
 # include "../Effect/EffectManager.h"
 # include "../Interfaces/Interface.h"
 # include "../Utilitys/Yumayo.h"
+# include "../Interfaces/Talk.h"
 
 //Nomoto's include
 # include "../Player/Player.h"
@@ -27,14 +28,9 @@ namespace User
         virtual ~SceneTutorial( );
     public:
         virtual void resize( ) override;
-    public:
         virtual void draw( ) override;
         virtual void update( ) override;
         virtual void select( ) override;
-    public:
-        void UpdatePlayer( );
-        void UpdateColor( );
-        void UpdateScore( );
     private:
         void beginDrawMain( );
         void drawMain( );
@@ -42,6 +38,20 @@ namespace User
         void beginDrawUI( );
         void drawUI( );
         void endDrawUI( );
+    private:
+        void UpdateDamage( );
+        void UpdatePlayerBegin( );
+        void UpdatePlayerBehavior( );
+        void UpdatePlayerEnd( );
+        void UpdateColor( );
+        void UpdateScore( );
+        void UpdateDamageExpression( );
+        void UpdateNextStage( );
+        void UpdateAllInstans( );
+        void UpdateSpecial( );
+    private:
+        void UpdateDebugTutorialClear( );
+        void UpdateTutorialClear( );
     private:
         //=======================================
         // ユーマヨが管理するもののインスタンス化。
@@ -54,7 +64,9 @@ namespace User
         EffectManagerRef effectManager;
         InterfaceRef UI;
         Timer timer;
+        int gameClearFrame;
         cinder::ColorA damageColor;
+        TalkRef talk;
         //=======================================
 
 
@@ -70,12 +82,6 @@ namespace User
 
         Special special;
         std::vector<Audio*> mainbgm;
-        //=======================================
-
-        //=======================================
-        // チュートリアルのみに存在するもの。
-
-        bool isStopEnemy = false;
         //=======================================
     };
 }

@@ -1,0 +1,90 @@
+{
+  "MeshObject": [
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ -10.0, 0.0, 0.0 ],
+      "end": [ -5.0, 0.0, 0.0 ],
+      "rotate": [ 0.0, 90.0, 0.0 ],
+      "scale": [ 2.0, 2.0, 2.0 ],
+      "texture": "kidobanya.jpg",
+      "obj": "kidobanya.obj"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ -15.0, 0.0, 5.0 ],
+      "end": [ -5.0, 0.0, 5.0 ],
+      "rotate": [ 0.0, 90.0, 0.0 ],
+      "scale": [ 2.0, 2.0, 2.0 ],
+      "texture": "kidobanya.jpg",
+      "obj": "kidobanya.obj"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ -20.0, 0.0, 10.0 ],
+      "end": [ -5.0, 0.0, 10.0 ],
+      "rotate": [ 0.0, 90.0, 0.0 ],
+      "scale": [ 2.0, 2.0, 2.0 ],
+      "texture": "kidobanya.jpg",
+      "obj": "kidobanya.obj"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ -25.0, 0.0, 15.0 ],
+      "end": [ -5.0, 0.0, 15.0 ],
+      "rotate": [ 0.0, 90.0, 0.0 ],
+      "scale": [ 2.0, 2.0, 2.0 ],
+      "texture": "kidobanya.jpg",
+      "obj": "kidobanya.obj"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ 10.0, 0.0, 0.0 ],
+      "end": [ 5.0, 0.0, 0.0 ],
+      "rotate": [ 0.0, 90.0, 0.0 ],
+      "scale": [ 2.0, 2.0, 2.0 ],
+      "texture": "kidobanya.jpg",
+      "obj": "kidobanya.obj"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ 15.0, 0.0, 5.0 ],
+      "end": [ 5.0, 0.0, 5.0 ],
+      "rotate": [ 0.0, 90.0, 0.0 ],
+      "scale": [ 2.0, 2.0, 2.0 ],
+      "texture": "kidobanya.jpg",
+      "obj": "kidobanya.obj"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ 20.0, 0.0, 10.0 ],
+      "end": [ 5.0, 0.0, 10.0 ],
+      "rotate": [ 0.0, 90.0, 0.0 ],
+      "scale": [ 2.0, 2.0, 2.0 ],
+      "texture": "kidobanya.jpg",
+      "obj": "kidobanya.obj"
+    },
+    {
+      "beginCount": 60,
+      "moveCount": 100,
+      "begin": [ 25.0, 0.0, 15.0 ],
+      "end": [ 5.0, 0.0, 15.0 ],
+      "rotate": [ 0.0, 90.0, 0.0 ],
+      "scale": [ 2.0, 2.0, 2.0 ],
+      "texture": "kidobanya.jpg",
+      "obj": "kidobanya.obj"
+    }
+  ],
+  "RectObject": [
+
+  ],
+  "Enemy": [
+    "Tutorial"
+  ]
+}

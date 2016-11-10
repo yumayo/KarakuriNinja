@@ -8,15 +8,17 @@ namespace User
 {
     using namespace cinder;
 
-    EffectBase::EffectBase( std::string const & path, cinder::Vec2f position, cinder::Vec2f cutSize, Mode mode )
+    EffectBase::EffectBase( std::string const & path, cinder::Vec2f position, cinder::Vec2f size, cinder::Vec2f cutSize, Mode mode, bool alfa )
         : texture( &GData::FindTexture( path ) )
         , frame( 0 )
+        , size_( size )
         , speed( 5 )
         //, position( position )
         //, cutSize( cutSize )
         , isActive( true )
         //, maxIndex( 0 )
         , mode( mode )
+        , alfamode( alfa )
     {
         Position( position );
         CutSize( cutSize );
@@ -64,18 +66,28 @@ namespace User
     void EffectBase::DrawCutTexture( cinder::Vec2f cutPosition )
     {
         gl::pushModelView( );
+
         switch ( mode )
         {
         case User::EffectBase::Mode::LEFTUP:
             gl::translate( position - cutPosition );
             break;
         case User::EffectBase::Mode::CENTERCENTER:
-            gl::translate( position - cutSize / 2.0F - cutPosition );
+            gl::translate( position - ( cutSize / 2.0F ) - cutPosition );
             break;
         default:
             break;
         }
-        gl::color( Color::white( ) );
+        //gl::scale(size_ / cutSize);
+        if ( alfamode == false ) {
+            gl::color( Color::white( ) );
+        }
+        else {
+            float alfa = Easing::getEasing[Easing::CubicIn]( float( frame ) / float( speed*( maxIndex - 1 ) ), 1.f, 0.f );
+            app::console( ) << alfa << std::endl;
+            gl::color( ColorA( 1, 1, 1, alfa ) );
+        }
+
         gl::draw( *texture, Area( cutPosition, cutPosition + cutSize ), Area( cutPosition, cutPosition + cutSize ) );
         gl::popModelView( );
     }

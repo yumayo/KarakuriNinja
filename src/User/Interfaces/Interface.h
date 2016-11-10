@@ -16,12 +16,12 @@ namespace User
         void AddScore( int score ) { scorePoint += score; }
         int Score( ) { return scorePoint; }
     private:
-        cinder::gl::Texture APEdge;
-        cinder::gl::Texture HPEdge;
-        cinder::gl::Texture score;
+        cinder::gl::Texture* APEdge;
+        cinder::gl::Texture* HPEdge;
+        cinder::gl::Texture* score;
 
-        cinder::gl::Texture APEdgeBase;
-        cinder::gl::Texture HPEdgeBase;
+        cinder::gl::Texture* APEdgeBase;
+        cinder::gl::Texture* HPEdgeBase;
 
         Fonts font;
         int scorePoint;

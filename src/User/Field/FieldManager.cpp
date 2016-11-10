@@ -30,16 +30,19 @@ namespace User
     }
     void FieldManager::End( )
     {
-        // 最後のフィールドはカラクリが発動しません。
-        if ( !IsLastField( ) ) field->End( );
+        field->End( );
     }
     bool FieldManager::IsChange( )
     {
         return field->IsNextField( );
     }
+    bool FieldManager::IsMoveing( )
+    {
+        return field->IsMoveing( );
+    }
     void FieldManager::ChangeField( )
     {
-        if ( IsChange( ) ) NextField( );
+        if ( IsChange( ) && !IsLastField( ) ) NextField( );
     }
     bool FieldManager::IsLastField( )
     {

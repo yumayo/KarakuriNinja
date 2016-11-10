@@ -1,6 +1,7 @@
 # include "EnemyBulletManager.h"
 
 # include "GlobalData.hpp"
+# include "../Utilitys/GlobalDraw.h"
 
 namespace User
 {
@@ -19,9 +20,12 @@ namespace User
         BulletEraser( );
     }
 
-    void EnemyBulletManager::draw( )
+    void EnemyBulletManager::draw( cinder::CameraPersp const& camera )
     {
-        Each( [ ] ( EnemyBulletBaseRef& bulletRef ) { bulletRef->draw( ); } );
+        for ( auto itr = bulletList.begin( ); itr != bulletList.end( ); ++itr )
+        {
+            GlobalDraw::InsertAlphaObject( std::make_pair( camera.worldToEyeDepth( ( *itr )->Position( ) ), std::bind( &EnemyBulletBase::draw, *itr ) ) );
+        }
     }
 
     void EnemyBulletManager::BulletRegister( EnemyBulletList& bulletList )
@@ -90,6 +94,17 @@ namespace User
                 else {
                     if ( bulletRef->NormalizedMoveTime( ) == 1 ) {
                         guard_se->Play( );
+                        Vec2f enemypos = camera.worldToScreen( bulletRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+                        float a = ( line_.startPos.y - line_.endPos.y ) / ( line_.startPos.x - line_.endPos.x );
+                        float b = line_.startPos.y - a * line_.startPos.x;
+                        float pos_x = ( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 );
+                        float pos_y = a*( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 ) + b;
+                        EffectCreate( EffectBase( "Textures/Effect/guard3.png",
+                                                  Vec2f( pos_x, pos_y ),
+                                                  Vec2f( 240, 240 ),
+                                                  Vec2f( 480, 480 ),
+                                                  EffectBase::Mode::CENTERCENTER, true
+                        ) );
                     }
                 }
 
@@ -137,5 +152,12 @@ namespace User
     {
         auto eraceList = std::remove_if( bulletList.begin( ), bulletList.end( ), [ ] ( EnemyBulletBaseRef& bulletRef ) { return !bulletRef->IsActive( ); } );
         bulletList.erase( eraceList, bulletList.end( ) );
+    }
+
+    EffectList EnemyBulletManager::EffectRecovery( )
+    {
+        auto ret = effectList;
+        effectList.clear( );
+        return ret;
     }
 }
