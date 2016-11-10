@@ -56,41 +56,12 @@ namespace User
             player.TranseNowHp( -damage );
         }
 
-        // プレイヤーがガード状態なら
-        if ( player.Command( ) == CommandType::GUARD )
-        {
-            int damage = 0;
-            damage += enemyManager->EnemyToPlayerDamage( player.GuardLine( ), enemyCamera->GetCamera( ) );
-            damage += enemyBulletManager->EnemyToPlayerDamage( player.GuardLine( ), enemyCamera->GetCamera( ) );
-            player.TranseNowHp( -damage );
-        }
-
         for ( auto& obj : moveInput.Lines( ) )
         {
             int AP = 0;
-            AP += enemyManager->PlayerToEnemyDamage( obj, enemyCamera->GetCamera( ) );
+            if ( fieldManager->GetFieldNumber( ) != 1 ) AP += enemyManager->PlayerToEnemyDamage( obj, enemyCamera->GetCamera( ) );
             AP += enemyBulletManager->PlayerToEnemyDamage( obj, enemyCamera->GetCamera( ) );
             player.TranseNowMp( AP );
-        }
-    }
-    void SceneTutorial::UpdateCombo( )
-    {
-        if ( moveInput.Lines( ).empty( ) ) return;
-
-        int attackSuccessNum = 0;
-        for ( auto& obj : moveInput.Lines( ) )
-        {
-            if ( 0 != enemyManager->PlayerToEnemyAttackCheck( obj, enemyCamera->GetCamera( ) ) )
-            {
-                attackSuccessNum += 1;
-            }
-        }
-
-        combo += attackSuccessNum;
-
-        if ( attackSuccessNum == 0 )
-        {
-            combo = 0;
         }
     }
     void SceneTutorial::UpdateNextStage( )
@@ -177,10 +148,10 @@ namespace User
     }
     void SceneTutorial::UpdateGuardSucceed( )
     {
-        // ガードに成功したら
-        if ( player.Command( ) == CommandType::GUARD )
+        for ( auto& obj : moveInput.Lines( ) )
         {
-            if ( 0 < enemyBulletManager->EnemyToPlayerGuardCheck( player.GuardLine( ), enemyCamera->GetCamera( ) ) )
+            // ガードに成功したら
+            if ( 0 < enemyBulletManager->EnemyToPlayerSlashGuardCheck( obj, enemyCamera->GetCamera( ) ) )
             {
                 tutorialManager.BougyoPlayerGuardSucceed( );
             }
@@ -192,17 +163,14 @@ namespace User
 
         player.Update( );
 
-        // これを呼ぶことでガードができる。
-        if ( fieldManager->GetFieldNumber( ) == 1 ) player.UpdateDeffenceOfTouch( );
-
         enemyManager->update( enemyCamera->GetCamera( ) );
+
+        UpdateGuardSucceed( );
         enemyBulletManager->BulletRegister( enemyManager->BulletRecovery( ) );
         enemyBulletManager->update( );
 
         UpdateDamage( );
-        UpdateCombo( );
         UpdateEnemySpawn( );
-        UpdateGuardSucceed( );
 
         effectManager->EffectRegister( enemyManager->EffectRecovery( ) );
         effectManager->EffectRegister( enemyBulletManager->EffectRecovery( ) );
@@ -213,9 +181,6 @@ namespace User
         UpdateCamera( );
 
         moveInput.Begin( combo );
-
-        // プレイヤーがguard状態の時はmoveInputを無効にします。
-        if ( player.Command( ) == GUARD || fieldManager->GetFieldNumber( ) == 1 ) moveInput.InputInvalidation( );
 
         UpdateAllInstans( );
 

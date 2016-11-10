@@ -175,7 +175,7 @@ namespace User
         gl::translate( leftDown + Vec2f( 120, -140 ) );
         gl::scale( Vec2f( texsize.x / ( specialeffect->getSize( ).x / CUTNUM ), texsize.y / specialeffect->getSize( ).y ) );
         cinder::ColorA color;
-        float alfa = ( count < 60 * 12 ) ? 0.7f : 0.35 + 0.35*sin( float( count ) / 2.f );
+        float alfa = ( count < ( 60 * 25 ) ) ? 0.7f : 0.35 + 0.35*sin( float( count ) / 2.f );
         switch ( specialsubtime )
         {
         case 0:
@@ -235,7 +235,7 @@ namespace User
         auto rightDown = env.getWindowSize( );
         std::string str;
         cinder::ColorA color;
-        float alfa = ( count < 60 * 12 ) ? 1.f : 0.5 + 0.5*sin( float( count ) / 1.5f );
+        float alfa = ( count < ( 60 * 25 ) ) ? 1.f : 0.5 + 0.5*sin( float( count ) / 1.5f );
         Vec2f size = Vec2f( 225, 75 );
         Vec2f pos = leftDown + Vec2f( 320, -210 + 5 * sin( ( float( count ) ) / 10.f ) );
 
@@ -273,7 +273,7 @@ namespace User
         if ( !_ismpmax ) {//‰½‚à‘I‚Î‚ê‚Ä‚¢‚È‚¢
             return;
         }
-       /* auto leftDown = Vec2f( 0, env.getWindowHeight( ) );
+        /* auto leftDown = Vec2f( 0, env.getWindowHeight( ) );
         auto rightDown = env.getWindowSize( );
         std::string str;
         cinder::ColorA color;

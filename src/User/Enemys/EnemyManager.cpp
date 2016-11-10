@@ -178,6 +178,7 @@ namespace User
             }
         } );
 
+        bool isSlashHited = false;
         int drainMp = 0;
         if ( map.empty( ) ) return drainMp;
         else
@@ -189,13 +190,13 @@ namespace User
 
                 auto scoreRate = 100 * ( 1 + std::min( combo / 5.0F, 4.0F ) );
 
-                if ( enemy.IsLive( ) )
+                if ( enemy.IsLive( ) && !isSlashHited )
                 {
                     drainMp += enemy.Hit( camera, length, scoreRate, value );
                     score += drainMp * scoreRate;
-                    break;
+                    isSlashHited = true;
                 }
-                else
+                else if ( enemy.IsAttackMotion( ) || !enemy.IsLive( ) )
                 {
                     drainMp += enemy.Hit( camera, length, scoreRate, value );
                     score += drainMp * scoreRate;
@@ -236,7 +237,7 @@ namespace User
     int EnemyManager::PlayerSpecialAttackToEnemyDamage( int damage, const cinder::CameraPersp& camera, SpecialType specialState, float combo )
     {
         int drainMp = 0;
-            auto scoreRate = 50 * ( 1 + std::min( combo / 5.0F, 4.0F ) );
+        auto scoreRate = 50 * ( 1 + std::min( combo / 5.0F, 4.0F ) );
         Each( [ &drainMp, &damage, &camera, &specialState, &combo, &scoreRate, this ] ( EnemyBaseRef& enemyRef )
         {
             Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );

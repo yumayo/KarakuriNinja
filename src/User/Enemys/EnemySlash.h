@@ -21,6 +21,9 @@ namespace User
         cinder::gl::Texture* UŒ‚‰æ‘œ;
         cinder::gl::Texture* ¶‚ÉˆÚ“®;
         cinder::gl::Texture* ‰E‚ÉˆÚ“®;
+    private:
+        Audio* guard_se;
+        float prevAttackHP = 0.0F;
     public:
         EnemySlash( cinder::Vec3f pos, const cinder::CameraPersp& camera );
         void update( cinder::CameraPersp const& camera ) override;

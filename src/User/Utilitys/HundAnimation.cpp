@@ -124,13 +124,13 @@ void HundAnimation::selectGuardTexture( )
 void HundAnimation::selectAttackTexture( )
 {
     attackhand = righthandopen;
-   /* const int opentime = 40;///初期から４０フレーㇺ後に握る画像に
+    const int opentime = 40;///初期から４０フレーㇺ後に握る画像に
     if ( attackframe < opentime ) {
         attackhand = righthandopen;
     }
     else {
         attackhand = righthandclose;
-    }*/
+    }
 }
 
 void HundAnimation::moveAttackPos( cinder::Vec2f startpos, cinder::Vec2f endpos, cinder::Vec2f size )

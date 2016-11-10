@@ -27,12 +27,13 @@ namespace User
     using namespace cinder;
 
     EnemyBoss::EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera )
-        : EnemyBase( pos, camera, Status( 30.0F, 12 ) )
+        : EnemyBase( pos, camera, Status( 18.0F, 7 ) )
         , timer( )
         , isAttack( false )
         , isDeadStop( true )
         , font( u8"HG行書体", 90 )
         , serif( u8"" )
+        , prevAttackHP( 0 )
     {
         TRData::bossSpawn.TutorialStart( );
         {
@@ -223,8 +224,6 @@ namespace User
         {
             object.Speed( Vec3f::zero( ) );
 
-            TRData::bossSerif.TutorialStart( );
-
             isFrieldKilledSerif = true;
             SetSerifFunction( u8"よくも私の仲間を！！", &EnemyBoss::セリフ );
 
@@ -242,45 +241,62 @@ namespace User
     }
     void EnemyBoss::どっちの攻撃を出すかの確認( cinder::CameraPersp const & camera )
     {
-        auto どちらの攻撃 = randBool( );
-        if ( どちらの攻撃 && ( 直接攻撃カウント < 直接攻撃の上限回数 ) )
+        auto anyAttack = randBool( );
+        if ( anyAttack && ( 直接攻撃カウント < 直接攻撃の上限回数 ) )
         {
             弾カウント = 0;
 
-            auto cameraPos = camera.getEyePoint( ) + camera.getViewDirection( ) * camera.getNearClip( ) + camera.getViewDirection( );
-            cameraPos.y = 0;
-
-            auto pos = object.Position( );
-            pos.y = 0;
-
-            moveSpeed = cameraPos - pos;
-            moveSpeed /= 60.0F;
-
-            moveLeftRightSpeed = Vec3f::xAxis( ) * 0.5F;
-
-            timer.Advance( 60 ); // 高速移動フレーム
-
-            直接攻撃カウント++;
-            SetFunction( &EnemyBoss::左右に高速移動しながらカメラへ近づく );
+            SetFunction( &EnemyBoss::直接攻撃選択 );
             return;
         }
         else if ( 弾カウント < 弾の上限回数 )
         {
             直接攻撃カウント = 0;
 
-            timer.Advance( 120 ); // 弾を投げる動作
-            texture = 投げるモーション画像;
-
-            弾カウント++;
-            SetFunction( &EnemyBoss::弾を投げるまでのモーション );
+            SetFunction( &EnemyBoss::間接攻撃選択 );
             return;
         }
         else // どちらとも出せない場合
         {
-            弾カウント = 0;
-            直接攻撃カウント = 0;
-            どっちの攻撃を出すかの確認( camera );
+            if ( anyAttack )
+            {
+                SetFunction( &EnemyBoss::直接攻撃選択 );
+                return;
+            }
+            else
+            {
+                SetFunction( &EnemyBoss::間接攻撃選択 );
+                return;
+            }
         }
+    }
+    void EnemyBoss::直接攻撃選択( cinder::CameraPersp const & camera )
+    {
+        auto cameraPos = camera.getEyePoint( ) + camera.getViewDirection( ) * camera.getNearClip( ) + camera.getViewDirection( );
+        cameraPos.y = 0;
+
+        auto pos = object.Position( );
+        pos.y = 0;
+
+        moveSpeed = cameraPos - pos;
+        moveSpeed /= 60.0F;
+
+        moveLeftRightSpeed = Vec3f::xAxis( ) * 0.4F;
+
+        timer.Advance( 60 ); // 高速移動フレーム
+
+        直接攻撃カウント++;
+        SetFunction( &EnemyBoss::左右に高速移動しながらカメラへ近づく );
+        return;
+    }
+    void EnemyBoss::間接攻撃選択( cinder::CameraPersp const & camera )
+    {
+        timer.Advance( 120 ); // 弾を投げる動作
+        texture = 投げるモーション画像;
+
+        弾カウント++;
+        SetFunction( &EnemyBoss::弾を投げるまでのモーション );
+        return;
     }
     void EnemyBoss::左右に高速移動しながらカメラへ近づく( cinder::CameraPersp const& camera )
     {
@@ -315,9 +331,10 @@ namespace User
 
             object.Speed( Vec3f::zero( ) );
 
-            timer.Advance( 80 ); // 攻撃モーションフレームを代入
-            attackTime.AttackFrame( 80 );
+            timer.Advance( 140 ); // 攻撃モーションフレームを代入
+            attackTime.AttackFrame( 140 );
 
+            prevAttackHP = status.HP;
             objects.clear( );
             texture = 攻撃モーション画像;
             prevPosition = object.Position( );
@@ -328,7 +345,7 @@ namespace User
     void EnemyBoss::攻撃モーション( cinder::CameraPersp const& camera )
     {
         auraTex = ( ( frame / 15 ) % 2 == 0 ? オーラ1 : オーラ2 );
-        auto yureru = Vec3f( randFloat( -0.01, 0.01 ), randFloat( -0.01, 0.01 ), randFloat( 0, 0.001 ) );
+        auto yureru = Vec3f( randFloat( -0.01, 0.01 ), randFloat( -0.01, 0.01 ), 0 );
         object.Position( prevPosition + yureru );
         // 攻撃モーション後、次の関数へ。
         if ( timer.IsAction( ) )
@@ -337,6 +354,16 @@ namespace User
             texture = 攻撃画像;
             object.Position( prevPosition );
             SetFunction( &EnemyBoss::攻撃 );
+            return;
+        }
+
+        if ( prevAttackHP != status.HP )
+        {
+            auraTex = nullptr;
+            texture = 待機;
+
+            timer.Advance( 20 ); // 硬直フレーム
+            SetFunction( &EnemyBoss::攻撃後硬直 );
             return;
         }
     }
@@ -388,24 +415,13 @@ namespace User
     {
         isAttack = false;
         isDeadSerif = true;
+        texture = 倒れかけるモーション;
 
-        //auto pos = object.Position( );
+        SetSerifFunction( u8"っく、我は滅びぬ", &EnemyBoss::セリフ );
 
-        //pos.x = EasingLinear( timer.NomalizedFrame( ), prevPosition.x, 0 );
-        //pos.z = EasingLinear( timer.NomalizedFrame( ), prevPosition.z, 3 );
-
-        //object.Position( pos );
-
-        //if ( timer.IsAction( ) )
-        //{
-            texture = 倒れかけるモーション;
-
-            SetSerifFunction( u8"っく、我は滅びぬ", &EnemyBoss::セリフ );
-
-            timer.Advance( 120 ); // セリフを吐くフレーム
-            SetFunction( &EnemyBoss::死ぬ時のセリフ );
-            return;/*
-        }*/
+        timer.Advance( 120 ); // セリフを吐くフレーム
+        SetFunction( &EnemyBoss::死ぬ時のセリフ );
+        return;
     }
     void EnemyBoss::死ぬ( cinder::CameraPersp const & camera )
     {
@@ -427,9 +443,8 @@ namespace User
         {
             se[i]->Play( );
         }
-        timer.Advance( 20 ); // 硬直フレーム
+        timer.Advance( 40 ); // 硬直フレーム
 
-        弾を投げる回数++;
         SetFunction( &EnemyBoss::弾を投げた後の硬直 );
         return;
     }
@@ -437,31 +452,11 @@ namespace User
     {
         if ( timer.IsAction( ) )
         {
-            timer.Advance( 120 );
-
-            SetFunction( &EnemyBoss::弾をもう一度投げるかの確認 );
-            return;
-        }
-    }
-    void EnemyBoss::弾をもう一度投げるかの確認( cinder::CameraPersp const & camera )
-    {
-        if ( 弾を投げる回数 < 弾を投げる上限回数 )
-        {
-            texture = 投げるモーション画像;
-            if ( timer.IsAction( ) )
-            {
-                SetFunction( &EnemyBoss::弾を投げるまでのモーション );
-                return;
-            }
-        }
-        else
-        {
             // タイマーをセットしてまた待機状態にします。
-            timer.Advance( randInt( 240, 340 ) );
+            timer.Advance( randInt( 340, 440 ) );
 
             texture = 待機;
 
-            弾を投げる回数 = 0;
             SetFunction( &EnemyBoss::タイマーが鳴るまで待機 );
             return;
         }
@@ -539,7 +534,6 @@ namespace User
     {
         if ( timer.IsAction( ) )
         {
-            TRData::bossSerif.TutorialEnd( );
             SetSerifFunction( u8"", &EnemyBoss::ヌルセルフ );
             SetFunction( &EnemyBoss::タイマーが鳴るまで待機 );
             return;

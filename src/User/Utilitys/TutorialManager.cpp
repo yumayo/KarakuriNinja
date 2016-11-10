@@ -225,10 +225,10 @@ namespace User
     {
         kougeki.Draw( );
 
-        Vec2f end( env.getWindowWidth( ) / 2 - 350, env.getWindowHeight( ) / 2 );
-        Vec2f begin( env.getWindowWidth( ) / 2 + 350, env.getWindowHeight( ) / 2 );
-        handAnimation.updateAttack( begin, end, Vec2f( 512, 512 ) );
-        handAnimation.drawAttack( Vec2f( 600, 50 ) );
+        Vec2f end( env.getWindowWidth( ) / 2 - 512, env.getWindowHeight( ) / 2 );
+        Vec2f begin( env.getWindowWidth( ) / 2 + 512, env.getWindowHeight( ) / 2 );
+        handAnimation.updateAttack( begin, end, Vec2f( 768, 768 ) );
+        handAnimation.drawAttack( Vec2f( 600, 200 ) );
 
         //description.SetMode( Description::KOUGEKI );
         //description.Draw( Vec2f( env.getWindowWidth( ) - 768 - 50, env.getWindowHeight( ) - 256 - 50 ), Vec2f( 768, 256 ) );
@@ -237,10 +237,10 @@ namespace User
     {
         bougyo.Draw( );
 
-        Vec2f left( env.getWindowWidth( ) / 2 - 350, env.getWindowHeight( ) / 2 );
-        Vec2f right( env.getWindowWidth( ) / 2 + 350, env.getWindowHeight( ) / 2 );
-        handAnimation.updateGuard( left, right, Vec2f( 512, 512 ) );
-        handAnimation.drawGuard( Vec2f( 600, 50 ) );
+        Vec2f end( env.getWindowWidth( ) / 2 - 512, env.getWindowHeight( ) / 2 );
+        Vec2f begin( env.getWindowWidth( ) / 2 + 512, env.getWindowHeight( ) / 2 );
+        handAnimation.updateAttack( begin, end, Vec2f( 768, 768 ) );
+        handAnimation.drawAttack( Vec2f( 600, 200 ) );
 
         //description.SetMode( Description::BOUGYO );
         //description.Draw( Vec2f( env.getWindowWidth( ) - 768 - 50, env.getWindowHeight( ) - 256 - 50 ), Vec2f( 768, 256 ) );

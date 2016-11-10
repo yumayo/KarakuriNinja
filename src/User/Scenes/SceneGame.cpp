@@ -15,8 +15,6 @@ namespace User
     SceneGame::SceneGame( )
         : mainBGMfadeOut( 100 )
     {
-
-
         TRData::Reset( );
 
         // ユーマヨが管理するものを作成。
@@ -97,15 +95,6 @@ namespace User
             damage += enemyManager->EnemyToPlayerDamage( enemyCamera->GetCamera( ) ) * 無敵じゃない;
             damage += enemyBulletManager->EnemyToPlayerDamage( enemyCamera->GetCamera( ) ) * 無敵じゃない;
             player.TranseNowHp( -damage );
-        }
-
-        // プレイヤーがガード状態なら
-        if ( player.Command( ) == CommandType::GUARD )
-        {
-            int damage = 0;
-            damage += enemyManager->EnemyToPlayerDamage( player.GuardLine( ), enemyCamera->GetCamera( ) );
-            damage += enemyBulletManager->EnemyToPlayerDamage( player.GuardLine( ), enemyCamera->GetCamera( ) );
-            player.TranseNowHp( -damage * !( special.getSpecialType( ) == SpecialType::TREE ) );
         }
 
         if ( playerHP != player.NowHp( ) )
@@ -219,7 +208,6 @@ namespace User
              !TRData::special.IsStopUpdate( ) )
         {
             player.Update( );
-            player.UpdateDeffenceOfTouch( );
         }
 
         if ( !special.getIsSpecial( ) &&
@@ -245,7 +233,6 @@ namespace User
             UpdateColor( );
             UpdateScore( );
             UpdateCombo( );
-
         }
 
         if ( !special.getIsSpecial( ) )
@@ -307,7 +294,7 @@ namespace User
         {
             const float damagevalue = 10.0F;
             player.TranseNowMp( enemyManager->PlayerSpecialAttackToEnemyDamage( special.getspecialPower( ) * damagevalue, enemyCamera->GetCamera( ), special.getSpecialType( ), UI->ComboNumber( ) ) );
-            player.TranseNowMp( enemyBulletManager->PlayerSpecialAttackToEnemyDamage( ) );
+            player.TranseNowMp( enemyBulletManager->PlayerSpecialAttackToEnemyDamage( enemyCamera->GetCamera( ) ) );
         }
     }
     void SceneGame::UpdateGameEnd( )
@@ -383,10 +370,7 @@ namespace User
              !TRData::special.IsStopUpdate( ) )
         {
             moveInput.Begin( UI->ComboNumber( ) );
-        }
-        if ( player.Command( ) == GUARD )
-        {
-            moveInput.InputInvalidation( );
+            player.Reset( );
         }
         if ( TRData::bossSpawn.IsStopUpdate( ) )
         {

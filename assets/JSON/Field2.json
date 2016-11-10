@@ -91,11 +91,7 @@
     },
     {
       "type": "bullet",
-      "position": [ -1.8, 3.0, -1.5 ]
-    },
-    {
-      "type": "bullet",
-      "position": [ 3.3, 4.7, 1.2 ]
+      "position": [ 3.3, 2.7, 1.2 ]
     },
     {
       "type": "slashWalk",

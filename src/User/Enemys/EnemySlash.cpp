@@ -13,7 +13,7 @@ namespace User
     using namespace cinder;
 
     EnemySlash::EnemySlash( cinder::Vec3f pos, const cinder::CameraPersp& camera )
-        : EnemyBase( pos, camera, Status( 6.0F * 1.5F, 3 ) )
+        : EnemyBase( pos, camera, Status( 6.0F, 3 ) )
         , timer( )
         , isAttack( false )
         , prevMovePosition( Vec3f::zero( ) )
@@ -120,6 +120,7 @@ namespace User
         {
             timer.Advance( 60 ); // UŒ‚ƒ‚[ƒVƒ‡ƒ“ƒtƒŒ[ƒ€‚ğ‘ã“ü
             attackTime.AttackFrame( 60 );
+            prevAttackHP = status.HP;
             texture = UŒ‚ƒ‚[ƒVƒ‡ƒ“‰æ‘œ;
             SetFunction( &EnemySlash::UŒ‚ƒ‚[ƒVƒ‡ƒ“ );
             return;
@@ -132,6 +133,14 @@ namespace User
         {
             texture = UŒ‚‰æ‘œ;
             SetFunction( &EnemySlash::UŒ‚ );
+            return;
+        }
+
+        if ( prevAttackHP != status.HP )
+        {
+            texture = ‘Ò‹@;
+            timer.Advance( 10 ); // d’¼10ƒtƒŒ[ƒ€
+            SetFunction( &EnemySlash::UŒ‚Œãd’¼ );
             return;
         }
     }

@@ -264,7 +264,26 @@ namespace User
             line.endPos = touch.getPos( );
 
             moveTouch.isActive = false;
-            slashEffect.emplace_back( line, MakeAttackEffect( line.startPos, line.endPos ), combo );
+
+            Vec2f directionRotate = line.endPos - line.startPos;
+            directionRotate.rotate( M_PI / 2.0 );
+            directionRotate.normalize( );
+
+            if ( 5 <= combo )
+            {
+                slashEffect.emplace_back( line, MakeAttackEffect( line.startPos + directionRotate * -100, line.endPos + directionRotate * -100 ), combo );
+                slashEffect.emplace_back( line, MakeAttackEffect( line.startPos, line.endPos ), combo );
+                slashEffect.emplace_back( line, MakeAttackEffect( line.startPos + directionRotate * 100, line.endPos + directionRotate * 100 ), combo );
+            }
+            else if ( 3 <= combo )
+            {
+                slashEffect.emplace_back( line, MakeAttackEffect( line.startPos + directionRotate * -50, line.endPos + directionRotate * -50 ), combo );
+                slashEffect.emplace_back( line, MakeAttackEffect( line.startPos + directionRotate * 50, line.endPos + directionRotate * 50 ), combo );
+            }
+            else
+            {
+                slashEffect.emplace_back( line, MakeAttackEffect( line.startPos, line.endPos ), combo );
+            }
         }
     }
 
