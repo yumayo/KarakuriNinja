@@ -37,11 +37,13 @@ namespace User
         int EnemyToPlayerDamage( const cinder::CameraPersp& camera );
         // エネミーからプレイヤーへの攻撃（プレイヤーがガードをしている時の判定に使います）
         int EnemyToPlayerDamage( Line& line_, const cinder::CameraPersp& camera );
-        // 弾の当たり判定域を描画します。
-        void DrawCollisionCircle( cinder::CameraPersp const& camera );
+        // スコアを回収します。回収したら、中身はクリアします。
+        int ScoreRecovery( ) { auto temp = score; score = 0; return temp; }
         // 弾が当たる場所を描画します。
         void DrawBulletCircle( cinder::CameraPersp const & camera );
-        int ScoreRecovery( ) { auto temp = score; score = 0; return temp; }
+    public:
+        // 弾の当たり判定域を描画します。（デバッグ用）
+        void DrawCollisionCircle( cinder::CameraPersp const& camera );
     private:
         void Each( std::function<void( EnemyBulletBaseRef& )> func );
         void BulletEraser( );

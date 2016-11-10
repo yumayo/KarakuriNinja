@@ -9,6 +9,41 @@
 
 namespace User
 {
+    class AttackTime
+    {
+        bool isAttackMotion;
+        int attackFrame;
+        int maxAttackFrame;
+    public:
+        AttackTime( )
+            : isAttackMotion( false )
+        {
+            AttackFrame( 0 );
+        }
+        void Update( )
+        {
+            attackFrame = std::min( attackFrame + 1, maxAttackFrame );
+            if ( attackFrame == maxAttackFrame ) isAttackMotion = false;
+        }
+        void AttackFrame( int attackFrame )
+        {
+            if ( attackFrame <= 0 ) // 0除算回避
+            {
+                isAttackMotion = false;
+                this->attackFrame = 1;
+                maxAttackFrame = 1;
+            }
+            else
+            {
+                isAttackMotion = true;
+                this->attackFrame = 0;
+                maxAttackFrame = attackFrame;
+            }
+        }
+        bool IsAttackMotion( ) { return isAttackMotion; }
+        float NormalizedAttackFrame( ) { return static_cast<float>( attackFrame ) / maxAttackFrame; }
+    };
+
     class EnemyBase
     {
     protected:
@@ -16,6 +51,7 @@ namespace User
         EnemyObject initObject;
         bool isLanding;
         cinder::gl::Texture* texture;
+        AttackTime attackTime;
     private:
         float maxHP;
         float HP;
@@ -50,6 +86,8 @@ namespace User
         bool IsLive( ) { return isLive; }
         cinder::Color HitColor( ) { return hitColor; }
         float NormalizedHitPoint( ) { return HP / maxHP; }
+        bool IsAttackMotion( ) { return attackTime.IsAttackMotion( ); }
+        float NormalizedAttackFrame( ) { return attackTime.NormalizedAttackFrame( ); }
     public:
         // 引数 : あたった時の中心からの距離(正規化済み) : 0.0 ~ 1.0(半径)
         int Hit( float length );
@@ -67,6 +105,7 @@ namespace User
         bool IsInTheScreen( cinder::CameraPersp const& camera );
 
         bool IsInField( );
+        void CollideField( );
     protected: // 以下 アップデートに記入推奨
         // 地面の中にいたら地上に引き戻します。
         void CollideGround( );

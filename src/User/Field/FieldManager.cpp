@@ -1,13 +1,22 @@
 #include "FieldManager.h"
 
+#include "cinder/app/App.h"
+#include "cinder/Json.h"
+
 namespace User
 {
-    FieldManager::FieldManager( )
+    using namespace cinder;
+
+    FieldManager::FieldManager( std::string const& path )
         : nowNumber( 0 )
     {
-        fieldName.insert( std::make_pair( 0, "Field1.json" ) );
-        fieldName.insert( std::make_pair( 1, "Field3.json" ) );
-        fieldName.insert( std::make_pair( 2, "Field5.json" ) );
+        JsonTree params( app::loadAsset( path ) );
+
+        int index = 0;
+        for ( auto& obj : params["Field"] )
+        {
+            fieldName.insert( std::make_pair( index++, obj.getValue( ) ) );
+        }
 
         CreateField( nowNumber );
     }

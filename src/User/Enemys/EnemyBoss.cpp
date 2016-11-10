@@ -46,6 +46,7 @@ namespace User
             behavior( camera );
             // タイマー処理
             timer.Update( );
+            
         }
 
         // 以下 EnemyBaseUpdate
@@ -56,9 +57,11 @@ namespace User
             object.PositionAdd( object.Speed( ) );
             DamageEffect( );
             LiveCheck( );
+            attackTime.Update( );
         }
         CollideGround( ); // 死んでいても実行します。
-        if ( isDeadStop == false ) Dying( ); // 死んでいても実行します。
+        if ( isDeadStop == false ) // ここで、死ぬと判断されることを遅らせています。
+            Dying( );
 
         if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_0 ) ) Kill( );
     }
@@ -136,7 +139,7 @@ namespace User
     }
     void EnemyBoss::左右に高速移動しながらカメラへ近づく( cinder::CameraPersp const& camera )
     {
-        if ( !IsInTheScreen( camera ) )
+        if ( !IsInField( ) )
         {
             moveLeftRightSpeed *= -1;
             object.PositionAdd( moveLeftRightSpeed );
@@ -152,7 +155,8 @@ namespace User
 
             object.Speed( Vec3f::zero( ) );
 
-            timer.Advance( 10 ); // 攻撃モーションフレームを代入
+            timer.Advance( 80 ); // 攻撃モーションフレームを代入
+            attackTime.AttackFrame( 80 );
             SetFunction( &EnemyBoss::攻撃モーション );
             return;
         }

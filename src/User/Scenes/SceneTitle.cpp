@@ -1,5 +1,5 @@
 # include "SceneTitle.h"
-#include "SceneGame.h"
+# include "SceneTutorial.h"
 
 #include "GlobalData.hpp"
 
@@ -45,7 +45,7 @@ namespace User
     void SceneTitle::select( )
     {
         if ( isEnd == false ) return;
-        create( new SceneGame( ) );
+        create( new SceneTutorial( ) );
     }
 
     void SceneTitle::UpdateLogoAlpha( )

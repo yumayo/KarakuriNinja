@@ -147,6 +147,7 @@
     <ClCompile Include="..\src\User\Scenes\SceneGame.cpp" />
     <ClCompile Include="..\src\User\Scenes\SceneResult.cpp" />
     <ClCompile Include="..\src\User\Scenes\SceneTitle.cpp" />
+    <ClCompile Include="..\src\User\Scenes\SceneTutorial.cpp" />
     <ClCompile Include="..\src\User\SlashEffect\SlashEffect.cpp" />
     <ClCompile Include="..\src\User\Special\Circle.cpp" />
     <ClCompile Include="..\src\User\Special\Fire.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="..\src\User\Scenes\SceneResult.h" />
     <ClInclude Include="..\src\User\Scenes\SceneStart.h" />
     <ClInclude Include="..\src\User\Scenes\SceneTitle.h" />
+    <ClInclude Include="..\src\User\Scenes\SceneTutorial.h" />
     <ClInclude Include="..\src\User\SlashEffect\SlashEffect.h" />
     <ClInclude Include="..\src\User\Special\Circle.h" />
     <ClInclude Include="..\src\User\Special\Fire.h" />

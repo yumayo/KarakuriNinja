@@ -96,8 +96,10 @@ namespace User
             object.PositionAdd( object.Speed( ) );
             LiveCheck( );
             DamageEffect( );
+            attackTime.Update( );
         }
         CollideGround( );// 死んでいても実行します。
+        CollideField( );// 死んでいても実行します。
         Dying( );// 死んでいても実行します。
 
         // デバッグダメージ
@@ -129,7 +131,7 @@ namespace User
     #endif // _DEBUG
 
         gl::popModelView( );
-    }
+}
     void EnemyBase::drawUI( )
     {
         /*nothing*/
@@ -207,13 +209,31 @@ namespace User
         auto x = object.Position( ).x;
         return -1 <= x && x <= 1;
     }
+    void EnemyBase::CollideField( )
+    {
+        if ( !IsInField( ) )
+        {
+            auto pos = object.Position( );
+            if ( pos.x < -1 )
+            {
+                pos.x = -1;
+                object.Position( pos );
+            }
+            else if ( 1 < pos.x )
+            {
+                pos.x = 1;
+                object.Position( pos );
+            }
+        }
+    }
     void EnemyBase::CollideGround( )
     {
         // オブジェクトの埋まった位置を戻します。
-        auto pos = object.Position( );
-        auto speed = object.Speed( );
         if ( IsUnderGround( ) )
         {
+            auto pos = object.Position( );
+            auto speed = object.Speed( );
+
             isLanding = true;
 
             pos.y = Size( ).y / 2.0F;

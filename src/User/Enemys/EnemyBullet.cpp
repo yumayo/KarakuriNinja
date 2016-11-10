@@ -119,7 +119,7 @@ namespace User
         direction.rotateY( M_PI / 2.0 );
         object.PositionAdd( direction * 0.05 );
 
-        if ( !IsInTheScreen( camera ) )
+        if ( !IsInField( ) )
         {
             object.PositionAdd( -direction * 0.05 );
 
@@ -143,7 +143,7 @@ namespace User
         direction.rotateY( -M_PI / 2.0 );
         object.PositionAdd( direction * 0.05 );
 
-        if ( !IsInTheScreen( camera ) )
+        if ( !IsInField( ) )
         {
             object.PositionAdd( -direction * 0.05 );
 

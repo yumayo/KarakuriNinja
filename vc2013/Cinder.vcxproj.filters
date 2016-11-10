@@ -312,6 +312,9 @@
     <ClInclude Include="..\src\User\Scenes\SceneBegin.h">
       <Filter>User\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\User\Scenes\SceneTutorial.h">
+      <Filter>User\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -520,6 +523,9 @@
       <Filter>User\Utilitys</Filter>
     </ClCompile>
     <ClCompile Include="..\src\User\Scenes\SceneBegin.cpp">
+      <Filter>User\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Scenes\SceneTutorial.cpp">
       <Filter>User\Scenes</Filter>
     </ClCompile>
   </ItemGroup>

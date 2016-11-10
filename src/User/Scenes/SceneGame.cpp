@@ -17,7 +17,7 @@ namespace User
         camera.lookAt( cameraEyePosition, Vec3f( 0, 0.7, 0 ) );
         camera.setWorldUp( Vec3f( 0, 1, 0 ) );
         camera.setPerspective( 60.0F, env.getWindowAspectRatio( ), 1.0F, 100.0F );
-        fieldManager = std::make_shared<FieldManager>( );
+        fieldManager = std::make_shared<FieldManager>( "GameMainField.json" );
         enemyManager = std::make_shared<EnemyManager>( camera, fieldManager->FieldDataPath( ) );
         enemyBulletManager = std::make_shared<EnemyBulletManager>( );
         effectManager = std::make_shared<EffectManager>( );
@@ -256,6 +256,8 @@ namespace User
         player.Draw( );
 
         enemyManager->drawUI( );
+
+        enemyManager->DrawAttackCircle( camera );
 
         enemyBulletManager->DrawBulletCircle( camera );
 

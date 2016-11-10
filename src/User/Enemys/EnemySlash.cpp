@@ -98,6 +98,7 @@ namespace User
         if ( timer.IsAction( ) )
         {
             timer.Advance( 60 ); // 攻撃モーションフレームを代入
+            attackTime.AttackFrame( 60 );
             texture = 攻撃モーション画像;
             SetFunction( &EnemySlash::攻撃モーション );
             return;
@@ -135,7 +136,7 @@ namespace User
     void EnemySlash::ジャンプで戻る( cinder::CameraPersp const& camera )
     {
         auto backDirection = -object.Direction( ) * 8.0F / 60.0F;
-        backDirection.rotate( Vec3f::yAxis( ), randFloat( -M_PI / 4.0F, M_PI / 4.0F ) );
+        backDirection.rotate( Vec3f::yAxis( ), randFloat( -M_PI / 8.0F, M_PI / 8.0F ) );
         auto jumpPower = Vec3f( 0, 0.15, 0 );
         // 硬直後、すぐにジャンプして次の関数へ。
         Jump( jumpPower + backDirection );
@@ -163,7 +164,7 @@ namespace User
         direction.rotateY( M_PI / 2.0 );
         object.PositionAdd( direction * 0.05 );
 
-        if ( !IsInTheScreen( camera ) )
+        if ( !IsInField( ) )
         {
             object.PositionAdd( -direction * 0.05 );
 
@@ -187,7 +188,7 @@ namespace User
         direction.rotateY( -M_PI / 2.0 );
         object.PositionAdd( direction * 0.05 );
 
-        if ( !IsInTheScreen( camera ) )
+        if ( !IsInField( ) )
         {
             object.PositionAdd( -direction * 0.05 );
 
