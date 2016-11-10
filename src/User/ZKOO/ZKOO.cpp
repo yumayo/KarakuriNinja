@@ -11,6 +11,10 @@ namespace User
         static ZKOO instans;
         return instans;
     }
+    bool ZKOO::isRecognition( const uint32_t handle, ZKOOHand & hand )
+    {
+        return zkoo.isRecognition( handle, hand );
+    }
     bool ZKOO::isPush( const uint32_t handle, ZKOOHand & hand )
     {
         return zkoo.isPush( handle, hand );
@@ -49,5 +53,17 @@ namespace User
     {
         static ZKOOHand hand;
         return hand;
+    }
+    void ZKOO::Resumption( )
+    {
+        zkoo.Resumption( );
+    }
+    bool ZKOO::IsActive( )
+    {
+        return zkoo.IsActive( );
+    }
+    bool ZKOO::IsHandsActive( )
+    {
+        return zkoo.IsHandsActive( );
     }
 }

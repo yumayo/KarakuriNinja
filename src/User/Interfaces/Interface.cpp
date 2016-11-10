@@ -7,12 +7,11 @@ namespace User
     using namespace cinder;
 
     Interface::Interface( )
-        : playerIconEdge( loadImage( app::loadAsset( "PlayerIconEdge.png" ) ) )
-        , APEdge( loadImage( app::loadAsset( "APEdge.png" ) ) )
-        , HPEdge( loadImage( app::loadAsset( "HPEdge.png" ) ) )
-        , score( loadImage( app::loadAsset( "score.png" ) ) )
-        , APEdgeBase( loadImage( app::loadAsset( "APEdgeBase.png" ) ) )
-        , HPEdgeBase( loadImage( app::loadAsset( "HPEdgeBase.png" ) ) )
+        : APEdge( loadImage( app::loadAsset( "UI/APEdge.png" ) ) )
+        , HPEdge( loadImage( app::loadAsset( "UI/HPEdge.png" ) ) )
+        , score( loadImage( app::loadAsset( "UI/Score.png" ) ) )
+        , APEdgeBase( loadImage( app::loadAsset( "UI/APEdgeBase.png" ) ) )
+        , HPEdgeBase( loadImage( app::loadAsset( "UI/HPEdgeBase.png" ) ) )
     { }
 
     void Interface::draw( float APNormalized, float HPNormalized )
@@ -20,21 +19,19 @@ namespace User
         auto leftDown = Vec2f( 0, env.getWindowHeight( ) );
         auto rightDown = env.getWindowSize( );
 
-        auto translatePlayerIconEdge = Vec2f( 10 + 128, -10 - 128 );
-
         gl::color( Color::white( ) );
 
-        textureDraw( APEdgeBase, leftDown + translatePlayerIconEdge + Vec2f( APEdgeBase.getWidth( ) / 2.0F, 0 ) + Vec2f( 128, -64 ),
-                     Area( 94, 0, 314, APEdgeBase.getHeight( ) ), APNormalized );
-        textureDraw( APEdge, leftDown + translatePlayerIconEdge + Vec2f( APEdge.getWidth( ) / 2.0F, 0 ) + Vec2f( 128, -64 ) );
+        auto translateScorePosition = Vec2f( -11, -26 );
+        textureDraw( score, rightDown + Vec2f( -score.getWidth( ), 0 ) + translateScorePosition );
 
-        textureDraw( HPEdgeBase, leftDown + translatePlayerIconEdge + Vec2f( HPEdgeBase.getWidth( ) / 2.0F, 0 ) + Vec2f( 128, 64 ),
-                     Area( 10, 0, 730, HPEdgeBase.getHeight( ) ), HPNormalized );
-        textureDraw( HPEdge, leftDown + translatePlayerIconEdge + Vec2f( HPEdge.getWidth( ) / 2.0F, 0 ) + Vec2f( 128, 64 ) );
+        textureDraw( HPEdge, leftDown );
+        textureDraw( HPEdgeBase, leftDown,
+                     Area( 224, 0, 864, HPEdgeBase.getHeight( ) ), HPNormalized );
 
-        textureDraw( playerIconEdge, leftDown + translatePlayerIconEdge );
-
-        textureDraw( score, rightDown + Vec2f( -512, -10 - 128 ) );
+        auto translateAPEdgePosition = Vec2f( 226, -101 );
+        textureDraw( APEdge, leftDown + translateAPEdgePosition );
+        textureDraw( APEdgeBase, leftDown + translateAPEdgePosition,
+                     Area( 14, 0, 354, APEdgeBase.getHeight( ) ), APNormalized );
     }
 
     void Interface::update( )
@@ -45,7 +42,7 @@ namespace User
     void Interface::textureDraw( cinder::gl::Texture const & texture, cinder::Vec2f position )
     {
         gl::pushModelView( );
-        gl::translate( -texture.getSize( ) / 2.0F + position );
+        gl::translate( -texture.getSize( ) / 2.0F + position + Vec2f( texture.getWidth( ) / 2.0F, -texture.getHeight( ) / 2.0F ) );
         gl::draw( texture );
         texture.unbind( );
         gl::popModelView( );
@@ -54,7 +51,7 @@ namespace User
     void Interface::textureDraw( cinder::gl::Texture const & texture, cinder::Vec2f position, cinder::Area area, float size )
     {
         gl::pushModelView( );
-        gl::translate( -texture.getSize( ) / 2.0F + position );
+        gl::translate( -texture.getSize( ) / 2.0F + position + Vec2f( texture.getWidth( ) / 2.0F, -texture.getHeight( ) / 2.0F ) );
         gl::draw( texture,
                   Area( area.x1, area.y1, area.x1 + area.x2 * size, area.y1 + area.y2 ),
                   Rectf( area.x1, area.y1, area.x1 + area.x2 * size, area.y1 + area.y2 ) );

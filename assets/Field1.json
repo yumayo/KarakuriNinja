@@ -34,8 +34,6 @@
     }
   ],
   "Enemy": [
-    "Slash",
-    "Slash",
-    "Bullet"
+    "Slash"
   ]
 }

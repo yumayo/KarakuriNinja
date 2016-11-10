@@ -68,11 +68,11 @@ namespace User
     int EnemyManager::PlayerToEnemyDamage( Line& line_, const cinder::CameraPersp& camera )
     {
         int drainMp = 0;
-        Each( [ &drainMp, &line_, &camera ] ( EnemyBaseRef& enemyRef )
+        Each( [ &drainMp, &line_, &camera, this ] ( EnemyBaseRef& enemyRef )
         {
             Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
             Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            float radius = Vec3f( size - vec ).length( ) / 2.0F;
+            float radius = Vec3f( size - vec ).length( ) / 2.0F * colliedSize;
             drainMp += enemyRef->Hit( CheckDefLineOfCircle( line_, vec, radius ) );
         } );
         return drainMp;
@@ -125,11 +125,11 @@ namespace User
 
     void EnemyManager::DrawCollisionCircle( cinder::CameraPersp const & camera )
     {
-        Each( [ &camera ] ( EnemyBaseRef& enemyRef )
+        Each( [ &camera, this ] ( EnemyBaseRef& enemyRef )
         {
             Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
             Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            float radius = Vec3f( size - vec ).length( ) / 2.0F;
+            float radius = Vec3f( size - vec ).length( ) / 2.0F * colliedSize;
 
             gl::color( ColorA( 1, 1, 1, 0.25F ) );
             gl::drawSolidCircle( vec, radius, radius );

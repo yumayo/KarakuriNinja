@@ -94,11 +94,11 @@ namespace User
 
     void EnemyBulletManager::DrawBulletCircle( cinder::CameraPersp const & camera )
     {
-        Each( [ &camera ] ( EnemyBulletBaseRef& bulletRef )
+        Each( [ &camera, this ] ( EnemyBulletBaseRef& bulletRef )
         {
             Vec2f vec = camera.worldToScreen( bulletRef->EndPosition( ), env.getWindowWidth( ), env.getWindowHeight( ) );
             Vec2f size = camera.worldToScreen( bulletRef->EndPosition( ) + bulletRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            float radius = Vec3f( size - vec ).length( ) / 2.0F;
+            float radius = Vec3f( size - vec ).length( ) / 2.0F * colliedSize;
 
             gl::color( ColorA( 1, 0, 0, 0.5F ) );
             gl::drawSolidCircle( vec, radius, radius );

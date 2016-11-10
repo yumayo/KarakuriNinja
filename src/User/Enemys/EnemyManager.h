@@ -15,6 +15,7 @@ namespace User
 
     class EnemyManager
     {
+        float colliedSize = 1.5F;
         EnemyList enemyList;
         EnemyBulletList bulletList;
     public:

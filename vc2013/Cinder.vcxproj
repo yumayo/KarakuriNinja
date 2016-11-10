@@ -245,6 +245,13 @@
     <ClInclude Include="..\src\User\ZKOO\ZKOOHand.h" />
     <ClInclude Include="..\src\User\ZKOO\ZKOOMaker.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\assets\Field1.json" />
+    <None Include="..\assets\Field2.json" />
+    <None Include="..\assets\Field3.json" />
+    <None Include="..\assets\Field4.json" />
+    <None Include="..\assets\Field5.json" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

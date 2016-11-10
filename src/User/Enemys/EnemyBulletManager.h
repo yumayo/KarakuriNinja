@@ -16,6 +16,8 @@ namespace User
 
     class EnemyBulletManager
     {
+        float colliedSize = 1.5F;
+        EnemyBulletList bulletList;
     public:
         EnemyBulletManager( );
         void update( );
@@ -37,8 +39,6 @@ namespace User
     private:
         void Each( std::function<void( EnemyBulletBaseRef& )> func );
         void BulletEraser( );
-    private:
-        EnemyBulletList bulletList;
     };
 
     using EnemyBulletManagerRef = std::shared_ptr<EnemyBulletManager>;

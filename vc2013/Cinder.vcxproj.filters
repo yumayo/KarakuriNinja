@@ -64,6 +64,9 @@
     <Filter Include="User\Effect">
       <UniqueIdentifier>{1e3c688b-e26b-4dca-a73f-694babe85cbf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Asset">
+      <UniqueIdentifier>{a3a55d9d-7c10-461b-a043-8dc09a17475c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -483,5 +486,22 @@
     <ClCompile Include="..\src\User\Special\Water.cpp">
       <Filter>User\Special</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\assets\Field1.json">
+      <Filter>Asset</Filter>
+    </None>
+    <None Include="..\assets\Field2.json">
+      <Filter>Asset</Filter>
+    </None>
+    <None Include="..\assets\Field3.json">
+      <Filter>Asset</Filter>
+    </None>
+    <None Include="..\assets\Field4.json">
+      <Filter>Asset</Filter>
+    </None>
+    <None Include="..\assets\Field5.json">
+      <Filter>Asset</Filter>
+    </None>
   </ItemGroup>
 </Project>

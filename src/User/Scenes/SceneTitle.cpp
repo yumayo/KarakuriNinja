@@ -12,8 +12,6 @@ namespace User
         , logoAlphaSpeed( 0.0125f )
         , isEnd( false )
     {
-        env.setWindowSize( 1280, 720 );
-
         Izanami::FileReader fileReader;
         Izanami::TextureMaker tex;
 
@@ -40,6 +38,9 @@ namespace User
 
     void SceneTitle::update( )
     {
+        inputzkoo.Resumption( );
+        if ( !inputzkoo.IsActive( ) ) return;
+
         slashInput.Begin( );
 
         UpdateLogoAlpha( );
@@ -97,6 +98,37 @@ namespace User
         font.Draw( u8"スタート", startButtonPosition );
 
         slashInput.Draw( );
+
+        // 画面を薄い黒で塗りつぶす。
+        if ( !inputzkoo.IsActive( ) )
+        {
+            gl::color( ColorA( 0, 0, 0, 0.5 ) );
+            gl::drawSolidRect( Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
+            gl::color( Color( 1, 1, 1 ) );
+        }
+
+        // ZKOOの表示
+        auto hand = inputzkoo.hand( );
+        for ( auto& i : inputzkoo.GetHandleIDs( ) )
+        {
+            if ( inputzkoo.isRecognition( i, hand ) )
+            {
+                gl::color( Color( 1, 1, 0 ) );
+                gl::drawSolidCircle( hand.Position( ), 100, 50 );
+            }
+            if ( inputzkoo.isPress( i, hand ) )
+            {
+                gl::color( Color( 1, 1, 1 ) );
+                gl::drawSolidCircle( hand.Position( ), 50, 50 );
+            }
+            if ( inputzkoo.isPush( i, hand ) )
+            {
+                if ( !inputzkoo.IsActive( ) )
+                {
+                    if ( inputzkoo.IsHandsActive( ) ) inputzkoo.Resumption( );
+                }
+            }
+        }
     }
     void SceneTitle::endDrawUI( )
     {

@@ -71,7 +71,7 @@ namespace User
     }
     bool EnemyBoss::Attack( const cinder::CameraPersp& camera )
     {
-        return isAttack;
+        return isAttack && IsLive( );
     }
     void EnemyBoss::Gravitate( )
     {

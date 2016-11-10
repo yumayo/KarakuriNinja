@@ -12,7 +12,6 @@ namespace User
         void draw( float APNormalized, float HPNormalized );
         void update( );
     private:
-        cinder::gl::Texture playerIconEdge;
         cinder::gl::Texture APEdge;
         cinder::gl::Texture HPEdge;
         cinder::gl::Texture score;

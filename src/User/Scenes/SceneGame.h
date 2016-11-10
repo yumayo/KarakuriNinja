@@ -9,6 +9,7 @@
 # include "../Enemys/EnemyBulletManager.h"
 # include "../Field/FieldManager.h"
 # include "../Interfaces/Interface.h"
+# include "../Utilitys/Yumayo.h"
 
 //Nomoto's include
 # include "../Player/Player.h"
@@ -49,6 +50,8 @@ namespace User
         FieldManagerRef fieldManager;
 		InterfaceRef UI;
         int gameClearFrame;
+        Timer timer;
+        bool カメラを揺らす;
         //
 
         // 野本が管理するもののインスタンス化。

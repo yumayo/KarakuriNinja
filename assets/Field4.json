@@ -34,9 +34,6 @@
     }
   ],
   "Enemy": [
-    "Bullet",
-    "Bullet",
-    "Slash",
     "Boss"
   ]
 }

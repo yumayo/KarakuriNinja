@@ -62,6 +62,23 @@ namespace User
             hands[i].Rotation( std::stod( splited[index++] ) );
             hands[i].IsTouching( splited[index++] == "True" ? true : false );
             hands[i].IsTracking( splited[index++] == "True" ? true : false );
+
+            if ( i == 0 )
+            {
+                CONSOLE << "œœœœœœœœœœœœœœ" << std::endl;
+                CONSOLE << hands[i].Position( ) << std::endl;
+                CONSOLE << hands[i].Rotation( ) << std::endl;
+                CONSOLE << hands[i].IsTouching( ) << std::endl;
+                CONSOLE << hands[i].IsTracking( ) << std::endl;
+            }
+            else
+            {
+                CONSOLE << "››››››››››››››" << std::endl;
+                CONSOLE << hands[i].Position( ) << std::endl;
+                CONSOLE << hands[i].Rotation( ) << std::endl;
+                CONSOLE << hands[i].IsTouching( ) << std::endl;
+                CONSOLE << hands[i].IsTracking( ) << std::endl;
+            }
         }
 
         return hands;

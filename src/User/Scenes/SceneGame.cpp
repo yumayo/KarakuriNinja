@@ -21,6 +21,7 @@ namespace User
         enemyBulletManager = std::make_shared<EnemyBulletManager>( );
         UI = std::make_shared<Interface>( );
         gameClearFrame = 60 * 3;
+        カメラを揺らす = false;
 
         player = Player( 100, 100 );
     }
@@ -37,6 +38,8 @@ namespace User
     {
         player.AttackPhase( );
 
+        int playerHP = player.NowHp( );
+
         if ( player.Command( ) != CommandType::GUARD )
         {
             player.TranseNowHp( -enemyManager->EnemyToPlayerDamage( camera ) );
@@ -49,6 +52,13 @@ namespace User
             player.TranseNowHp( -enemyBulletManager->EnemyToPlayerDamage( player.GuardLine( ), camera ) );
         }
 
+        if ( playerHP != player.NowHp( ) )
+        {
+            カメラを揺らす = true;
+            timer.On( );
+            timer.Advance( 60 );
+        }
+
         if ( player.IsAttack( ) == true )
         {
             player.TranseNowMp( enemyManager->PlayerToEnemyDamage( player.MakeLine( ), camera ) );
@@ -58,6 +68,9 @@ namespace User
     }
     void SceneGame::update( )
     {
+        inputzkoo.Resumption( );
+        if ( !inputzkoo.IsActive( ) ) return;
+
         // スペシャルは最初にアップデートします。
         // エネミーがいない場合はスペシャルを発動できないようにします。
         if ( !enemyManager->IsEmpty( ) )
@@ -76,6 +89,20 @@ namespace User
         if ( special.getEffectEnd( ) )
         {
             camera.lookAt( cameraEyePosition, camera.getCenterOfInterestPoint( ) );
+        }
+
+        timer.Update( );
+
+        if ( カメラを揺らす )
+        {
+            camera.lookAt( Vec3f( randFloat( -0.05F, 0.05F ), randFloat( -0.05F, 0.05F ), 0.0F ) + cameraEyePosition, camera.getCenterOfInterestPoint( ) );
+        }
+
+        if ( timer.IsAction( ) )
+        {
+            timer.Off( );
+            camera.lookAt( cameraEyePosition, camera.getCenterOfInterestPoint( ) );
+            カメラを揺らす = false;
         }
 
         // エフェクト終了時、全てのエネミー及び弾にダメージを与えます。
@@ -130,7 +157,7 @@ namespace User
     }
     void SceneGame::select( )
     {
-        if ( gameClearFrame == 0 ) 
+        if ( gameClearFrame == 0 )
             create( new SceneResult( ) );
     }
     void SceneGame::beginDrawMain( )
@@ -200,22 +227,35 @@ namespace User
 
         special.draw( );
 
-        // 旧バージョンのZKOOの使い方。
-        if ( zkoo.IsHandUsing( ) )
+        // 画面を薄い黒で塗りつぶす。
+        if ( !inputzkoo.IsActive( ) )
         {
-            gl::color( Color( 1, 1, 0 ) );
-            if ( zkoo.Left( )->IsTracking( ) )  gl::drawSolidCircle( zkoo.Left( )->Position( ), 100, 50 );
-            if ( zkoo.Right( )->IsTracking( ) )  gl::drawSolidCircle( zkoo.Right( )->Position( ), 100, 50 );
+            gl::color( ColorA( 0, 0, 0, 0.5 ) );
+            gl::drawSolidRect( Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
+            gl::color( Color( 1, 1, 1 ) );
+            gl::drawSolidRect( Rectf(Vec2f(200, 400), env.getWindowSize()) );
         }
 
-        // 新しいZKOOの使い方。
+        // ZKOOの表示
         auto hand = inputzkoo.hand( );
         for ( auto& i : inputzkoo.GetHandleIDs( ) )
         {
+            if ( inputzkoo.isRecognition( i, hand ) )
+            {
+                gl::color( Color( 1, 1, 0 ) );
+                gl::drawSolidCircle( hand.Position( ), 100, 50 );
+            }
             if ( inputzkoo.isPress( i, hand ) )
             {
                 gl::color( Color( 1, 1, 1 ) );
                 gl::drawSolidCircle( hand.Position( ), 50, 50 );
+            }
+            if ( inputzkoo.isPush( i, hand ) )
+            {
+                if ( !inputzkoo.IsActive( ) )
+                {
+                    if ( inputzkoo.IsHandsActive( ) ) inputzkoo.Resumption( );
+                }
             }
         }
     }
