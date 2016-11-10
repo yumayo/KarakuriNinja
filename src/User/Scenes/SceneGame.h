@@ -5,16 +5,16 @@
 # include "cinder/Camera.h"
 
 //Yumayo's include
-# include "../Enemys/EnemyController.h"
+# include "../Enemys/EnemyManager.h"
 # include "../Enemys/EnemyBulletManager.h"
+# include "../Field/FieldManager.h"
 # include "../Interfaces/Interface.h"
-# include "../Field/Field.h"
 
 //Nomoto's include
-# include "../Attack/AttackFactory.h"
-# include "../SlashEffect/SlashEffect.h"
 # include "../Player/Player.h"
-# include "../Camera/Camera.h"
+
+//Hirasawa's include
+#include "../Special/Special.h"
 
 namespace User
 {
@@ -40,14 +40,25 @@ namespace User
 		void endDrawUI();
 	private:
         cinder::Vec3f cameraEyePosition;
-		cinder::CameraPersp cameraPersp;
+		cinder::CameraPersp camera;
 
 		// ユーマヨが管理するもののインスタンス化。
-		EnemyControllerRef enemyController;
+
+		EnemyManagerRef enemyManager;
 		EnemyBulletManagerRef enemyBulletManager;
-		Interface UI;
-        FieldRef field;
+        FieldManagerRef fieldManager;
+		InterfaceRef UI;
+        int gameClearFrame;
+        //
+
+        // 野本が管理するもののインスタンス化。
 
 		Player player;
+        //
+
+        // 大ちゃんが管理するもののインスタンス化。
+
+        Special special;
+        //
 	};
 }

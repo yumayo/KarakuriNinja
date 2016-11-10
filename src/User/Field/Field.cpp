@@ -9,6 +9,7 @@ namespace User
 
     Field::Field( std::string const & path )
         : count( 0 )
+        , isEnd( false )
     {
         JsonTree params( app::loadAsset( path ) );
 
@@ -22,12 +23,30 @@ namespace User
     {
         Each( [ this ] ( KarakuriRef& karakuri ) { karakuri->update( count ); } );
 
-        count += 1;
+        if ( isEnd == false )
+        {
+            count = std::min( count + 1, 60 * 4 );
+        }
+        else
+        {
+            count = std::max( count - 1, 0 );
+        }
     }
 
     void Field::draw( )
     {
         Each( [ ] ( KarakuriRef& karakuri ) { karakuri->draw( ); } );
+    }
+
+    void Field::End( )
+    {
+        if ( isEnd ) return;
+        isEnd = true;
+    }
+
+    bool Field::IsNextField( )
+    {
+        return count == 0 && isEnd;
     }
 
     void Field::Each( std::function<void( KarakuriRef& karakuri )> func )

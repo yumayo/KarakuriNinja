@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <list>
+#include <functional>
 
 #include "EnemyBulletBase.h"
 
@@ -31,7 +32,10 @@ namespace User
         int EnemyToPlayerDamage( Line& line_, const cinder::CameraPersp& camera );
         // ’e‚Ì“–‚½‚è”»’èˆæ‚ğ•`‰æ‚µ‚Ü‚·B
         void DrawCollisionCircle( cinder::CameraPersp const& camera );
+        // ’e‚ª“–‚½‚éêŠ‚ğ•`‰æ‚µ‚Ü‚·B
+        void DrawBulletCircle( cinder::CameraPersp const & camera );
     private:
+        void Each( std::function<void( EnemyBulletBaseRef& )> func );
         void BulletEraser( );
     private:
         EnemyBulletList bulletList;

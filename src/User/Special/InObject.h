@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include "cinder/Vector.h"
 #include "Framework.hpp"
 #include "cinder/app/App.h"

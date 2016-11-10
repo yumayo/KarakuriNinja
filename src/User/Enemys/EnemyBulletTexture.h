@@ -10,7 +10,8 @@ namespace User
     protected:
         cinder::gl::Texture texture;
     public:
-        EnemyBulletTexture( cinder::Vec3f position, cinder::Vec3f speed, std::string const& path );
+        EnemyBulletTexture( cinder::Vec3f begin, cinder::Vec3f end, std::string const& path );
+        EnemyBulletTexture( cinder::Vec3f begin, cinder::Vec3f end, std::string const& path, int attackPoint );
         virtual void draw( ) override;
     };
 }

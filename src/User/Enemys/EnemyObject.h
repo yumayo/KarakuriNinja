@@ -9,37 +9,37 @@ namespace User
     {
     public:
         EnemyObject( )
-            : pos( cinder::Vec3f::zero( ) ), size( cinder::Vec3f::zero( ) ), speed( cinder::Vec3f::zero( ) ), radius( 0.0F )
+            : pos( cinder::Vec3f::zero( ) ), size( cinder::Vec3f::zero( ) ), speed( cinder::Vec3f::zero( ) ), direction( cinder::Vec3f::zAxis( ) ), radius( 0.0F )
         {
             Direction( cinder::Vec3f::zAxis( ) );
         }
         EnemyObject( cinder::Vec3f pos, cinder::Vec3f size )
-            : pos( pos ), size( size ), speed( cinder::Vec3f::zero( ) ), radius( size.length( ) / 2.0F )
+            : pos( pos ), size( size ), speed( cinder::Vec3f::zero( ) ), direction( cinder::Vec3f::zAxis( ) ), radius( size.length( ) / 2.0F )
         {
             Direction( cinder::Vec3f::zAxis( ) );
         }
         EnemyObject( cinder::Vec3f pos, cinder::Vec3f size, cinder::Vec3f speed )
-            : pos( pos ), size( size ), speed( speed ), radius( size.length( ) / 2.0F )
+            : pos( pos ), size( size ), speed( speed ), direction( cinder::Vec3f::zAxis( ) ), radius( size.length( ) / 2.0F )
         {
             Direction( cinder::Vec3f::zAxis( ) );
         }
         EnemyObject( cinder::Vec3f pos, cinder::Vec3f size, cinder::Vec3f speed, float radius )
-            : pos( pos ), size( size ), speed( speed ), radius( radius )
+            : pos( pos ), size( size ), speed( speed ), direction( cinder::Vec3f::zAxis( ) ), radius( radius )
         {
             Direction( cinder::Vec3f::zAxis( ) );
         }
         EnemyObject( cinder::Vec3f pos, cinder::Vec3f size, cinder::Vec3f speed, cinder::Vec3f direction )
-            : pos( pos ), size( size ), speed( speed ), radius( size.xy( ).length( ) / 2.0F )
+            : pos( pos ), size( size ), speed( speed ), direction( cinder::Vec3f::zAxis( ) ), radius( size.xy( ).length( ) / 2.0F )
         {
             Direction( direction );
         }
         EnemyObject( cinder::Vec3f pos, cinder::Vec3f size, cinder::Vec3f speed, float radius, cinder::Vec3f direction )
-            : pos( pos ), size( size ), speed( speed ), radius( radius )
+            : pos( pos ), size( size ), speed( speed ), direction( cinder::Vec3f::zAxis( ) ), radius( radius )
         {
             Direction( direction );
         }
         EnemyObject( const EnemyObject& other )
-            : pos( other.pos ), size( other.size ), speed( other.speed ), radius( other.radius )
+            : pos( other.pos ), size( other.size ), speed( other.speed ), direction( cinder::Vec3f::zAxis( ) ), radius( other.radius )
         {
             Direction( other.direction );
         }
@@ -63,8 +63,10 @@ namespace User
 
         void Speed( cinder::Vec3f speed ) { this->speed = speed; }
         void SpeedAdd( cinder::Vec3f speed ) { this->speed += speed; }
-        
-        void Direction( cinder::Vec3f direction ) { this->direction = direction.normalized( ); quaternion = cinder::Quatf( cinder::Vec3f::zAxis( ), this->direction ); }
+
+        void Direction( cinder::Vec3f direction );
         void DirectionRotate( cinder::Vec3f axis, float radian ) { direction.rotate( axis, radian ); Direction( direction ); }
+
+        void Target( cinder::Vec3f targetPosition );
     };
 }

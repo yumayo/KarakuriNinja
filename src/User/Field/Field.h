@@ -14,11 +14,14 @@ namespace User
     {
         KarakuriList karakuris;
         int count;
+        bool isEnd;
     public:
         Field( std::string const& path );
     public:
         void update( );
         void draw( );
+        void End( );
+        bool IsNextField( );
     private:
         void Each( std::function<void( KarakuriRef& karakuri )> func );
     };

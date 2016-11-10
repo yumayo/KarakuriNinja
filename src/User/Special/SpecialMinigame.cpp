@@ -18,7 +18,12 @@ void SpecialMinigame::draw()
 	for (auto &itr : inobject) {
 		itr.draw();
 	}
-	
+	if (endflash) {
+		gl::translate(Vec2f(app::getWindowWidth()/2,app::getWindowHeight()/2));
+		gl::color(ColorA(1,1,1,end_al_));
+		gl::drawSolidRect(ci::Rectf(-app::getWindowSize()/2, app::getWindowSize() / 2));
+		gl::color(ColorA(1, 1, 1, 1));
+	}
 }
 
 void SpecialMinigame::update()
@@ -51,8 +56,12 @@ void SpecialMinigame::update()
 		itr.update();
 	}
 	if (circles.size() == 2) {
+		if (circles[0].getMoveStart() && circles[1].getMoveStart()) {
+			gage_.setisCount(circles[0].getIsRealSafe()&& circles[1].getIsRealSafe());
+		}
 		if (circles[0].getClear() && circles[1].getClear()) {
 			inobject.push_back(getInObject());
+			gage_.setisCount(false);
 			clearCircles();
 		}
 	}
@@ -64,10 +73,19 @@ void SpecialMinigame::update()
 				create2Circles();
 		}
 	}
-if (step_ == STEPNUM) {
-		clearCircles();
-		go_next_ = true;
+	gage_.update();
+    if (step_ == STEPNUM) {
+	endflash = true;
+		//clearCircles();
+		//go_next_ = true;
 	}
+    if (endflash) {
+		Easing::tCount(endt_,0.7f);
+		end_al_ = Easing::getEasing[Easing::EasingType::CircInOut](endt_, 0.f, 1.f);
+		if (endt_ >= 1) {
+			go_next_ = true;
+		}
+    }
 }
 
 void SpecialMinigame::create2Circles()

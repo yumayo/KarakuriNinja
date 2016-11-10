@@ -114,19 +114,6 @@ void Player::Touch()
 	{
 		SetAttackMotionOfTouch(touch, id);
 		MakeAttackMotionOfTouch(touch, id);
-
-		//////とりあえずこれでプレイヤーアイコンの近くをプッシュするとスペシャルモードに入れるようにしておきました
-		if (inputs.isPushTouch(id, touch))
-		{
-			Vec2f iconpos = Vec2f(163, 665);
-			float iconsize = 150.f;
-			float kyori = (iconpos.x - touch.getPos().x)*(iconpos.x - touch.getPos().x) + (iconpos.y - touch.getPos().y)*(iconpos.y - touch.getPos().y);
-			if (kyori < (iconsize*iconsize)) {
-				if (special.getIsSpecial() == false)
-					special.goSpecialMode();
-			}
-		}
-	    //////
 	}
 }
 
@@ -202,7 +189,6 @@ void Player::AttackPhase()
 	Zkoo();
 	Touch();
 	slashEffect.Update();
-	special.update();//とりあえずここに書いときます
 }
 
 void Player::UpdateDeffenceOfTouch()
@@ -249,5 +235,4 @@ void Player::Draw()
 {
 	slashEffect.Draw();
 	deffence.Draw();
-	special.draw();//とりあえずここに書いときます
 }

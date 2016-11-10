@@ -2,9 +2,8 @@
 
 # include "Scene.hpp"
 # include "../Assets/Assets.h"
-#include "../SlashEffect/SlashEffect.h"
-#include "../Deffence/Deffence.h"
-#include "../Attack/AttackFactory.h"
+
+# include "../Utilitys/Yumayo.h"
 
 namespace User
 {
@@ -20,33 +19,27 @@ namespace User
         void select( );
     public:
         void UpdateLogoAlpha( );
-        //今はTouchでやっています
-        //後でZkooに変えます
-        void Touch( );
-        void SetAttackMotionOfTouch( cinder::app::TouchEvent::Touch touch, uint32_t id );
-        void MakeAttackMotionOfTouch( cinder::app::TouchEvent::Touch touch, uint32_t id );
-
+    public:
         void beginDrawUI( );
         void drawUI( );
         void endDrawUI( );
-
-        
-
-        
     private:
-        Slash slashEffect;
-        AttackFactory attackTask;
-        Line line;
-        bool isAttack;
+        // スラッシュでの操作を行いますので、インスタンス化します。
+        // Yumayo.h
+        SlashInput slashInput;
 
-        //スタートボタンのLogoのAlpha値です
-        float logoAlpha;
-        //スタートボタンのLogoのAlpha移動のSpeed値です
-        float logoAlphaSpeed;
+        // Yumayo.h のフォントを扱うクラスです。
+        Fonts font;
 
+        // 簡単なテクスチャマネージャー。
         Izanami::Holder<ci::gl::Texture> textures;
-        
 
+        // スタートボタンの変数。
+        float logoAlpha;
+        float logoAlphaSpeed;
+        cinder::Vec2f startButtonPosition;
+
+        // シーン遷移に使います。
         bool isEnd;
     };
 }

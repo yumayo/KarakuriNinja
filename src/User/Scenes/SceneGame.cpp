@@ -1,6 +1,8 @@
+# include "SceneGame.h"
+# include "SceneResult.h"
+
 # include "ZKOO.hpp"
-#include "SceneGame.h"
-#include "cinder/Rand.h"
+# include "cinder/Rand.h"
 
 namespace User
 {
@@ -8,15 +10,17 @@ namespace User
 
     SceneGame::SceneGame( )
     {
-        cameraEyePosition = Vec3f( 0, 0.5, -5 );
-        cameraPersp.lookAt( cameraEyePosition, Vec3f( 0, 0.5, 0 ) );
-        cameraPersp.setWorldUp( Vec3f( 0, 1, 0 ) );
-        cameraPersp.setPerspective( 60.0F, env.getWindowAspectRatio( ), 1.0F, 100.0F );
+        cameraEyePosition = Vec3f( 0, 0.7, -5 );
+        camera.lookAt( cameraEyePosition, Vec3f( 0, 0.7, 0 ) );
+        camera.setWorldUp( Vec3f( 0, 1, 0 ) );
+        camera.setPerspective( 60.0F, env.getWindowAspectRatio( ), 1.0F, 100.0F );
 
-        enemyController = std::make_shared<EnemyController>( cameraPersp );
+        // ユーマヨが管理するものを作成。
+        fieldManager = std::make_shared<FieldManager>( );
+        enemyManager = std::make_shared<EnemyManager>( camera, fieldManager->FieldDataPath( ) );
         enemyBulletManager = std::make_shared<EnemyBulletManager>( );
-
-        field = std::make_shared<Field>( "field_1.json" );
+        UI = std::make_shared<Interface>( );
+        gameClearFrame = 60 * 3;
 
         player = Player( 100, 100 );
     }
@@ -26,7 +30,7 @@ namespace User
     }
     void SceneGame::resize( )
     {
-        cameraPersp.setAspectRatio( env.getWindowAspectRatio( ) );
+        camera.setAspectRatio( env.getWindowAspectRatio( ) );
     }
 
     void SceneGame::UpdatePlayer( )
@@ -35,64 +39,84 @@ namespace User
 
         if ( player.Command( ) != CommandType::GUARD )
         {
-            player.TranseNowHp( -enemyController->EnemyToPlayerDamage( cameraPersp ) );
-            player.TranseNowHp( -enemyBulletManager->EnemyToPlayerDamage( cameraPersp ) );
-            enemyController->ResetPosition( cameraPersp );
+            player.TranseNowHp( -enemyManager->EnemyToPlayerDamage( camera ) );
+            player.TranseNowHp( -enemyBulletManager->EnemyToPlayerDamage( camera ) );
         }
 
         if ( player.Command( ) == CommandType::GUARD )
         {
-            player.TranseNowHp( -enemyController->EnemyToPlayerDamage( player.GuardLine( ), cameraPersp ) );
-            player.TranseNowHp( -enemyBulletManager->EnemyToPlayerDamage( player.GuardLine( ), cameraPersp ) );
-            enemyController->ResetPosition( cameraPersp );
+            player.TranseNowHp( -enemyManager->EnemyToPlayerDamage( player.GuardLine( ), camera ) );
+            player.TranseNowHp( -enemyBulletManager->EnemyToPlayerDamage( player.GuardLine( ), camera ) );
         }
 
         if ( player.IsAttack( ) == true )
         {
-            player.TranseNowMp( enemyController->PlayerToEnemyDamage( player.MakeLine( ), cameraPersp ) );
-            player.TranseNowMp( enemyBulletManager->PlayerToEnemyDamage( player.MakeLine( ), cameraPersp ) );
+            player.TranseNowMp( enemyManager->PlayerToEnemyDamage( player.MakeLine( ), camera ) );
+            player.TranseNowMp( enemyBulletManager->PlayerToEnemyDamage( player.MakeLine( ), camera ) );
             player.ShiftIsAttack( );
         }
     }
     void SceneGame::update( )
     {
+        // スペシャルは最初にアップデートします。
+        // エネミーがいない場合はスペシャルを発動できないようにします。
+        if ( !enemyManager->IsEmpty( ) )
+        {
+            special.update( player.NowMp( ) == player.MaxMp( ) );
+        }
+
         // プレイヤーのスペシャルエフェクト時にカメラを揺らします。
-        if ( player.getisEffecting( ) )
+        if ( special.isEffecting( ) )
         {
-            cameraPersp.lookAt( Vec3f( randFloat( -0.05F, 0.05F ), randFloat( -0.05F, 0.05F ), 0.0F ) + cameraEyePosition, cameraPersp.getCenterOfInterestPoint( ) );
-        }
-        // それが終わったら、カメラを元通りにします。
-        if ( player.getisEffetEnd( ) )
-        {
-            cameraPersp.lookAt( cameraEyePosition, cameraPersp.getCenterOfInterestPoint( ) );
+            camera.lookAt( Vec3f( randFloat( -0.05F, 0.05F ), randFloat( -0.05F, 0.05F ), 0.0F ) + cameraEyePosition, camera.getCenterOfInterestPoint( ) );
+            player.TranseNowMp( -1 );
         }
 
-        // カラクリアップデート
-        field->update( );
-
-        // スペシャル選択時から、エフェクトが終わるまでエネミーの動作を止めます。
-        if ( !player.getisSpecial( ) )
+        // エフェクト終了時、カメラを元通りにします。
+        if ( special.getEffectEnd( ) )
         {
-            enemyController->update( );
-            enemyBulletManager->BulletRegister( enemyController->BulletsRecovery( ) );
-            enemyBulletManager->update( );
+            camera.lookAt( cameraEyePosition, camera.getCenterOfInterestPoint( ) );
         }
 
         // エフェクト終了時、全てのエネミー及び弾にダメージを与えます。
-        if ( player.getisEffetEnd( ) )
+        if ( special.getEffectEnd( ) )
         {
-            player.TranseNowMp( enemyController->PlayerSpecialAttackToEnemyDamage( 5.0F ) );
+            const float damagevalue = 5.f;
+            player.TranseNowMp( enemyManager->PlayerSpecialAttackToEnemyDamage( special.getspecialPower( )*damagevalue ) );
             player.TranseNowMp( enemyBulletManager->PlayerSpecialAttackToEnemyDamage( ) );
         }
 
-        UpdatePlayer( );
-        auto touch = inputs.touch( );
-        for ( auto id : inputs.GetTouchHandleIDs( ) )
+        // スペシャル選択時から、エフェクトが終わるまで全ての動作を止めます。
+        if ( !special.getIsSpecial( ) )
         {
-            if ( inputs.isPushTouch( id, touch ) )
-                CONSOLE << id << std::endl;
+            fieldManager->Update( );
+            enemyManager->update( camera );
+            enemyBulletManager->BulletRegister( enemyManager->BulletsRecovery( ) );
+            enemyBulletManager->update( );
+            UpdatePlayer( );
         }
 
+        // エネミーが全滅したら、次のステージを準備。
+        if ( enemyManager->IsEmpty( ) )
+        {
+            fieldManager->End( );
+        }
+
+        // ステージの移動が終了したら次のステージへ。
+        if ( fieldManager->IsChange( ) )
+        {
+            fieldManager->ChangeField( );
+            enemyManager = std::make_shared<EnemyManager>( camera, fieldManager->FieldDataPath( ) );
+            enemyBulletManager = std::make_shared<EnemyBulletManager>( );
+            UI = std::make_shared<Interface>( );
+        }
+
+        // ラスボスを倒し終わったら、何らかのアクション後、次のシーンへ。
+        if ( enemyManager->IsEmpty( ) && fieldManager->IsLastField( ) )
+        {
+            gameClearFrame = std::max( gameClearFrame - 1, 0 );
+            camera.lookAt( Vec3f( randFloat( -0.05F, 0.05F ), randFloat( -0.05F, 0.05F ), 0.0F ) + cameraEyePosition, camera.getCenterOfInterestPoint( ) );
+        }
     }
     void SceneGame::draw( )
     {
@@ -106,7 +130,8 @@ namespace User
     }
     void SceneGame::select( )
     {
-
+        if ( gameClearFrame == 0 ) 
+            create( new SceneResult( ) );
     }
     void SceneGame::beginDrawMain( )
     {
@@ -128,13 +153,13 @@ namespace User
     }
     void SceneGame::drawMain( )
     {
-        gl::setMatrices( cameraPersp );
+        gl::setMatrices( camera );
 
         gl::drawCoordinateFrame( );
 
-        field->draw( );
+        fieldManager->Draw( );
 
-        enemyController->draw( );
+        enemyManager->draw( );
         enemyBulletManager->draw( );
     }
     void SceneGame::endDrawMain( )
@@ -158,13 +183,24 @@ namespace User
     }
     void SceneGame::drawUI( )
     {
+        // 敵や、バレットの当たり判定領域を描画します。
     #ifdef _DEBUG
-        enemyController->DrawCollisionCircle( cameraPersp );
-        enemyBulletManager->DrawCollisionCircle( cameraPersp );
+        enemyManager->DrawCollisionCircle( camera );
+        enemyBulletManager->DrawCollisionCircle( camera );
     #endif
 
+        // 描画順は プレイヤー エネミー UI スペシャルの順にします。
         player.Draw( );
 
+        enemyManager->drawUI( );
+
+        enemyBulletManager->DrawBulletCircle( camera );
+
+        UI->draw( player.NormalizedMp( ), player.NormalizedHp( ) );
+
+        special.draw( );
+
+        // 旧バージョンのZKOOの使い方。
         if ( zkoo.IsHandUsing( ) )
         {
             gl::color( Color( 1, 1, 0 ) );
@@ -172,6 +208,7 @@ namespace User
             if ( zkoo.Right( )->IsTracking( ) )  gl::drawSolidCircle( zkoo.Right( )->Position( ), 100, 50 );
         }
 
+        // 新しいZKOOの使い方。
         auto hand = inputzkoo.hand( );
         for ( auto& i : inputzkoo.GetHandleIDs( ) )
         {
@@ -180,11 +217,6 @@ namespace User
                 gl::color( Color( 1, 1, 1 ) );
                 gl::drawSolidCircle( hand.Position( ), 50, 50 );
             }
-        }
-
-        if ( !player.getisMinigame( ) )
-        {
-            UI.draw( player.NormalizedMp( ), player.NormalizedHp( ) );
         }
     }
     void SceneGame::endDrawUI( )

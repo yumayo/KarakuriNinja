@@ -14,6 +14,7 @@ using Mouse = cinder::app::MouseEvent;
 using Key = cinder::app::KeyEvent;
 
 # include "../src/Lib/Input.h"
-
 # define inputs Lib::Input::Geti( )
-# define env Lib::Input::Geti( ).GetApp( )
+
+# include "../src/Lib/Environment.h"
+# define env Lib::Environment::Geti( ).GetApp( )

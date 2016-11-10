@@ -1,5 +1,28 @@
 #include"Special.h"
-void Special::update() {
+void Special::update(bool canspecial) {
+	/////////////////////
+	if (isspesial == false&&canspecial) {
+		auto touch = inputs.touch();
+		auto ids = inputs.GetTouchHandleIDs();
+
+		for (auto id : ids)
+		{
+
+			//////とりあえずこれでプレイヤーアイコンの近くをプッシュするとスペシャルモードに入れるようにしておきました
+			if (inputs.isPushTouch(id, touch))
+			{
+				Vec2f iconpos = Vec2f(0, env.getWindowHeight())+ Vec2f(10 + 128, -10 - 128);
+				float iconsize = 128.f;
+				float kyori = (iconpos.x - touch.getPos().x)*(iconpos.x - touch.getPos().x) + (iconpos.y - touch.getPos().y)*(iconpos.y - touch.getPos().y);
+				if (kyori < (iconsize*iconsize)) {
+						goSpecialMode();
+				}
+			}
+			//////
+		}
+	}
+
+	/////////////
 	special_->update();
 	effectend_ = false;
 	if (special_->shift())
@@ -21,6 +44,7 @@ void Special::shift()
 		mode = MODE::MINIGAME;
 		break;
 	case Special::MINIGAME:
+		specialpower_ = special_->getSpecialPower();
 		special_ = std::make_shared<SpecialEffect>(special_->getSpecialType());
 		mode = MODE::EFFECT;
 		break;

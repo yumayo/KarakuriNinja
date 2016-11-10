@@ -22,11 +22,14 @@ public:
 		start_t_x_ = 0.f;
 		start_t_y_ = 0.f;
 		info_t_ = 0.0f;
+		end_al_ = 0.0f;
+		endt_ = 0.0f;
 		backimage_ = loadImage(app::loadAsset("minihaikei.png"));
 		cursor_= loadImage(app::loadAsset("awasero.png"));
 		backninja_ = loadImage(app::loadAsset("backninja.png"));
 		start_angle_t_ = 0.0f;
 		ispush_back_circles_ = false;
+		endflash = false;
 	}
 	void draw() override;
 	void update() override;
@@ -38,6 +41,9 @@ public:
 	}
 	bool isFullScreen() {
 		return startend();
+	}
+	float getSpecialPower() override{
+		return gage_.getCount();
 	}
 private:
 	struct BackCircle {
@@ -63,6 +69,8 @@ private:
 	float start_t_y_;
 	float start_angle_t_;
 	float info_t_;
+	float endt_;
+	float end_al_;
 	bool ispush_back_circles_;
 
 	void create2Circles();
@@ -81,6 +89,7 @@ private:
 	void drawMyFillBox(Vec2f pos, Vec2f size);
 	void drawBackground();
 	int getInObject();
+	bool endflash;
 	bool startend() {
 		return start_t_y_ >= 1.0f;
 	}

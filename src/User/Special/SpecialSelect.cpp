@@ -21,7 +21,9 @@ void SpecialSelect::drawIcon()
 		gl::pushModelView();
 		gl::translate(icons[i].pos);
 		gl::rotate(Vec3f(0.f,icons[i].angle,0));
+		icontex[i].enableAndBind();
 		gl::drawSolidRect(ci::Rectf(-icons[i].size / 2.f, icons[i].size / 2.f));
+		icontex[i].disable();
 		gl::popModelView();
 	}
 }

@@ -4,24 +4,14 @@
 #include <string>
 #include <vector>
 
-#include "cinder/app/AppNative.h"
+#include "cinder/app/TouchEvent.h"
 
 namespace Lib
 {
     class Input
     {
     public:
-        static Input& Geti( )
-        {
-            static Input instans;
-            return instans;
-        }
-    public:
-        void setup( cinder::app::AppNative *app );
-    public:
-        cinder::app::AppNative& GetApp( );
-    private:
-        cinder::app::AppNative *app;
+        static Input& Geti( );
     public: // É}ÉEÉX
         bool isPushButton( const int button ) const;
         bool isPressButton( const int button ) const;

@@ -3,23 +3,40 @@
 # include "cinder/ImageIo.h"
 # include "cinder/app/App.h"
 
+# include "../Utilitys/Hirasawa.h"
+
 namespace User
 {
     using namespace cinder;
 
-    EnemyBulletBase::EnemyBulletBase( cinder::Vec3f position, cinder::Vec3f speed )
-        : object( position, Vec3f( 0.1, 0.1, 0.01 ), speed )
+    EnemyBulletBase::EnemyBulletBase( cinder::Vec3f begin, cinder::Vec3f end )
+        : object( begin, Vec3f( 0.1, 0.1, 0.01 ), Vec3f::zero( ) )
+        , begin( begin )
+        , end(end)
         , attackPoint( 3 )
-        , activeTime( 60 * 10 )
+        , maxMoveTime( 60 * 2 )
+        , moveTime( 0 )
         , isActive( true )
     {
-        object.Direction( speed );
+        object.Direction( Vec3f( end - begin ).normalized( ) );
+    }
+
+    EnemyBulletBase::EnemyBulletBase( cinder::Vec3f begin, cinder::Vec3f end, int attackPoint )
+        : object( begin, Vec3f( 0.1, 0.1, 0.01 ), Vec3f::zero( ) )
+        , begin( begin )
+        , end( end )
+        , attackPoint( attackPoint )
+        , maxMoveTime( 60 * 2 )
+        , moveTime( 0 )
+        , isActive( true )
+    {
+        object.Direction( Vec3f( end - begin ).normalized( ) );
     }
 
     void EnemyBulletBase::update( )
     {
-        ActiveCount( );
-        Move( );
+        MoveCount( );
+        Move( NormalizedMoveTime( ) );
     }
 
     void EnemyBulletBase::draw( )
@@ -37,10 +54,7 @@ namespace User
 
     bool EnemyBulletBase::Attack( const cinder::CameraPersp& camera )
     {
-        auto cameraPos = camera.getEyePoint( ) + camera.getViewDirection( ) * camera.getNearClip( );
-        // エネミの場所がカメラよりも手前側だったら攻撃します。
-        if ( cameraPos.dot( cameraPos - object.Position( ) ) < 0 ) return true;
-        else return false;
+        return maxMoveTime <= moveTime;
     }
 
     int EnemyBulletBase::Hit( float length )
@@ -48,7 +62,7 @@ namespace User
         if ( length <= 1.0F )
         {
             Erase( );
-            return 5;
+            return 10;
         }
         return 0;
     }
@@ -56,22 +70,28 @@ namespace User
     int EnemyBulletBase::Kill( )
     {
         Erase( );
-        return 5;
+        return 2;
     }
 
     bool EnemyBulletBase::IsActive( )
     {
-        return activeTime <= 0 || isActive;
+        return isActive;
     }
 
-    void EnemyBulletBase::ActiveCount( )
+    void EnemyBulletBase::MoveCount( )
     {
-        activeTime = std::max( activeTime - 1, 0 );
+        moveTime = std::min( moveTime + 1, maxMoveTime );
     }
 
-    void EnemyBulletBase::Move( )
+    void EnemyBulletBase::Move( float t )
     {
-        object.PositionAdd( object.Speed( ) );
+        Vec3f position;
+
+        position.x = EasingQuadInOut( t, begin.x, end.x );
+        position.y = EasingQuadInOut( t, begin.y, end.y );
+        position.z = EasingQuadInOut( t, begin.z, end.z );
+
+        object.Position( position );
     }
     void EnemyBulletBase::Erase( )
     {

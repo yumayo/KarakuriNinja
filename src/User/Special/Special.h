@@ -18,18 +18,12 @@ public:
 		special_type_ = NOTSELECTED;
 		special_ = std::make_shared<NotSpecial>();
 		effectend_ = false;
+		specialpower_ = 0.f;
 	}
-	void update();
+	void update(bool canspecial);
 	void draw();
 	
-	//スペシャルを選択するモードに入る時に使います、一応サブ効果中は入れないようにしておきました
-	void goSpecialMode() {
-		if (special_type_ == NOTSELECTED) {
-			isspesial = true;
-			special_ = std::make_shared<SpecialSelect>();
-			mode = SELECT;
-		}
-	}
+
 
 	//スペシャルセレクトに入ってからエフェクトが終わるまで間TRUEが帰ります。
 	//プレイヤーの攻撃やガードのupdate、敵のupdateを止めるなどに使ってください
@@ -57,7 +51,7 @@ public:
 
 	//エフェクト中に敵がダメージをくらっている感じを出すときなどに使ってください
 	bool isEffecting() {
-		return mode == MODE::EFFECT;
+		return special_->Effecting();
 	}
 
 	//エフェクトが終わった瞬間の１フレームだけTRUEが帰ります
@@ -65,7 +59,18 @@ public:
 	bool getEffectEnd() {
 		return effectend_;
 	}
+	float getspecialPower() {
+		return specialpower_;
+	}
 private:
+	//スペシャルを選択するモードに入る時に使います、一応サブ効果中は入れないようにしておきました
+	void goSpecialMode() {
+		if (special_type_ == NOTSELECTED) {
+			isspesial = true;
+			special_ = std::make_shared<SpecialSelect>();
+			mode = SELECT;
+		}
+	}
 	std::shared_ptr<SpecialSceneBase>special_;
 	void shift();
 	enum MODE {
@@ -74,5 +79,6 @@ private:
 	MODE mode;
 	bool isspesial;
 	bool effectend_;
+	float specialpower_;
 	SpecialType special_type_;
 };

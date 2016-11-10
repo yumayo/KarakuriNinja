@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Property/Property.h"
 #include "../Utilitys/Nomoto.h"
 #include "../SlashEffect/SlashEffect.h"
 #include "../Deffence/Deffence.h"
@@ -89,21 +88,7 @@ public:
 
 	CommandType Command() { return nowCommand; }
 
-	SpecialType getSpecialtype(){
-		return special.getSpecialType();
-	}
-	bool getisSpecial() {
-		return special.getIsSpecial();
-	}
-	bool getisMinigame() {
-		return special.isMinigame();
-	}
-    bool getisEffetEnd( ) {
-        return special.getEffectEnd( );
-    }
-    bool getisEffecting( ) {
-        return special.isEffecting( );
-    }
+
 private:
 	int nowHp;
 	int maxHp;
@@ -118,6 +103,5 @@ private:
 
 	Deffence deffence;
 	bool isGuard;
-	Special special;
 	CommandType nowCommand;
 };

@@ -19,4 +19,10 @@ class SpecialSceneBase {
 	bool virtual isFullScreen() {
 		return false;
 	}
+	bool virtual Effecting() {
+		return false;
+	}
+	float virtual getSpecialPower() {
+		return 0;
+	}
 };

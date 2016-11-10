@@ -2,7 +2,10 @@
 #include "cinder/Vector.h"
 #include "Framework.hpp"
 #include "../Utilitys/Nomoto.h"
-
+#include "cinder/app/App.h"
+#include "cinder/gl/gl.h"
+#include "cinder/ImageIo.h"
+#include "cinder/gl/Texture.h"
 const int GUARD_LINE_DEF = 500;
 
 class Deffence
@@ -10,7 +13,7 @@ class Deffence
 public:
 	Deffence() : isActive(false)
 	{
-
+		tex = loadImage(cinder::app::loadAsset("Textures/gurd.png"));
 	}
 
 	void Update(ci::Vec2f rightPos,ci::Vec2f leftPos);
@@ -44,4 +47,5 @@ private:
 	Line guardLine;
 	LineSegment guardLineSegment;
 	Effect effect;
+	cinder::gl::Texture tex;
 };

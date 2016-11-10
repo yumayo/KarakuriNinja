@@ -1,12 +1,12 @@
 # pragma once
 
-# include "Karakuri.h"
+# include "KarakuriObject.h"
 
 namespace User
 {
     class KarakuriBase
     {
-        Karakuri object;
+        KarakuriObject object;
 
         // カラクリの方向も用意。
         cinder::Vec3f direction;

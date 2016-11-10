@@ -9,7 +9,7 @@ void Cinder::setup( )
 {
     Lib::InputTask::Geti( ).setup( );
 
-    Lib::Input::Geti( ).setup( this );
+    Lib::Environment::Geti( ).setup( this );
 
     scene.setup( );
 }

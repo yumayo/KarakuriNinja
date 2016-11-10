@@ -23,4 +23,6 @@ namespace User
         void textureDraw( cinder::gl::Texture const& texture, cinder::Vec2f position = cinder::Vec2f::zero( ) );
         void textureDraw( cinder::gl::Texture const& texture, cinder::Vec2f position, cinder::Area area, float value );
     };
+
+    using InterfaceRef = std::shared_ptr<Interface>;
 }

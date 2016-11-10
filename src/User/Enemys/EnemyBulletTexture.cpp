@@ -8,8 +8,14 @@ namespace User
 {
     using namespace cinder;
 
-    EnemyBulletTexture::EnemyBulletTexture( cinder::Vec3f position, cinder::Vec3f speed, std::string const & path )
-        : EnemyBulletBase( position, speed )
+    EnemyBulletTexture::EnemyBulletTexture( cinder::Vec3f begin, cinder::Vec3f end, std::string const & path )
+        : EnemyBulletBase( begin, end )
+        , texture( loadImage( app::loadAsset( path ) ) )
+    {
+    }
+
+    EnemyBulletTexture::EnemyBulletTexture( cinder::Vec3f begin, cinder::Vec3f end, std::string const & path, int attackPoint )
+        : EnemyBulletBase( begin, end, attackPoint )
         , texture( loadImage( app::loadAsset( path ) ) )
     {
     }

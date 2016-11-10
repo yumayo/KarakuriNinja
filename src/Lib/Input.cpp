@@ -3,13 +3,10 @@
 
 namespace Lib
 {
-    void Input::setup( cinder::app::AppNative *app )
+    Input & Input::Geti( )
     {
-        this->app = app;
-    }
-    cinder::app::AppNative& Input::GetApp( )
-    {
-        return *app;
+        static Input instans;
+        return instans;
     }
     bool Input::isPushButton( const int button ) const
     {

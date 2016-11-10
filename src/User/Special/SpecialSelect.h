@@ -29,6 +29,9 @@ public:
 			icon.startangle = 5.f;
 			icons.push_back(icon);
 		}
+		for (int i = 0;i < 3;i++) {
+			icontex[i] = loadImage(app::loadAsset("Textures/select"+std::to_string(i)+".png"));
+		}
 	}
 	void draw() override;
 	void update() override;
@@ -65,6 +68,7 @@ private:
 	float start_t;
 	float end_t_;
 	float last_t_;
+	gl::Texture icontex[3];
 	bool isCanChoose() {
 		return (icons[icons.size() - 1].angle_t >= 1.0f)&&(ischoosed_==false);
 	}

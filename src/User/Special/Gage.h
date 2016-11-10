@@ -9,15 +9,21 @@ class Gage {
 public:
 	Gage(){
 		issuccces_ = false;
-		count_ = 0;
+		count_ = 0.0f;
 		texsname[WAKU] = "spwaku.png";
 		texsname[GAGE] = "spgage.png";
 		for (int i = 0;i < texs::MAX;i++) {
 			texs[i] = loadImage(app::loadAsset("Textures/"+texsname[i]));
 		}
 	}
+	void setisCount(bool is) {
+	      issuccces_ = is;
+	}
 	void draw();
 	void update();
+	float getCount() {
+		return count_;
+	}
 private:
 	enum texs {
 		WAKU,GAGE,MAX
