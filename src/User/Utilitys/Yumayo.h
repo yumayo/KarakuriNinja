@@ -123,6 +123,13 @@ namespace User
         void SetAttackMotionOfTouch( uint32_t id, cinder::app::TouchEvent::Touch& touch );
         // どの位置で線を引き終えたのかを判断し、スラッシュの値をセットします。
         void MakeAttackMotionOfTouch( uint32_t id, cinder::app::TouchEvent::Touch& touch, int combo );
+
+        // 以下のスラッシュをアップデートします。
+        void UpdateAttackMotionOfMouse( int combo );
+        // どの位置をタッチしたのかを覚えさせます。
+        void SetAttackMotionOfMouse( uint32_t id );
+        // どの位置で線を引き終えたのかを判断し、スラッシュの値をセットします。
+        void MakeAttackMotionOfMouse( uint32_t id, int combo );
     };
 
     class Fonts

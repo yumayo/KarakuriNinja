@@ -27,7 +27,7 @@ namespace User
     using namespace cinder;
 
     EnemyBoss::EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera )
-        : EnemyBase( pos, camera, Status( 18.0F, 7 ) )
+        : EnemyBase( pos, camera, Status( 22.0F, 7 ) )
         , timer( )
         , isAttack( false )
         , isDeadStop( true )

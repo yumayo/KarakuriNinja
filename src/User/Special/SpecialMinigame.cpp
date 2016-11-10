@@ -47,7 +47,7 @@ void SpecialMinigame::update( bool isstop )
     }
     for ( int i = 0; i < backcircles.size( ); i++ ) {
         backcircles[i].pos.x += 20;
-        if ( backcircles[i].pos.x>app::getWindowWidth( ) + 100 ) {
+        if ( backcircles[i].pos.x > app::getWindowWidth( ) + 100 ) {
             backcircles[i].pos.x = -100;
             backcircles[i].pos.y = randFloat( 0, app::getWindowHeight( ) );
         }
@@ -139,6 +139,16 @@ void SpecialMinigame::updateTouch( )
             }
         }
     }
+
+    // マウスでのアップデート
+    if ( inputs.isPressButton( Mouse::LEFT_DOWN ) )
+    {
+        for ( int i = 0; i < circles.size( ); i++ ) {
+            if ( circleCollision( inputs.mousePosition( ), circles[i].getPos( ), circles[i].getSize( ) ) )
+                circles[i].setIsSafe( true );//ここでどっちもtrueにできたらtouch成功
+        }
+    }
+
     auto hand = inputzkoo.hand( );
     for ( auto& i : inputzkoo.GetHandleIDs( ) )
     {
@@ -157,20 +167,22 @@ void SpecialMinigame::clearCircles( )
 }
 void SpecialMinigame::startBackgroundEasing( )
 {
+    float speed = 0.5F;
+
     backangle = 0.0f;
     if ( start_t_x_ < 1.0f ) {
-        Easing::tCount( start_t_x_, 0.25f );
+        Easing::tCount( start_t_x_, speed );
         backsize.x = app::getWindowWidth( ) / 20.f;
         backsize.y = EasingCubicIn( start_t_x_, 0, app::getWindowHeight( ) / 2 );
     }
     if ( start_t_x_ >= 1.0f ) {
-        Easing::tCount( start_angle_t_, 0.25f );
+        Easing::tCount( start_angle_t_, speed );
         backangle = EasingQuartIn( start_angle_t_, 0, 180 );
         backsize.x = app::getWindowWidth( ) / 20.f;
         backsize.y = app::getWindowHeight( ) / 2;
     }
     if ( start_angle_t_ >= 1.0f ) {
-        Easing::tCount( start_t_y_, 0.25f );
+        Easing::tCount( start_t_y_, speed );
         backsize.x = EasingQuadIn( start_t_y_, app::getWindowWidth( ) / 20.f, app::getWindowWidth( ) / 2 );
         backsize.y = app::getWindowHeight( ) / 2;
     }

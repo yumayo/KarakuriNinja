@@ -14,7 +14,7 @@ namespace User
         , begin( begin )
         , end(end)
         , attackPoint( 3 )
-        , maxMoveTime( 60 * 3 )
+        , maxMoveTime( 60 * 2 )
         , moveTime( 0 )
         , isActive( true )
     {
@@ -26,7 +26,7 @@ namespace User
         , begin( begin )
         , end( end )
         , attackPoint( attackPoint )
-        , maxMoveTime( 60 * 3 )
+        , maxMoveTime( 60 * 2 )
         , moveTime( 0 )
         , isActive( true )
     {

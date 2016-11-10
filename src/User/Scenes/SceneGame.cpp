@@ -28,8 +28,8 @@ namespace User
         timer.Off( );
         damageColor = ColorA( 1, 0, 0, 0 );
         talk = std::make_shared<Talk>( );
-
         mojiManager.Setup( "JSON/GameStart.json" );
+        production = &GData::FindTexture( "Production.png" );
 
         // 野本が管理するものを作成。
         player = Player( 100, 100 );
@@ -177,6 +177,7 @@ namespace User
 
             if ( fieldManager->IsLastField( ) )
             {
+                演出中 = true;
                 player.Reset( );
             }
         }
@@ -269,7 +270,7 @@ namespace User
                 mpmax->Gain( 1.f );
                 mpmax->Play( );
                 special.goSpecialMode( );
-
+                演出中 = false;
                 isTalk = false;
                 talkTime = 0;
             }
@@ -362,6 +363,8 @@ namespace User
     }
     void SceneGame::update( )
     {
+        frame += 1;
+
         enemyCamera->Update( );
 
         if ( !special.getIsSpecial( ) &&
@@ -514,6 +517,13 @@ namespace User
         }
 
         special.draw( );
+
+        if ( 演出中 )
+        {
+            gl::color( ColorA( 1, 1, 1, 0.75F + 0.25F * math<float>::sin( static_cast<float>( frame ) / 15.0F ) ) );
+            gl::draw( *production, Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
+            gl::color( Color::white( ) );
+        }
 
         gl::color( damageColor );
         gl::drawSolidRect( Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );

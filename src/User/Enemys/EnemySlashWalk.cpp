@@ -5,7 +5,7 @@ namespace User
     using namespace cinder;
 
     EnemySlashWalk::EnemySlashWalk( cinder::Vec3f pos, const cinder::CameraPersp & camera )
-        : EnemyBase( pos, camera, Status( 1.0F, 0 ) )
+        : EnemyBase( pos, camera, Status( 8.0F, 0 ) )
     {
         ‘Ò‹@ = &GData::FindTexture( "Enemy/SlashWalk/SlashWalk (1).png" );
 

@@ -175,6 +175,7 @@ namespace User
     void MoveInput::Begin( int combo )
     {
         UpdateAttackMotionOfTouch( combo );
+        UpdateAttackMotionOfMouse( combo );
 
         slashEffect.remove_if( [ ] ( SlashLine& slashLine ) { return !slashLine.IsThisErase( ); } );
         for ( auto& obj : slashEffect ) obj.Update( );
@@ -262,6 +263,63 @@ namespace User
             Line line;
             line.startPos = moveTouch.prevPos;
             line.endPos = touch.getPos( );
+
+            moveTouch.isActive = false;
+
+            Vec2f directionRotate = line.endPos - line.startPos;
+            directionRotate.rotate( M_PI / 2.0 );
+            directionRotate.normalize( );
+
+            if ( 5 <= combo )
+            {
+                slashEffect.emplace_back( line, MakeAttackEffect( line.startPos + directionRotate * -100, line.endPos + directionRotate * -100 ), combo );
+                slashEffect.emplace_back( line, MakeAttackEffect( line.startPos, line.endPos ), combo );
+                slashEffect.emplace_back( line, MakeAttackEffect( line.startPos + directionRotate * 100, line.endPos + directionRotate * 100 ), combo );
+            }
+            else if ( 3 <= combo )
+            {
+                slashEffect.emplace_back( line, MakeAttackEffect( line.startPos + directionRotate * -50, line.endPos + directionRotate * -50 ), combo );
+                slashEffect.emplace_back( line, MakeAttackEffect( line.startPos + directionRotate * 50, line.endPos + directionRotate * 50 ), combo );
+            }
+            else
+            {
+                slashEffect.emplace_back( line, MakeAttackEffect( line.startPos, line.endPos ), combo );
+            }
+        }
+    }
+
+    void MoveInput::UpdateAttackMotionOfMouse( int combo )
+    {
+        SetAttackMotionOfMouse( 0 );
+        MakeAttackMotionOfMouse( 0, combo );
+    }
+
+    void MoveInput::SetAttackMotionOfMouse( uint32_t id )
+    {
+        if ( inputs.isPushButton( Mouse::LEFT_DOWN ) )
+        {
+            moveTouch.insert( std::make_pair( id, MoveTouch( inputs.mousePosition( ) ) ) );
+        }
+
+        if ( inputs.isPullButton( Mouse::LEFT_DOWN ) )
+        {
+            moveTouch.erase( id );
+        }
+    }
+
+    void MoveInput::MakeAttackMotionOfMouse( uint32_t id, int combo )
+    {
+        auto findItr = moveTouch.find( id );
+        if ( findItr == moveTouch.end( ) ) return;
+
+        auto& moveTouch = findItr->second;
+        if ( !moveTouch.isActive ) return;
+
+        if ( inputs.isPressButton( Mouse::LEFT_DOWN ) && IsHandMove( id, inputs.mousePosition( ) ) )
+        {
+            Line line;
+            line.startPos = moveTouch.prevPos;
+            line.endPos = inputs.mousePosition( );
 
             moveTouch.isActive = false;
 

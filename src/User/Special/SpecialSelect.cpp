@@ -10,7 +10,7 @@ void SpecialSelect::draw( )
     drawIcon( );
     drawSelectInfo( );
     drawbeginSpecial( );
-    for ( int i = 0; i<shurikens.size( ); i++ ) {
+    for ( int i = 0; i < shurikens.size( ); i++ ) {
         shurikens[i].draw( Vec2f( 0, beginposy ) );
     }
     drawKuriko( );
@@ -46,9 +46,9 @@ void SpecialSelect::drawIcon( )
 void SpecialSelect::updateIcon( )
 {
     if ( !shurikenEnd( ) )return;
-    start_t += 1.0f / ( 60.0f*0.5f );
+    start_t += 1.0f / ( 60.0f * 1.0F );
     start_t = std::min( 1.0f, start_t );
-    const float speed = 0.25f;
+    const float speed = 0.5f;
     const float changeratio = 0.5f;
     for ( int i = 0; i < icons.size( ); i++ ) {
         icons[i].pos.y = EasingBackOut( start_t, icons[i].startpos.y, icons[i].endpos.y );
@@ -74,10 +74,10 @@ void SpecialSelect::updateIcon( )
             icons[i].pos.x = EasingCubicIn( end_t_, icons[i].endpos.x, icons[i].shiftpos.x );
             icons[i].pos.y = EasingCubicIn( end_t_, icons[i].endpos.y, icons[i].shiftpos.y );
         }
-        end_t_ += 1.0f / ( 60.0f*0.25f );
+        end_t_ += 1.0f / ( 60.0f*speed );
         end_t_ = std::min( end_t_, 1.0f );
         if ( end_t_ >= 1.0f ) {
-            last_t_ += 1.0f / ( 60.0f*0.5f );
+            last_t_ += 1.0f / ( 60.0f*speed );
             last_t_ = std::min( last_t_, 1.0f );
             Vec2f startpos = Vec2f( app::getWindowWidth( ) / 2, app::getWindowHeight( ) / 2 );
             icons[int( specialtype_ )].pos.y = EasingBackIn( last_t_, startpos.y, startpos.y - 600 );
@@ -107,6 +107,20 @@ void SpecialSelect::chooseSpecial( )//とりあえずタッチのプッシュでやっておきまし
                     icons[i].shiftpos = Vec2f( app::getWindowWidth( ) / 2, icons[i].endpos.y );
                     return;
                 }
+            }
+        }
+    }
+
+    // マウスでの操作
+    if ( inputs.isPushButton( Mouse::LEFT_DOWN ) )
+    {
+        for ( int i = 0; i < icons.size( ); i++ ) {
+            if ( circleCollision( inputs.mousePosition( ), icons[i].pos, icons[i].size.x / 2.f ) ) {
+                ischoosed_ = true;
+                specialtype_ = (SpecialType)( i );
+                isshifteasing_ = true;
+                icons[i].shiftpos = Vec2f( app::getWindowWidth( ) / 2, icons[i].endpos.y );
+                return;
             }
         }
     }
@@ -290,7 +304,7 @@ void SpecialSelect::updateSubInfo( )
 {
     if ( !shurikenEnd( ) )return;
 
-    for ( int i = 0; i <3; i++ ) {
+    for ( int i = 0; i < 3; i++ ) {
         subpos[i].x = app::getWindowWidth( ) / 2 + float( ( i - 1 )*450.f );
         subpos[i].y = EasingBackOut( start_t, env.getWindowHeight( ) + 500, env.getWindowHeight( )*0.8f );
         subangle[i] = EasingQuintIn( icons[i].angle_t, 5.0f, 0 );

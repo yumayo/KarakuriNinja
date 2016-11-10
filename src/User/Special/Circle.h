@@ -29,6 +29,10 @@ public:
         movestart_ = false;
         setRoute( );
         tex = &GData::FindTexture( "ac-sp.png" );
+        righthandopen = &GData::FindTexture( "ZKOO/Right_OpenHand.png" );
+        lefthandopen = &GData::FindTexture( "ZKOO/Left_OpenHand.png" );
+        righthandclose = &GData::FindTexture( "ZKOO/Right_CloseHand.png" );
+        lefthandclose = &GData::FindTexture( "ZKOO/Left_CloseHand.png" );
     }
     void update( );
     void draw( );
@@ -53,6 +57,10 @@ private:
     cinder::gl::Texture* tex;
     Easing::EasingType easingtype_x_;
     Easing::EasingType easingtype_y_;
+    gl::Texture* righthandopen;
+    gl::Texture* lefthandopen;
+    gl::Texture* righthandclose;
+    gl::Texture* lefthandclose;
     bool issafe_;
     bool isrealsafe_;
     int safecount_;

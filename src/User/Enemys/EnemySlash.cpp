@@ -13,7 +13,7 @@ namespace User
     using namespace cinder;
 
     EnemySlash::EnemySlash( cinder::Vec3f pos, const cinder::CameraPersp& camera )
-        : EnemyBase( pos, camera, Status( 6.0F, 3 ) )
+        : EnemyBase( pos, camera, Status( 8.0F, 3 ) )
         , timer( )
         , isAttack( false )
         , prevMovePosition( Vec3f::zero( ) )

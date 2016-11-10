@@ -159,6 +159,14 @@ namespace User
             }
             //////
         }
+
+        if ( inputs.isPushButton( Mouse::LEFT_DOWN ) )
+        {
+            enablenext = true;
+            for ( int i = 0; i < TitleEasing::TitleMAX; i++ ) {
+                t_[i] = true;
+            }
+        }
     }
     void SceneTitle::drawKunai( )
     {
@@ -202,20 +210,35 @@ namespace User
         auto touch = inputs.touch( );
         auto ids = inputs.GetTouchHandleIDs( );
 
+        bool isAnyInput = false;
+
         for ( auto id : ids )
         {
             //////とりあえずこれでプレイヤーアイコンの近くをプッシュするとスペシャルモードに入れるようにしておきました
             if ( inputs.isPressTouch( id, touch ) )
             {
+                isAnyInput = true;
                 gameStartGauge.Update( true );
                 marucount++;
-            }
-            else {
-                gameStartGauge.Update( false );
-                marucount = 0;
+                break;
             }
             //////
         }
+
+        if ( inputs.isPressButton( Mouse::LEFT_DOWN ) && !isAnyInput )
+        {
+            isAnyInput = true;
+            gameStartGauge.Update( true );
+            marucount++;
+        }
+
+
+        if ( !isAnyInput ) {
+            gameStartGauge.Update( false );
+            marucount = 0;
+        }
+
+
         if ( marucount >= gameStartGauge.GetLoadFrame( ) ) {
             start_se->Play( );
             return true;

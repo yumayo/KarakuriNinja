@@ -11,7 +11,7 @@ namespace User
 {
     using namespace cinder;
     EnemyBullet::EnemyBullet( cinder::Vec3f pos, const cinder::CameraPersp& camera )
-        : EnemyBase( pos, camera, Status( 6.0F, 4 ), true )
+        : EnemyBase( pos, camera, Status( 8.0F, 4 ), true )
     {
         timer.Advance( randInt( 120, 200 ) );
 

@@ -81,6 +81,9 @@ namespace User
         MoveInput moveInput;
         MojiManager mojiManager;
         Audio* gameClearSE;
+        bool ââèoíÜ = false;
+        cinder::gl::Texture* production;
+        int frame = 0;
         //=======================================
 
 
@@ -104,7 +107,7 @@ namespace User
         Audio* mpmax;
         bool ismpmax;
         Audio* horagai;
-        
+
         std::vector<Haguruma> hagurumas;
         float bgmGain = 0.6;
         //=======================================
