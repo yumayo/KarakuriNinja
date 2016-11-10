@@ -26,12 +26,21 @@ namespace User
         cinder::Vec2f serifDrawPosition;
         std::function<void( )> serifBehavior;
     private:
-        cinder::gl::Texture* 何かの画像;
+        cinder::gl::Texture* 待機;
+        cinder::gl::Texture* 投げるモーション画像;
+        cinder::gl::Texture* 投げる画像;
+        cinder::gl::Texture* 攻撃モーション画像;
+        cinder::gl::Texture* 攻撃画像;
+        cinder::gl::Texture* 左に移動;
+        cinder::gl::Texture* 右に移動;
+        cinder::gl::Texture* 倒れかけるモーション;
+        cinder::gl::Texture* 倒れるモーション;
+
     public:
-        EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera );
+        EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera, std::string const& fieldName );
         void update( cinder::CameraPersp const& camera ) override;
         void draw( ) override;
-        void drawUI( ) override;
+        void drawUI( const cinder::CameraPersp& camera ) override;
         bool Attack( const cinder::CameraPersp& camera ) override;
     private:
         // 重力をかけます。
@@ -46,8 +55,11 @@ namespace User
         void 攻撃後硬直( cinder::CameraPersp const& camera );
         void ジャンプで戻る( cinder::CameraPersp const& camera );
         void 着地( cinder::CameraPersp const& camera );
+        void 死ぬ( cinder::CameraPersp const& camera );
     private:
+        void 弾を投げるまでのモーション( cinder::CameraPersp const& camera );
         void 弾を投げる( cinder::CameraPersp const& camera );
+        void 弾を投げた後の硬直( cinder::CameraPersp const& camera );
         void 弾をもう一度投げるかの確認( cinder::CameraPersp const& camera );
     private:
         void 出現した時のセリフ( cinder::CameraPersp const& camera );

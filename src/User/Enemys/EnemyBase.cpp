@@ -23,12 +23,7 @@ namespace User
     {
         update( camera );
         initObject = object;
-        EffectCreate( EffectBase( "Textures/Effect/kemuri2.png",
-                                  camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) ),
-                                  Vec2f( 240, 240 ),
-                                  Vec2f( 300, 400 ),
-                                  EffectBase::Mode::CENTERCENTER, true
-        ) );
+        SpawnEffect( camera );
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, float sizeScale )
         : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
@@ -42,12 +37,7 @@ namespace User
     {
         update( camera );
         initObject = object;
-        EffectCreate( EffectBase( "Textures/Effect/kemuri2.png",
-                                  camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) ),
-                                  Vec2f( 240, 240 ),
-                                  Vec2f( 300, 400 ),
-                                  EffectBase::Mode::CENTERCENTER, true
-        ) );
+        SpawnEffect( camera );
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, std::string const & path )
         : object( pos, Vec3f( 1.7, 1.7, 0.01 ), Vec3f::zero( ) )
@@ -62,12 +52,7 @@ namespace User
     {
         update( camera );
         initObject = object;
-        EffectCreate( EffectBase( "Textures/Effect/kemuri2.png",
-                                  camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) ),
-                                  Vec2f( 240, 240 ),
-                                  Vec2f( 300, 400 ),
-                                  EffectBase::Mode::CENTERCENTER, true
-        ) );
+        SpawnEffect( camera );
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, float sizeScale, const cinder::CameraPersp & camera, std::string const & path )
         : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
@@ -82,12 +67,7 @@ namespace User
     {
         update( camera );
         initObject = object;
-        EffectCreate( EffectBase( "Textures/Effect/kemuri2.png",
-                                  camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) ),
-                                  Vec2f( 240, 240 ),
-                                  Vec2f( 300, 400 ),
-                                  EffectBase::Mode::CENTERCENTER, true
-        ) );
+        SpawnEffect( camera );
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, float sizeScale, float HP, int attackPoint, const cinder::CameraPersp & camera, std::string const & path )
         : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
@@ -102,12 +82,7 @@ namespace User
     {
         update( camera );
         initObject = object;
-        EffectCreate( EffectBase( "Textures/Effect/kemuri2.png",
-                                  camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) ),
-                                  Vec2f( 240, 240 ),
-                                  Vec2f( 300, 400 ),
-                                  EffectBase::Mode::CENTERCENTER, true
-        ) );
+        SpawnEffect( camera );
     }
     void EnemyBase::update( cinder::CameraPersp const& camera )
     {
@@ -135,6 +110,18 @@ namespace User
         gl::drawVector( object.Position( ), object.Position( ) + object.Direction( ) * 0.1 );
     #endif // _DEBUG
 
+        gl::disable( GL_CULL_FACE );
+
+        gl::pushModelView( );
+        gl::translate( object.Position( ).x, 0, object.Position( ).z );
+        gl::translate( 0, 0.05, 0 );
+        gl::rotate( Vec3f( 90, 0, 0 ) );
+        gl::color( ColorA( 0, 0, 0, 0.5 ) );
+        auto distans = 1 - ( object.Position( ).y - object.Size( ).y / 2 ) / 2;
+        if ( distans < 0 ) distans = 0;
+        gl::drawSolidCircle( Vec2f::zero( ), ( object.Size( ).xy( ).length( ) / 4.0F ) * distans, 100 );
+        gl::popModelView( );
+
         gl::pushModelView( );
         gl::translate( object.Position( ) );
         gl::multModelView( object.Quaternion( ).toMatrix44( ) );
@@ -153,10 +140,12 @@ namespace User
     #endif // _DEBUG
 
         gl::popModelView( );
+
+        gl::enable( GL_CULL_FACE );
     }
-    void EnemyBase::drawUI( )
+    void EnemyBase::drawUI( cinder::CameraPersp const& camera )
     {
-        /*nothing*/
+
     }
     int EnemyBase::Hit( float length, float value )
     {
@@ -185,6 +174,7 @@ namespace User
         if ( damage < 0 ) return 0;
         HP = std::max( HP - damage, 0.0F );
         hitColor = Color( 1, 0, 0 );
+
         return 2;
     }
     void EnemyBase::Kill( )
@@ -296,5 +286,16 @@ namespace User
     {
         object.Speed( jumpPower );
         isLanding = false;
+    }
+    void EnemyBase::SpawnEffect( cinder::CameraPersp const& camera )
+    {
+        Vec2f vec = camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+        Vec2f size = camera.worldToScreen( object.Position( ) + object.Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+        EffectCreate( EffectBase( "Textures/Effect/kumo2.png",
+                                  vec,
+                                  Vec2f( vec - size ) * 2.5F,
+                                  Vec2f( 600, 300 ),
+                                  EffectBase::Mode::CENTERCENTER, true
+        ) );
     }
 }

@@ -9,52 +9,73 @@
 
 namespace User
 {
-    class GlobalTexture
+    template <class Ty>
+    class GlobalBase
     {
+    protected:
         size_t index;
-        SearchSystem search;
-        Izanami::Holder<cinder::gl::Texture> datas;
-    private:
-        GlobalTexture( );
-    private:
-        void Start( );
+        std::shared_ptr<SearchSystem> search;
+        Izanami::Holder<Ty> datas;
+    public:
+        GlobalBase( );
+        void Setup( std::string const& path );
+        virtual void Start( ) = 0;
         bool IsSetuped( );
         size_t MaxLoadIndex( );
         size_t NowLoadIndex( );
-    private:
-        friend class GlobalData;
+        Izanami::Holder<Ty>& Datas( );
     };
 
-    class GlobalAudio
+    template<class Ty>
+    inline GlobalBase<Ty>::GlobalBase( )
+        : index( 0 )
     {
-        size_t index;
-        SearchSystem search;
-        Izanami::Holder<Audio> datas;
-    private:
-        GlobalAudio( );
-    private:
-        void Start( );
-        bool IsSetuped( );
-        size_t MaxLoadIndex( );
-        size_t NowLoadIndex( );
-    private:
-        friend class GlobalData;
+    }
+    template<class Ty>
+    inline void GlobalBase<Ty>::Setup( std::string const& path )
+    {
+        index = 0;
+        search = std::make_shared<SearchSystem>( path );
+        datas.clear( );
+    }
+    template<class Ty>
+    inline bool GlobalBase<Ty>::IsSetuped( )
+    {
+        return index == MaxLoadIndex( );
+    }
+    template<class Ty>
+    inline size_t GlobalBase<Ty>::MaxLoadIndex( )
+    {
+        auto& files = search->Files( );
+        return files.size( );
+    }
+    template<class Ty>
+    inline size_t GlobalBase<Ty>::NowLoadIndex( )
+    {
+        return index;
+    }
+    template<class Ty>
+    inline Izanami::Holder<Ty>& GlobalBase<Ty>::Datas( )
+    {
+        return datas;
+    }
+
+    class GlobalTexture : public GlobalBase<cinder::gl::Texture>
+    {
+    public:
+        void Start( )override;
     };
 
-    class GlobalObj
+    class GlobalAudio : public GlobalBase<Audio>
     {
-        size_t index;
-        SearchSystem search;
-        Izanami::Holder<cinder::TriMesh> datas;
-    private:
-        GlobalObj( );
-    private:
-        void Start( );
-        bool IsSetuped( );
-        size_t MaxLoadIndex( );
-        size_t NowLoadIndex( );
-    private:
-        friend class GlobalData;
+    public:
+        void Start( )override;
+    };
+
+    class GlobalObj : public GlobalBase<cinder::TriMesh>
+    {
+    public:
+        void Start( )override;
     };
 
     class GlobalData
@@ -65,6 +86,7 @@ namespace User
     private:
         GlobalData( ) { /*nothing*/ }
     public:
+        static void Setup( std::string const& appPath );
         static void Start( );
         static bool IsSetuped( );
         static size_t MaxLoadIndex( );
@@ -74,4 +96,5 @@ namespace User
         static Audio& FindAudio( std::string const& path );
         static cinder::TriMesh& FindObj( std::string const& path );
     };
+
 }

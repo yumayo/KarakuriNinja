@@ -76,7 +76,7 @@ namespace User
         EnemyBase( cinder::Vec3f pos, float sizeScale, float HP, int attackPoint, const cinder::CameraPersp& camera, std::string const& path );
         virtual void update( cinder::CameraPersp const& camera );
         virtual void draw( );
-        virtual void drawUI( );
+        virtual void drawUI( cinder::CameraPersp const& camera );
         // エネミーが攻撃しているなら true が返って来ます。
         // 継承して攻撃方法を入れてください。
         virtual bool Attack( const cinder::CameraPersp& camera );
@@ -130,6 +130,8 @@ namespace User
     protected:
         void CameraSee( cinder::CameraPersp const& camera );
         void Jump( cinder::Vec3f jumpPower );
+    private:
+        void SpawnEffect( cinder::CameraPersp const& camera );
     };
 
     template<class Ty>

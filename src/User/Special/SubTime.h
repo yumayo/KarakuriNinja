@@ -50,10 +50,10 @@ private:
 			specialtime_ = 60 * 10000;//–¢’è‹`–hŽ~
 			break;
 		case FIRE:
-			specialtime_ = 60 * 5;
+			specialtime_ = 60 * 15;
 			break;
 		case WATER:
-			specialtime_ = 60 * 10;
+			specialtime_ = 60 * 15;
 			break;
 		case TREE:
 			specialtime_ = 60 * 15;

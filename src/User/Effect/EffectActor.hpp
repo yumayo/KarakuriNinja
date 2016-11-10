@@ -8,6 +8,6 @@ namespace User
     {
     public:
         virtual void Update( ) = 0;
-        virtual void Draw( cinder::CameraPersp const& camera ) = 0;
+        virtual void Draw( ) = 0;
     };
 }

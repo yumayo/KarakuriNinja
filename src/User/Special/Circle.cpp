@@ -127,7 +127,7 @@ void Circle::setValue(Vec2f leftstartpos, Vec2f leftendpos, Easing::EasingType l
 void Circle::move()
 {
 	if (movestart_) {
-		Easing::tCount(move_t_,3.0f);
+		Easing::tCount(move_t_,2.f);
 	}
 	pos_.x = Easing::getEasing[easingtype_x_](move_t_, startpos_.x, endpos_.x);
 	pos_.y = EasingLinear(move_t_, startpos_.y, endpos_.y);

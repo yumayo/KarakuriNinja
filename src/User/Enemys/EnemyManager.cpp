@@ -41,7 +41,7 @@ namespace User
             }
             else if ( obj.getValue( ) == "Boss" )
             {
-                Create<EnemyBoss>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera );
+                Create<EnemyBoss>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera, getFilenameNoExt( path ) );
             }
         }
 
@@ -54,7 +54,7 @@ namespace User
     {
         Each( [ &camera ] ( EnemyBaseRef& enemyRef ) { enemyRef->update( camera ); } );
 
-        EnemyEraser( );
+        EnemyEraser( camera );
 
         EnemyBulletsRecovery( );
 
@@ -69,9 +69,9 @@ namespace User
         }
     }
 
-    void EnemyManager::drawUI( )
+    void EnemyManager::drawUI( cinder::CameraPersp const& camera )
     {
-        Each( [ ] ( EnemyBaseRef& enemyRef ) { enemyRef->drawUI( ); } );
+        Each( [ camera ] ( EnemyBaseRef& enemyRef ) { enemyRef->drawUI( camera ); } );
     }
 
     bool EnemyManager::IsAttack( const cinder::CameraPersp& camera )
@@ -92,10 +92,23 @@ namespace User
         {
             Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
             Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            float radius = Vec3f( size - vec ).length( ) / 2.0F * playerAttackColliedSize;
-            drainMp += enemyRef->Hit( CheckDefLineOfCircle( line_, vec, radius ), value );
+            float radius = Vec2f( size - vec ).length( ) / 2.0F * playerAttackColliedSize;
+            float length = CheckDefLineOfCircle( line_, vec, radius );
+            drainMp += enemyRef->Hit( length, value );
+            if ( length < 1.0F )
+            {
+                EffectCreate( EffectBase( "Textures/Effect/pipo-btleffect085.png",
+                                          vec,
+                                          Vec2f( vec - size ),
+                                          Vec2f( 240, 240 ),
+                                          EffectBase::Mode::CENTERCENTER, true
+                ) );
+            }
         } );
-        if ( drainMp != 0 )adddamage->Play( );
+        if ( drainMp != 0 )
+        {
+            adddamage->Play( );
+        }
         score += drainMp * 100;
         return drainMp;
     }
@@ -107,7 +120,7 @@ namespace User
         {
             Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
             Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            float radius = Vec3f( size - vec ).length( ) / 2.0F * enemyAttackColliedSize;
+            float radius = Vec2f( size - vec ).length( ) / 2.0F * enemyAttackColliedSize;
 
             success.emplace_back( CheckDefLineOfCircle( line_, vec, radius ) < 1.0F );
         } );
@@ -121,12 +134,44 @@ namespace User
         return successNum;
     }
 
-    int EnemyManager::PlayerSpecialAttackToEnemyDamage( int damage )
+    int EnemyManager::PlayerSpecialAttackToEnemyDamage( int damage, const cinder::CameraPersp& camera, SpecialType specialState )
     {
         int drainMp = 0;
-        Each( [ &drainMp, &damage ] ( EnemyBaseRef& enemyRef )
+        Each( [ &drainMp, &damage, &camera, &specialState, this ] ( EnemyBaseRef& enemyRef )
         {
+            Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+            Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+
             drainMp += enemyRef->Damage( damage );
+            switch ( specialState )
+            {
+            case SpecialType::FIRE: // ‰Î
+                EffectCreate( EffectBase( "Textures/Effect/effect1.png",
+                                          vec,
+                                          Vec2f( vec - size ),
+                                          Vec2f( 240, 240 ),
+                                          EffectBase::Mode::CENTERCENTER
+                ) );
+                break;
+            case SpecialType::WATER: // …
+                EffectCreate( EffectBase( "Textures/Effect/attack_blue.png",
+                                          vec,
+                                          Vec2f( vec - size ),
+                                          Vec2f( 512, 512 ),
+                                          EffectBase::Mode::CENTERCENTER
+                ) );
+                break;
+            case SpecialType::TREE: // –Ø
+                EffectCreate( EffectBase( "Textures/Effect/effect4.png",
+                                          vec,
+                                          Vec2f( vec - size ),
+                                          Vec2f( 240, 240 ),
+                                          EffectBase::Mode::CENTERCENTER
+                ) );
+                break;
+            default:
+                break;
+            }
         } );
         score += drainMp * 100;
         return drainMp;
@@ -156,7 +201,7 @@ namespace User
             {
                 Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
                 Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-                float radius = Vec3f( size - vec ).length( ) / 2.0F * enemyAttackColliedSize;
+                float radius = Vec2f( size - vec ).length( ) / 2.0F * enemyAttackColliedSize;
                 if ( IsDamage( line_, vec, radius ) ) {
                     totalDamage += enemyRef->AttackPoint( );
                     playerdamaged_se->Play( );
@@ -170,7 +215,7 @@ namespace User
                     float pos_y = a*( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 ) + b;
                     EffectCreate( EffectBase( "Textures/Effect/guard3.png",
                                               Vec2f( pos_x, pos_y ),
-                                              Vec2f( 240, 240 ),
+                                              Vec2f( 480, 480 ),
                                               Vec2f( 480, 480 ),
                                               EffectBase::Mode::CENTERCENTER, true
                     ) );
@@ -189,7 +234,7 @@ namespace User
 
             Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
             Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            float radius = Vec3f( size - vec ).length( ) / 2.0F * enemyAttackColliedSize;
+            float radius = Vec2f( size - vec ).length( ) / 2.0F * enemyAttackColliedSize;
 
             success.emplace_back( !IsDamage( line_, vec, radius ) );
         } );
@@ -211,7 +256,7 @@ namespace User
 
             Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
             Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            float radius = Vec3f( size - vec ).length( ) / 2.0F * enemyAttackColliedSize;
+            float radius = Vec2f( size - vec ).length( ) / 2.0F * enemyAttackColliedSize;
 
             gl::color( ColorA( 1, 0, 0, 0.5F ) );
             gl::drawSolidCircle( vec, radius, radius );
@@ -241,7 +286,7 @@ namespace User
         {
             Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
             Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            float radius = Vec3f( size - vec ).length( ) / 2.0F * playerAttackColliedSize;
+            float radius = Vec2f( size - vec ).length( ) / 2.0F * playerAttackColliedSize;
 
             gl::color( ColorA( 1, 1, 1, 0.25F ) );
             gl::drawSolidCircle( vec, radius, radius );
@@ -258,12 +303,21 @@ namespace User
         std::for_each( enemyList.begin( ), enemyList.end( ), function );
     }
 
-    void EnemyManager::EnemyEraser( )
+    void EnemyManager::EnemyEraser( cinder::CameraPersp const& camera )
     {
-        auto eraceList = std::remove_if( enemyList.begin( ), enemyList.end( ), [ this ] ( EnemyBaseRef& enemyRef )
+        auto eraceList = std::remove_if( enemyList.begin( ), enemyList.end( ), [ &camera, this ] ( EnemyBaseRef& enemyRef )
         {
             if ( !enemyRef->IsActive( ) )
             {
+                Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+                Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+                EffectCreate( EffectBase( "Textures/Effect/pipo-btleffect102c.png",
+                                          vec,
+                                          Vec2f( vec - size ) * 3.0F,
+                                          Vec2f( 240, 240 ),
+                                          EffectBase::Mode::CENTERCENTER, true
+                ) );
+
                 score += 1000;
                 return true;
             }

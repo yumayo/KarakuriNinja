@@ -4,7 +4,7 @@ void Fire::update()
 {
 	pushFire();
 	count++;
-	if (count > 180) {
+	if (count > 150) {
 		end = true;
 	}
 }

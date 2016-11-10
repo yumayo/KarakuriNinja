@@ -15,7 +15,7 @@ namespace User
         , font( u8"ƒƒCƒŠƒI", 32 )
     {
         GlobalEditor::editor = params::InterfaceGl::create( "Edit Parameter", Vec2i( 400, 600 ) );
-        timer.Advance( 0 );
+        GData::Setup( env.getAppPath( ).string( ) );
         timer.Off( );
     }
     SceneBegin::~SceneBegin( )

@@ -9,16 +9,15 @@ namespace User
 {
     class Talk
     {
-        cinder::Vec2f position;
         Fonts font;
     public:
-        Talk( cinder::Vec2f position );
+        Talk( );
     public:
         bool IsAnyPullTouch( );
         bool IsAnyPushTouch( );
         bool IsAnyPressTouch( );
         void Update( );
-        void Draw( );
+        void Draw( cinder::Vec2f position );
     };
 
     using TalkRef = std::shared_ptr<Talk>;

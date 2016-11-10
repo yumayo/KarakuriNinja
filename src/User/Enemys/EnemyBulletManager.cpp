@@ -101,7 +101,7 @@ namespace User
                         float pos_y = a*( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 ) + b;
                         EffectCreate( EffectBase( "Textures/Effect/guard3.png",
                                                   Vec2f( pos_x, pos_y ),
-                                                  Vec2f( 240, 240 ),
+                                                  Vec2f( 480, 480 ),
                                                   Vec2f( 480, 480 ),
                                                   EffectBase::Mode::CENTERCENTER, true
                         ) );

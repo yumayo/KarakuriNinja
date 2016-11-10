@@ -87,11 +87,7 @@ namespace User
     }
     void EnemyTutorial::何もしない( cinder::CameraPersp const & camera )
     {
-        // 攻撃のチュートリアルを行います。
-        if ( !TRData::playerAttack.IsComplete( ) )
-        {
-            TRData::playerAttack.TutorialStart( );
-        }
+        
     }
     void EnemyTutorial::タイマーが鳴るまで待機( cinder::CameraPersp const& camera )
     {
@@ -169,6 +165,12 @@ namespace User
         // 地面に着いたら、次の関数へ。
         if ( isLanding )
         {
+            // 攻撃のチュートリアルを行います。
+            if ( !TRData::playerAttack.IsComplete( ) )
+            {
+                TRData::playerAttack.TutorialStart( );
+            }
+
             // スピードは0にします。滑っちゃうので。
             object.Speed( Vec3f::zero( ) );
             // 次の攻撃までのフレームを代入。

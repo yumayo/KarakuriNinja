@@ -24,7 +24,7 @@ void SpecialEffect::draw()
 void SpecialEffect::update()
 {
 	if (names.size() == 7) {
-		if (names[names.size()-1].getT() >= 1.0f) {
+		if (fire.size() == 1 || water.size() == 1 || tree.size()==1) {
 			count_++;
 			camera_move_ = true;
 		}
@@ -64,23 +64,21 @@ void SpecialEffect::pushNames()
 
 void SpecialEffect::pushEffect()
 {
+	const int pushtiming = 5;
 	switch (specialtype_)
 	{
 	case SpecialType::FIRE:
-		if (names.size() == 7 && fire.size() == 0) {
-			if (names[names.size() - 1].getT() >= 1.0f)
+		if (names.size() == pushtiming && fire.size() == 0) {
 			fire.push_back(Fire(*effect[0], *effect[1],effectse_[0]));
 		}
 		break;
 	case SpecialType::WATER:
-		if (names.size() == 7 && water.size() == 0) {
-			if (names[names.size() - 1].getT() >= 1.0f)
+		if (names.size() == pushtiming && water.size() == 0) {
 			water.push_back(Water(*effect[0], *effect[1], effectse_[0] ));
 		}
 		break;
 	case SpecialType::TREE:
-		if (names.size() == 7 && tree.size() == 0) {
-			if (names[names.size() - 1].getT() >= 1.0f)
+		if (names.size() == pushtiming && tree.size() == 0) {
 			tree.push_back(Tree(*effect[0], *effect[1], effectse_[0]));
 		}
 		break;

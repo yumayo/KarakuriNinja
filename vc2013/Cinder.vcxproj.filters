@@ -150,9 +150,6 @@
     <ClInclude Include="..\src\User\Utilitys\FileIO.h">
       <Filter>User\Utilitys</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\User\Interfaces\Interface.h">
-      <Filter>User\Interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\User\Player\Player.h">
       <Filter>User\Player</Filter>
     </ClInclude>
@@ -351,6 +348,9 @@
     <ClInclude Include="..\src\User\Interfaces\Talk.h">
       <Filter>User\Interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\User\Interfaces\Interface.h">
+      <Filter>User\Interfaces</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -419,9 +419,6 @@
     </ClCompile>
     <ClCompile Include="..\src\User\Utilitys\FileIO.cpp">
       <Filter>User\Utilitys</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\User\Interfaces\Interface.cpp">
-      <Filter>User\Interfaces</Filter>
     </ClCompile>
     <ClCompile Include="..\src\User\Player\Player.cpp">
       <Filter>User\Player</Filter>
@@ -589,6 +586,9 @@
       <Filter>User\Enemys</Filter>
     </ClCompile>
     <ClCompile Include="..\src\User\Interfaces\Talk.cpp">
+      <Filter>User\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Interfaces\Interface.cpp">
       <Filter>User\Interfaces</Filter>
     </ClCompile>
   </ItemGroup>

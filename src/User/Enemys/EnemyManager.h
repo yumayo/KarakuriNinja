@@ -12,6 +12,8 @@
 #include "cinder/ObjLoader.h"        // OBJ形式を読み込む
 #include "cinder/TriMesh.h"          // 三角ポリゴンの集合体
 
+#include "../Special/Special.h"
+
 namespace User
 {
     using EnemyBaseRef = std::shared_ptr<EnemyBase>;
@@ -34,7 +36,7 @@ namespace User
         EnemyManager( const cinder::CameraPersp& camera, std::string const& path );
         void update( cinder::CameraPersp const& camera );
         void draw( cinder::CameraPersp const& camera );
-        void drawUI( );
+        void drawUI( cinder::CameraPersp const& camera );
     public:
         // エネミーの作成を行います。
         template <class Ty>
@@ -49,7 +51,7 @@ namespace User
         // プレイヤーからの攻撃が何体のエネミーに当たったのかを判定します。
         int PlayerToEnemyAttackCheck( Line& line_, const cinder::CameraPersp& camera );
         // プレイヤーの必殺技をエネミーへと与えます。
-        int PlayerSpecialAttackToEnemyDamage( int damage );
+        int PlayerSpecialAttackToEnemyDamage( int damage, const cinder::CameraPersp& camera, SpecialType specialState );
         // エネミーからプレイヤーへの攻撃（直接ダメージを通します）
         int EnemyToPlayerDamage( const cinder::CameraPersp& camera );
         // エネミーからプレイヤーへの攻撃（プレイヤーがガードをしている時の判定に使います）
@@ -75,7 +77,7 @@ namespace User
         void Each( std::function<void( EnemyBaseRef& )> function );
     private: // 以下アップデートで回します。
         // エネミーのHPが０だったら削除
-        void EnemyEraser( );
+        void EnemyEraser( cinder::CameraPersp const& camera );
         // 各エネミーの弾を回収します。
         void EnemyBulletsRecovery( );
 

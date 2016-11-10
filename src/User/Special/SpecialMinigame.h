@@ -22,6 +22,7 @@ public:
 		step_ = 0;
 		go_next_ = false;
 		type_ = type;
+		infoalfa_ = 0.0f;
 		start_t_x_ = 0.f;
 		start_t_y_ = 0.f;
 		info_t_ = 0.0f;

@@ -1,6 +1,6 @@
 #include "SpecialMinigame.h"
 
-const int STEPNUM = 3;
+const int STEPNUM = 2;
 
 void SpecialMinigame::draw()
 {
@@ -57,8 +57,8 @@ void SpecialMinigame::update()
 	}
 	if (circles.size() == 2) {
 		if (circles[0].getMoveStart() && circles[1].getMoveStart()) {
-			gage_.setisCount(circles[0].getIsRealSafe()&& circles[1].getIsRealSafe());
-			if (circles[0].getIsRealSafe() && circles[1].getIsRealSafe()) {
+			gage_.setisCount(circles[0].getIsRealSafe(), circles[1].getIsRealSafe());
+			if (circles[0].getIsRealSafe() || circles[1].getIsRealSafe()) {
 				charge_se_[0]->Looping(true);
 				if(!charge_se_[0]->IsPlaying())
 				charge_se_[0]->Play();
@@ -69,7 +69,7 @@ void SpecialMinigame::update()
 		}
 		if (circles[0].getClear() && circles[1].getClear()) {
 			inobject.push_back(InObject(getInObject(),inpush));
-			gage_.setisCount(false);
+			gage_.setisCount(false,false);
 			clearCircles();
 		}
 	}
@@ -190,6 +190,7 @@ void SpecialMinigame::drawInfo()
 }
 void SpecialMinigame::drawBackninja()
 {
+	if (!startend())return;
 	Vec2f size = Vec2f(500,250);
 	gl::pushModelView();
 	gl::translate(Vec2f(app::getWindowWidth() / 2, app::getWindowHeight()/2+70));
@@ -291,6 +292,7 @@ void SpecialMinigame::drawBackground()
 	gl::pushModelView();
 	gl::translate(app::getWindowWidth() / 2, app::getWindowHeight() / 2);
 	gl::rotate(backangle);
+	gl::color(ColorA(1,1,1,1));
 	backimage_->enableAndBind();
 	gl::drawSolidRect(ci::Rectf(-backsize, backsize));
 	backimage_->disable();

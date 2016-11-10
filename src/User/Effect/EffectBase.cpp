@@ -29,7 +29,7 @@ namespace User
 
         frame += 1;
     }
-    void EffectBase::Draw( cinder::CameraPersp const& camera )
+    void EffectBase::Draw( )
     {
         auto cutPosition = TextureCutPosition( NowIndex( ) );
         DrawCutTexture( cutPosition );
@@ -65,20 +65,6 @@ namespace User
     }
     void EffectBase::DrawCutTexture( cinder::Vec2f cutPosition )
     {
-        gl::pushModelView( );
-
-        switch ( mode )
-        {
-        case User::EffectBase::Mode::LEFTUP:
-            gl::translate( position - cutPosition );
-            break;
-        case User::EffectBase::Mode::CENTERCENTER:
-            gl::translate( position - ( cutSize / 2.0F ) - cutPosition );
-            break;
-        default:
-            break;
-        }
-        //gl::scale(size_ / cutSize);
         if ( alfamode == false ) {
             gl::color( Color::white( ) );
         }
@@ -88,7 +74,25 @@ namespace User
             gl::color( ColorA( 1, 1, 1, alfa ) );
         }
 
-        gl::draw( *texture, Area( cutPosition, cutPosition + cutSize ), Area( cutPosition, cutPosition + cutSize ) );
+        auto normalized = cutSize.normalized( );
+        auto normalized_2 = normalized / 2.0F;
+
+        gl::pushModelView( );
+        gl::translate( position );
+        gl::scale( size_ );
+
+        switch ( mode )
+        {
+        case User::EffectBase::Mode::LEFTUP:
+            gl::draw( *texture, Area( cutPosition, cutPosition + cutSize ), Rectf( Vec2f::zero( ), normalized ) );
+            break;
+        case User::EffectBase::Mode::CENTERCENTER:
+            gl::draw( *texture, Area( cutPosition, cutPosition + cutSize ), Rectf( -normalized_2, normalized_2 ) );
+            break;
+        default:
+            break;
+        }
+
         gl::popModelView( );
     }
     void EffectBase::Erase( )

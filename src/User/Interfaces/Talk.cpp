@@ -7,9 +7,8 @@ namespace User
 {
     using namespace cinder;
 
-    Talk::Talk( cinder::Vec2f position )
+    Talk::Talk( )
         : font( u8"ÉÅÉCÉäÉI", 64 )
-        , position( position )
     {
     }
     bool Talk::IsAnyPullTouch( )
@@ -52,7 +51,7 @@ namespace User
     {
         if ( IsAnyPushTouch( ) ) TRData::PopFrontSerif( );
     }
-    void Talk::Draw( )
+    void Talk::Draw( cinder::Vec2f position )
     {
         gl::pushModelView( );
         gl::translate( position );

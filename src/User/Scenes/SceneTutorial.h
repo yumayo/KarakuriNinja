@@ -21,6 +21,8 @@
 
 namespace User
 {
+    class Fusuma;
+
     class SceneTutorial : public SceneBase
     {
     public:
@@ -45,6 +47,7 @@ namespace User
         void UpdatePlayerEnd( );
         void UpdateColor( );
         void UpdateScore( );
+        void UpdateCombo( );
         void UpdateDamageExpression( );
         void UpdateNextStage( );
         void UpdateAllInstans( );
@@ -82,6 +85,8 @@ namespace User
 
         Special special;
         std::vector<Audio*> mainbgm;
+        int watercount;
+        std::shared_ptr<Fusuma> fusuma;
         //=======================================
     };
 }

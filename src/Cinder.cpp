@@ -11,7 +11,7 @@ void Cinder::setup( )
 
     scene.setup( );
 
-    //setFullScreen( true );
+    setFullScreen( true );
 }
 
 void Cinder::prepareSettings( cinder::app::AppNative::Settings *settings )

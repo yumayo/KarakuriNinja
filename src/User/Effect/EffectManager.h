@@ -15,7 +15,7 @@ namespace User
     public:
         EffectManager( );
         void Update( ) override;
-        void Draw( cinder::CameraPersp const& camera ) override;
+        void Draw( ) override;
     public:
         void EffectRegister( EffectList& effectList );
     private: // 以下アップデートに記入

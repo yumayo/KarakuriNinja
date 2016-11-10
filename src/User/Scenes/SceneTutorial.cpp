@@ -1,5 +1,4 @@
 # include "SceneTutorial.h"
-# include "SceneGame.h"
 # include "SceneResult.h"
 
 # include "ZKOO.hpp"
@@ -28,7 +27,7 @@ namespace User
         gameClearFrame = 60 * 3;
         timer.Off( );
         damageColor = ColorA( 1, 0, 0, 0 );
-        talk = std::make_shared<Talk>( Vec2f( 0, env.getWindowHeight( ) - 300 ) );
+        talk = std::make_shared<Talk>( );
 
         // 野本が管理するものを作成。
         player = Player( 100, 100 );
@@ -38,6 +37,8 @@ namespace User
         mainbgm[0]->Looping( true );
         mainbgm[0]->Gain( 0.4 );
         mainbgm[0]->Play( );
+        watercount = 0;
+        fusuma = std::make_shared<Fusuma>( );
     }
     SceneTutorial::~SceneTutorial( )
     {
@@ -50,14 +51,21 @@ namespace User
 
     void SceneTutorial::UpdateDamage( )
     {
+        if ( special.getSpecialType( ) == SpecialType::WATER ) {
+            player.TranseNowHp( ( watercount % 60 ) == 0 );
+            watercount++;
+        }
+        else { watercount = 0; }
+
         int playerHP = player.NowHp( );
 
         // プレイヤーが何もしていないなら
         if ( player.Command( ) == CommandType::NONE )
         {
+            bool 無敵じゃない = ( !( special.getSpecialType( ) == SpecialType::TREE ) );
             int damage = 0;
-            damage += enemyManager->EnemyToPlayerDamage( camera );
-            damage += enemyBulletManager->EnemyToPlayerDamage( camera );
+            damage += enemyManager->EnemyToPlayerDamage( camera ) * 無敵じゃない;
+            damage += enemyBulletManager->EnemyToPlayerDamage( camera ) * 無敵じゃない;
             player.TranseNowHp( -damage );
         }
 
@@ -67,7 +75,7 @@ namespace User
             int damage = 0;
             damage += enemyManager->EnemyToPlayerDamage( camera );
             damage += enemyBulletManager->EnemyToPlayerDamage( camera );
-            player.TranseNowHp( -damage );
+            player.TranseNowHp( -damage * !( special.getSpecialType( ) == SpecialType::TREE ) );
         }
 
         // プレイヤーがガード状態なら
@@ -76,12 +84,13 @@ namespace User
             int damage = 0;
             damage += enemyManager->EnemyToPlayerDamage( player.GuardLine( ), camera );
             damage += enemyBulletManager->EnemyToPlayerDamage( player.GuardLine( ), camera );
-            player.TranseNowHp( -damage );
+            player.TranseNowHp( -damage * !( special.getSpecialType( ) == SpecialType::TREE ) );
         }
 
         if ( player.IsAttack( ) )
         {
-            player.TranseNowMp( enemyManager->PlayerToEnemyDamage( player.MakeLine( ), camera ) );
+            float damagerate = ( special.getSpecialType( ) == SpecialType::FIRE ) ? 1.3f : 1.0f;
+            player.TranseNowMp( enemyManager->PlayerToEnemyDamage( player.MakeLine( ), camera, damagerate ) );
             player.TranseNowMp( enemyBulletManager->PlayerToEnemyDamage( player.MakeLine( ), camera ) );
         }
 
@@ -118,6 +127,17 @@ namespace User
         UI->AddScore( enemyManager->ScoreRecovery( ) );
         UI->AddScore( enemyBulletManager->ScoreRecovery( ) );
     }
+    void SceneTutorial::UpdateCombo( )
+    {
+        if ( player.IsAttack( ) )
+        {
+            UI->update( 0 != enemyManager->PlayerToEnemyAttackCheck( player.MakeLine( ), camera ) );
+        }
+        else
+        {
+            UI->update( false );
+        }
+    }
     void SceneTutorial::UpdateDamageExpression( )
     {
         timer.Update( );
@@ -136,7 +156,7 @@ namespace User
     void SceneTutorial::UpdateNextStage( )
     {
         // エネミーが全滅したら、次のステージを準備。
-        if ( enemyManager->IsEmpty( ) && TRData::enemyKill.IsComplete( ) )
+        if ( enemyManager->IsEmpty( ) && !fieldManager->IsLastField( ) && TRData::enemyKill.IsComplete( ) )
         {
             fieldManager->End( );
         }
@@ -152,14 +172,14 @@ namespace User
         // ラスボスを倒し終わったら、何らかのアクション後、次のシーンへ。
         if ( enemyManager->IsEmpty( ) && fieldManager->IsLastField( ) )
         {
+            float gain = ( static_cast<float>( gameClearFrame ) / ( 60 * 3 ) ) * 0.4F;
+            mainbgm[0]->Gain( gain );
             gameClearFrame = std::max( gameClearFrame - 1, 0 );
             camera.lookAt( Vec3f( randFloat( -0.05F, 0.05F ), randFloat( -0.05F, 0.05F ), 0.0F ) + cameraEyePosition, camera.getCenterOfInterestPoint( ) );
         }
     }
     void SceneTutorial::UpdateAllInstans( )
     {
-        UI->update( );
-
         // スペシャル選択時から、エフェクトが終わるまで全ての動作を止めます。
         if ( !special.getIsSpecial( ) )
         {
@@ -174,9 +194,11 @@ namespace User
                 UpdateDamage( );
                 UpdateColor( );
                 UpdateScore( );
+                UpdateCombo( );
             }
 
             effectManager->EffectRegister( enemyManager->EffectRecovery( ) );
+            effectManager->EffectRegister( enemyBulletManager->EffectRecovery( ) );
             effectManager->Update( );
         }
     }
@@ -206,7 +228,7 @@ namespace User
         if ( special.getEffectEnd( ) )
         {
             const float damagevalue = 10.0F;
-            player.TranseNowMp( enemyManager->PlayerSpecialAttackToEnemyDamage( special.getspecialPower( ) * damagevalue ) );
+            player.TranseNowMp( enemyManager->PlayerSpecialAttackToEnemyDamage( special.getspecialPower( ) * damagevalue, camera, special.getSpecialType( ) ) );
             player.TranseNowMp( enemyBulletManager->PlayerSpecialAttackToEnemyDamage( ) );
         }
     }
@@ -319,6 +341,7 @@ namespace User
             UpdateDamage( );
             enemyManager->update( camera );
             UpdateScore( );
+            UpdateCombo( );
 
             if ( enemyManager->IsEmpty( ) )
             {
@@ -389,20 +412,29 @@ namespace User
     {
         if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_e ) )
         {
-            create( new SceneResult( UI->Score( ) ) );
+            create( new SceneResult( UI->Score( ), 10, player.NowHp( ), 100 ) );
             return;
         }
 
         if ( player.NowHp( ) <= 0.0F )
         {
-            create( new SceneResult( UI->Score( ) ) );
+            float gain = ( static_cast<float>( gameClearFrame ) / ( 60 * 3 ) ) * 0.4F;
+            mainbgm[0]->Gain( gain );
+            gameClearFrame = std::max( gameClearFrame - 1, 0 );
+
+            create( new SceneResult( UI->Score( ), 10, player.NowHp( ), 100 ) );
             return;
         }
 
         if ( gameClearFrame == 0 )
         {
-            create( new SceneResult( UI->Score( ) ) );
-            return;
+            fusuma->closeFusuma( );
+
+            if ( fusuma->IsMoveFinished( ) )
+            {
+                create( new SceneResult( UI->Score( ), 10, player.NowHp( ), 100 ) );
+                return;
+            }
         }
     }
     void SceneTutorial::beginDrawMain( )
@@ -426,6 +458,8 @@ namespace User
     }
     void SceneTutorial::drawMain( )
     {
+        if ( special.isMinigame( ) ) return;
+
         fieldManager->Draw( camera );
         enemyManager->draw( camera );
         enemyBulletManager->draw( camera );
@@ -453,19 +487,22 @@ namespace User
     }
     void SceneTutorial::drawUI( )
     {
-        player.Draw( );
+        if ( !special.isMinigame( ) )
+        {
+            player.Draw( );
 
-        enemyManager->drawUI( );
+            enemyManager->DrawAttackCircle( camera );
 
-        enemyManager->DrawAttackCircle( camera );
+            enemyBulletManager->DrawBulletCircle( camera );
 
-        enemyBulletManager->DrawBulletCircle( camera );
+            effectManager->Draw( );
 
-        effectManager->Draw( camera );
+            UI->draw( player.NormalizedMp( ), player.NormalizedHp( ),
+                ( player.NowMp( ) == player.MaxMp( ) ) && ( special.getSpecialType( ) == SpecialType::NOTSELECTED ),
+                      int( special.getSpecialType( ) ) );
 
-        UI->draw( player.NormalizedMp( ), player.NormalizedHp( ) );
-
-        talk->Draw( );
+            talk->Draw( Vec2f( 0, env.getWindowHeight( ) - 300 ) );
+        }
 
         special.draw( );
 
@@ -473,6 +510,8 @@ namespace User
 
         gl::color( damageColor );
         gl::drawSolidRect( Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
+
+        fusuma->drawFusuma( );
     }
     void SceneTutorial::endDrawUI( )
     {

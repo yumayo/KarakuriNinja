@@ -9,17 +9,11 @@ namespace User
 {
     using namespace cinder;
 
-    GlobalTexture::GlobalTexture( )
-        : search( "..\\assets\\TEXTURE" )
-        , index( 0 )
-    {
-        /*nothing*/
-    }
     void GlobalTexture::Start( )
     {
         if ( IsSetuped( ) ) return;
 
-        auto& files = search.Files( );
+        auto& files = search->Files( );
 
         for ( int count = 0; index < files.size( ) && count < 1; ++index, ++count )
         {
@@ -34,31 +28,12 @@ namespace User
             }
         }
     }
-    bool GlobalTexture::IsSetuped( )
-    {
-        return index == MaxLoadIndex( );
-    }
-    size_t GlobalTexture::MaxLoadIndex( )
-    {
-        auto& files = search.Files( );
-        return files.size( );
-    }
-    size_t GlobalTexture::NowLoadIndex( )
-    {
-        return index;
-    }
 
-    GlobalAudio::GlobalAudio( )
-        : search( "..\\assets\\AUDIO" )
-        , index( 0 )
-    {
-        /*nothing*/
-    }
     void GlobalAudio::Start( )
     {
         if ( IsSetuped( ) ) return;
 
-        auto& files = search.Files( );
+        auto& files = search->Files( );
 
         for ( int count = 0; index < files.size( ) && count < 1; ++index, ++count )
         {
@@ -71,32 +46,12 @@ namespace User
             }
         }
     }
-    bool GlobalAudio::IsSetuped( )
-    {
-        return index == MaxLoadIndex( );
-    }
 
-    size_t GlobalAudio::MaxLoadIndex( )
-    {
-        auto& files = search.Files( );
-        return files.size( );
-    }
-
-    size_t GlobalAudio::NowLoadIndex( )
-    {
-        return index;
-    }
-
-    GlobalObj::GlobalObj( )
-        : search( "..\\assets\\Obj" )
-        , index( 0 )
-    {
-    }
     void GlobalObj::Start( )
     {
         if ( IsSetuped( ) ) return;
 
-        auto& files = search.Files( );
+        auto& files = search->Files( );
 
         for ( int count = 0; index < files.size( ) && count < 1; ++index, ++count )
         {
@@ -113,23 +68,17 @@ namespace User
             }
         }
     }
-    bool GlobalObj::IsSetuped( )
-    {
-        return index == MaxLoadIndex( );
-    }
-    size_t GlobalObj::MaxLoadIndex( )
-    {
-        auto& files = search.Files( );
-        return files.size( );
-    }
-    size_t GlobalObj::NowLoadIndex( )
-    {
-        return index;
-    }
 
     GlobalTexture GlobalData::textureHolder;
     GlobalAudio GlobalData::audioHolder;
     GlobalObj GlobalData::objHolder;
+
+    void GlobalData::Setup( std::string const& appPath )
+    {
+        textureHolder.Setup( appPath + "..\\..\\assets\\TEXTURE" );
+        audioHolder.Setup( appPath + "..\\..\\assets\\AUDIO" );
+        objHolder.Setup( appPath + "..\\..\\assets\\OBJ" );
+    }
 
     void GlobalData::Start( )
     {
@@ -155,10 +104,10 @@ namespace User
     }
     cinder::gl::Texture& GlobalData::FindTexture( std::string const& path )
     {
-        auto ptr = textureHolder.datas.find( path );
+        auto ptr = textureHolder.Datas( ).find( path );
         if ( ptr == nullptr )
         {
-            return *textureHolder.datas.find( "SYSTEMTEXTURENULL.png" );
+            return *textureHolder.Datas( ).find( "SYSTEMTEXTURENULL.png" );
         }
         else
         {
@@ -167,10 +116,10 @@ namespace User
     }
     Audio & GlobalData::FindAudio( std::string const & path )
     {
-        auto ptr = audioHolder.datas.find( path );
+        auto ptr = audioHolder.Datas( ).find( path );
         if ( ptr == nullptr )
         {
-            return *audioHolder.datas.find( "SYSTEMAUDIONULL.wav" );
+            return *audioHolder.Datas( ).find( "SYSTEMAUDIONULL.wav" );
         }
         else
         {
@@ -180,15 +129,14 @@ namespace User
 
     cinder::TriMesh & GlobalData::FindObj( std::string const & path )
     {
-        auto ptr = objHolder.datas.find( path );
+        auto ptr = objHolder.Datas( ).find( path );
         if ( ptr == nullptr )
         {
-            return *objHolder.datas.find( "SYSTEMOBJNULL.obj" );
+            return *objHolder.Datas( ).find( "SYSTEMOBJNULL.obj" );
         }
         else
         {
             return *ptr;
         }
     }
-
 }

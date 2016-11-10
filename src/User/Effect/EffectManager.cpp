@@ -18,9 +18,9 @@ namespace User
 
         EffectEraser( );
     }
-    void EffectManager::Draw( cinder::CameraPersp const& camera )
+    void EffectManager::Draw( )
     {
-        Each( [ &camera ] ( EffectBaseRef& effectBase ) { effectBase->Draw( camera ); } );
+        Each( [ ] ( EffectBaseRef& effectBase ) { effectBase->Draw( ); } );
     }
     void EffectManager::EffectRegister( EffectList & effectList )
     {

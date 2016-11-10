@@ -33,7 +33,7 @@ namespace User
         EffectBase( std::string const& path, cinder::Vec2f position, cinder::Vec2f size, cinder::Vec2f cutSize, Mode mode = Mode::LEFTUP, bool alfa_m = false );
     public:
         virtual void Update( ) override;
-        virtual void Draw( cinder::CameraPersp const& camera ) override;
+        virtual void Draw( ) override;
     public:
         void Position( cinder::Vec2f position );
         void CutSize( cinder::Vec2f cutSize );

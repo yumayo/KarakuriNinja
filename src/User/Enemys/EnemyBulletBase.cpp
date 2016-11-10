@@ -94,9 +94,9 @@ namespace User
     {
         Vec3f position;
 
-        position.x = EasingQuadInOut( t, begin.x, end.x );
-        position.y = EasingQuadInOut( t, begin.y, end.y );
-        position.z = EasingQuadInOut( t, begin.z, end.z );
+        position.x = EasingLinear( t, begin.x, end.x );
+        position.y = EasingLinear( t, begin.y, end.y );
+        position.z = EasingLinear( t, begin.z, end.z );
 
         object.Position( position );
     }
