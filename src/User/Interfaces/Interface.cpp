@@ -85,9 +85,14 @@ namespace User
         drawchargeInfo( ismpmax );
     }
 
-    void Interface::update( bool isAttackSuccess )
+    void Interface::update( )
     {
-        combo.Update( isAttackSuccess );
+        combo.Update( );
+    }
+
+    void Interface::PlusCombo( bool isAttackSuccess )
+    {
+        combo.PlusCombo( isAttackSuccess );
     }
 
     void Interface::textureDraw( cinder::gl::Texture const & texture, cinder::Vec2f position )
@@ -265,30 +270,25 @@ namespace User
                   EffectBase::Mode::LEFTUP )
         , comboNumber( 0 )
         , maxComboNumber( comboNumber )
-        , comboFrame( 60 )
     {
     }
-    void Combo::Update( bool isSuccess )
+    void Combo::Update( )
+    {
+        if ( comboNumber != 0 )
+        {
+            effect.Update( );
+        }
+    }
+    void Combo::PlusCombo( bool isSuccess )
     {
         if ( isSuccess )
         {
             comboNumber += 1;
             if ( maxComboNumber < comboNumber ) maxComboNumber = comboNumber;
-            comboFrame = 60;
         }
         else
         {
-            comboFrame = std::max( comboFrame - 1, 0 );
-        }
-
-        if ( comboFrame == 0 )
-        {
             comboNumber = 0;
-        }
-
-        if ( comboNumber != 0 )
-        {
-            effect.Update( );
         }
     }
     void Combo::Draw( cinder::Vec2f position )

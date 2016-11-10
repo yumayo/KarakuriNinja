@@ -16,6 +16,7 @@ namespace User
         };
     private:
         int frame = 0;
+        float scale = 1.0F;
     private:
         // •’Ê‚Éi‚Ş‚Ì‰æ‘œ
         cinder::gl::Texture* touchToNext;
@@ -36,7 +37,7 @@ namespace User
         void DrawKOUGEKI( cinder::Vec2f position );
         void DrawBOUGYO( cinder::Vec2f position );
     private:
-        void DrawCutTexture( cinder::gl::Texture* texture, cinder::Vec2f position, cinder::Vec2f offset, cinder::Vec2f cutSize );
+        void DrawCutTexture( cinder::gl::Texture* texture, cinder::Vec2f position, cinder::Vec2f size, cinder::Vec2f offset, cinder::Vec2f cutSize );
     };
 
     using DescriptionRef = std::shared_ptr<Description>;

@@ -26,6 +26,7 @@ namespace User
         右に移動 = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );
 
         texture = 待機;
+        knockBackTexture = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );
 
         SetFunction( &EnemySlash::タイマーが鳴るまで待機 );
     }
@@ -36,11 +37,19 @@ namespace User
             // 重力処理
             Gravitate( );
 
-            // メイン処理
-            behavior( camera );
+            // ノックバック時は一時的に処理をしません。
+            if ( !IsKnockBack( ) )
+            {
+                // メイン処理
+                behavior( camera );
 
-            // タイマー処理
-            timer.Update( );
+                // タイマー処理
+                timer.Update( );
+            }
+        }
+        else
+        {
+            texture = knockBackTexture;
         }
 
         EnemyBase::update( camera );

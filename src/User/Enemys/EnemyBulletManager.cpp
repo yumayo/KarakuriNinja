@@ -12,10 +12,13 @@ namespace User
         guard_se = &GData::FindAudio( "SE/guard.wav" );
         playerdamaged_se = &GData::FindAudio( "SE/damage.wav" );
         adddamage = &GData::FindAudio( "SE/adddamage.wav" );
+        attackCircleTex = &GData::FindTexture( "UI/ac.png" );
     }
 
     void EnemyBulletManager::update( )
     {
+        frame += 1;
+
         Each( [ ] ( EnemyBulletBaseRef& bulletRef ) { bulletRef->update( ); } );
         BulletEraser( );
     }
@@ -136,8 +139,14 @@ namespace User
             Vec2f size = camera.worldToScreen( bulletRef->EndPosition( ) + bulletRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
             float radius = Vec3f( size - vec ).length( ) / 2.0F * colliedSize;
 
-            gl::color( ColorA( 1, 0, 0, 0.5F ) );
-            gl::drawSolidCircle( vec, radius, radius );
+            gl::color( Color::white( ) );
+            Rectf rect( -radius, -radius, radius, radius );
+            gl::pushModelView( );
+            gl::translate( vec );
+            gl::rotate( Vec3f( 0, 0, frame ) );
+            gl::draw( *attackCircleTex, rect );
+            gl::popModelView( );
+
             gl::color( ColorA( 1, 1, 0, 1.0F ) );
             float time = 1.8 - 0.8 * bulletRef->NormalizedMoveTime( );
             gl::drawStrokedCircle( vec, radius * time, radius * time );

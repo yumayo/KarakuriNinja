@@ -26,8 +26,12 @@ namespace User
         待機 = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );
         攻撃モーション画像 = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );
         攻撃画像 = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );
+        左に移動 = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );
+        右に移動 = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );
 
         texture = 待機;
+        knockBackTexture = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );
+
         SetFunction( &EnemyTutorial::タイマーが鳴るまで待機 );
     }
     EnemyTutorial::~EnemyTutorial( )
@@ -44,11 +48,19 @@ namespace User
             // 重力処理
             Gravitate( );
 
-            // メイン処理
-            behavior( camera );
+            // ノックバック時は一時的に処理をしません。
+            if ( !IsKnockBack( ) )
+            {
+                // メイン処理
+                behavior( camera );
 
-            // タイマー処理
-            timer.Update( );
+                // タイマー処理
+                timer.Update( );
+            }
+        }
+        else
+        {
+            texture = knockBackTexture;
         }
 
         EnemyBase::update( camera );

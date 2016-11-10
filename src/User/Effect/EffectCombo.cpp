@@ -38,8 +38,8 @@ namespace User
 			position.x = Easing::getEasing[Easing::CubicInOut](t_, startpos_.x, endpos_.x);
 			position.y = Easing::getEasing[Easing::CubicInOut](t_, startpos_.y, endpos_.y);
 			Vec2f endsize = Vec2f(480, 480);
-			size_.x = Easing::getEasing[Easing::CubicInOut](t_, startsize_.x, endsize.x);
-			size_.y = Easing::getEasing[Easing::CubicInOut](t_, startsize_.y, endsize.y);
+			size.x = Easing::getEasing[Easing::CubicInOut](t_, startsize_.x, endsize.x);
+            size.y = Easing::getEasing[Easing::CubicInOut](t_, startsize_.y, endsize.y);
 		}
 		if (t_ >= 1.0f)
 			Easing::tCount(endt_, 1.0f);
@@ -69,14 +69,14 @@ namespace User
 
 		gl::pushModelView();
 		gl::translate(position);
-		gl::scale(size_);
+		gl::scale( size );
 
 		switch (mode)
 		{
-		case User::EffectCombo::Mode::LEFTUP:
+		case User::EffectBase::Mode::LEFTUP:
 			gl::draw(*texture, Area(cutPosition, cutPosition + cutSize), Rectf(Vec2f::zero(), normalized));
 			break;
-		case User::EffectCombo::Mode::CENTERCENTER:
+		case User::EffectBase::Mode::CENTERCENTER:
 			gl::draw(*texture, Area(cutPosition, cutPosition + cutSize), Rectf(-normalized_2, normalized_2));
 			break;
 		default:

@@ -10,11 +10,12 @@ namespace User
     using namespace cinder;
 
     Talk::Talk( )
-        : font( u8"メイリオ", 64 )
+        : font( u8"メイリオ", 48 )
     {
-        messageBoxLeft = &GData::FindTexture( "wafuu (1).png" );
-        messageBoxCenter = &GData::FindTexture( "wafuu (2).png" );
-        messageBoxRight = &GData::FindTexture( "wafuu (3).png" );
+        int index = 1;
+        messageBoxLeft = &GData::FindTexture( "UI/serihu" + std::to_string( index++ ) + ".png" );
+        messageBoxCenter = &GData::FindTexture( "UI/serihu" + std::to_string( index++ ) + ".png" );
+        messageBoxRight = &GData::FindTexture( "UI/serihu" + std::to_string( index++ ) + ".png" );
     }
     bool Talk::IsAnyPullTouch( )
     {
@@ -66,6 +67,10 @@ namespace User
         auto rectCenter = Rectf( Vec2f::zero( ), Vec2f( textSize.x, messageBoxHeight ) );
         auto rectRight = Rectf( Vec2f::zero( ), messageBoxRight->getSize( ) );
 
+        int ue = 5;
+        int inMessageHeight = 63;
+        int fontStartHeightPosition = ue + ( inMessageHeight - textSize.y ) / 2;
+
         // メッセージボックスの表示
         gl::pushModelView( );
 
@@ -82,8 +87,8 @@ namespace User
         messageBoxCenter->unbind( );
 
         gl::pushModelView( );
-        gl::translate( 0, 26 - textSize.y / 2 + ( messageBoxHeight - 32 ) / 2 );
-        font.Draw( TRData::Serif( ), Vec2f::zero( ), Color::white( ), Fonts::Mode::LEFTUP );
+        gl::translate( 0, fontStartHeightPosition );
+        font.Draw( TRData::Serif( ), Vec2f::zero( ), Color::black( ), Fonts::Mode::LEFTUP );
         gl::popModelView( );
 
         gl::translate( Vec2f( rectCenter.getWidth( ), 0 ) );

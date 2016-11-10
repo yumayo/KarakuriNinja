@@ -3,6 +3,7 @@
 # include "EffectBase.h"
 # include "EffectAlpha.h"
 # include "EffectCombo.h"
+# include "EffectScore.h"
 
 # include <list>
 # include <functional>

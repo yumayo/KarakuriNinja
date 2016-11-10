@@ -21,6 +21,8 @@ namespace User
         Audio* guard_se;
         Audio* playerdamaged_se;
         Audio* adddamage;
+        int frame = 0;
+        cinder::gl::Texture* attackCircleTex;
     private:
         EnemyBulletList bulletList;
         EffectList effectList;

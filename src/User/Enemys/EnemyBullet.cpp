@@ -21,6 +21,7 @@ namespace User
         右に移動 = &GData::FindTexture( "Enemy/Bullet/Bullet (" + std::to_string( index++ ) + ").png" );
 
         texture = 待機;
+        knockBackTexture = &GData::FindTexture( "Enemy/Bullet/Bullet (" + std::to_string( index++ ) + ").png" );
 
         SetFunction( &EnemyBullet::タイマーが鳴るまで待機 );
         for ( int i = 0; i < 3; i++ )
@@ -32,11 +33,19 @@ namespace User
     {
         if ( IsLive( ) )
         {
-            // メイン処理
-            behavior( camera );
+            // ノックバック時は一時的に処理をしません。
+            if ( !IsKnockBack( ) )
+            {
+                // メイン処理
+                behavior( camera );
 
-            // タイマー更新
-            timer.Update( );
+                // タイマー処理
+                timer.Update( );
+            }
+        }
+        else
+        {
+            texture = knockBackTexture;
         }
 
         EnemyBase::update( camera );

@@ -14,6 +14,40 @@ namespace User
 {
     using namespace cinder;
 
+    void EnemyBoss::DrawAura( )
+    {
+        if ( auraTex )
+        {
+            auto object = this->object;
+            object.Position( object.Position( ) - object.Direction( ) * 0.1 );
+
+            gl::disable( GL_CULL_FACE );
+
+            gl::pushModelView( );
+            gl::translate( object.Position( ) );
+            gl::multModelView( object.Quaternion( ).toMatrix44( ) );
+
+            if ( !IsKnockBack( ) )
+            {
+                gl::pushModelView( );
+                float s = 2.0F + ( 0.3F * math<float>::sin( float( frame ) / 2.5F ) );
+                gl::scale( s, s, s );
+                gl::rotate( Vec3f( 0, 180, 180 + frame ) );
+                ColorA col = ColorA::white( );
+                col.a = 0.5F + ( 0.5 * math<float>::cos( float( frame ) / 2.5F ) );
+                gl::color( col );
+                auraTex->bind( );
+                gl::drawSolidRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
+                auraTex->unbind( );
+                gl::popModelView( );
+            }
+
+            gl::popModelView( );
+
+            gl::enable( GL_CULL_FACE );
+        }
+    }
+
     EnemyBoss::EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera )
         : EnemyBase( pos, camera, Status( 20.0F, 7 ) )
         , timer( )
@@ -23,20 +57,35 @@ namespace User
         , isDeadSerif( true )
         , font( u8"メイリオ", 74 )
         , serif( u8"" )
-        , serifDrawPosition( Vec2f::zero( ) )
     {
-        int index = 1;
-        待機 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
-        投げるモーション画像 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
-        投げる画像 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
-        攻撃モーション画像 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
-        攻撃画像 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
-        左に移動 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
-        右に移動 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
-        倒れかけるモーション = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
-        倒れるモーション = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+        {
+            int index = 1;
+            messageBoxLeft = &GData::FindTexture( "UI/e-serihu" + std::to_string( index++ ) + ".png" );
+            messageBoxCenter = &GData::FindTexture( "UI/e-serihu" + std::to_string( index++ ) + ".png" );
+            messageBoxRight = &GData::FindTexture( "UI/e-serihu" + std::to_string( index++ ) + ".png" );
+        }
 
-        texture = 待機;
+        {
+            int index = 1;
+            待機 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+            texture = 待機;
+            投げるモーション画像 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+            投げる画像 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+            攻撃モーション画像 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+            攻撃画像 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+            左に移動 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+            右に移動 = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+            倒れかけるモーション = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+            倒れるモーション = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+            knockBackTexture = &GData::FindTexture( "Enemy/Boss/Boss (" + std::to_string( index++ ) + ").png" );
+
+        }
+        {
+            int index = 1;
+            オーラ1 = &GData::FindTexture( "Enemy/Boss/オーラ_1_" + std::to_string( index++ ) + ".png" );
+            オーラ2 = &GData::FindTexture( "Enemy/Boss/オーラ_1_" + std::to_string( index++ ) + ".png" );
+            auraTex = nullptr;
+        }
 
         timer.Advance( 180 ); // セリフを吐くフレーム
         SetFunction( &EnemyBoss::出現した時のセリフ );
@@ -47,41 +96,64 @@ namespace User
             se.push_back( &GData::FindAudio( "SE/shuri" + std::to_string( i ) + ".wav" ) );
             弾カウント = 0;
         }
-
     }
     void EnemyBoss::update( cinder::CameraPersp const& camera )
     {
-        if ( isDeadStop )
+        if ( IsLive( ) )
         {
             // 重力処理
             Gravitate( );
-            // メイン処理
-            behavior( camera );
-            // タイマー処理
-            timer.Update( );
+            // ノックバック時は一時的に処理をしません。
+            if ( !IsKnockBack( ) )
+            {
+                // メイン処理
+                behavior( camera );
 
+                // タイマー処理
+                timer.Update( );
+            }
+        }
+        else
+        {
+            //texture = knockBackTexture;
         }
 
-        // 以下 EnemyBaseUpdate
+
+        frame += 1;
         CameraSee( camera );
 
-        if ( isDeadStop )
+        if ( IsLive( ) )
         {
-            object.PositionAdd( object.Speed( ) );
-            DamageEffect( );
             LiveCheck( );
-            attackTime.Update( );
+            if ( !IsKnockBack( ) )
+            {
+                object.PositionAdd( object.Speed( ) );
+                attackTime.Update( );
+            }
         }
-        CollideGround( ); // 死んでいても実行します。
+        DamageEffect( );
+        CollideGround( );// 死んでいても実行します。
         //CollideField( );// 死んでいても実行します。
-        if ( isDeadStop == false ) // ここで、死ぬと判断されることを遅らせています。
-            Dying( );
+        Dying( );// 死んでいても実行します。
 
+                 // デバッグダメージ
         if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_0 ) ) Kill( );
     }
     void EnemyBoss::draw( )
     {
+        DrawAura( );
+
         EnemyBase::draw( );
+
+        if ( IsKnockBack( ) )
+        {
+            objects.clear( );
+        }
+        int i = 1;
+        for ( auto itr = objects.begin( ); itr != objects.end( ); ++itr, ++i )
+        {
+            DrawAfterimage( *itr, i );
+        }
     }
     void EnemyBoss::drawUI( const cinder::CameraPersp& camera )
     {
@@ -92,6 +164,10 @@ namespace User
     {
         return isAttack && isDeadStop;
     }
+    bool EnemyBoss::IsLive( )
+    {
+        return isLive || isDeadStop;
+    }
     void EnemyBoss::Gravitate( )
     {
         //　ジャンプ中なら重力をかけます。
@@ -99,6 +175,53 @@ namespace User
         {
             object.SpeedAdd( Vec3f( 0, -0.01, 0 ) );
         }
+    }
+    void EnemyBoss::DrawAfterimage( EnemyObject& object, int index )
+    {
+        gl::disable( GL_CULL_FACE );
+
+        gl::pushModelView( );
+        gl::translate( object.Position( ).x, 0, object.Position( ).z );
+        gl::translate( 0, 0.05, 0 );
+        gl::rotate( Vec3f( 90, 0, 0 ) );
+        gl::color( ColorA( 0, 0, 0, 0.5 / index ) );
+        auto distans = 1 - ( object.Position( ).y - object.Size( ).y / 2 ) / 2;
+        if ( distans < 0 ) distans = 0;
+        gl::drawSolidCircle( Vec2f::zero( ), ( object.Size( ).xy( ).length( ) / 4.0F ) * distans, 100 );
+        gl::popModelView( );
+
+        gl::pushModelView( );
+        gl::translate( object.Position( ) );
+        gl::multModelView( object.Quaternion( ).toMatrix44( ) );
+
+        if ( IsKnockBack( ) )
+        {
+            gl::pushModelView( );
+            gl::rotate( Vec3f( 0, 180, 180 ) );
+            ColorA col = HitColor( );
+            col.a = 1.0 / index;
+            gl::color( col );
+            knockBackTexture->bind( );
+            gl::drawSolidRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
+            knockBackTexture->unbind( );
+            gl::popModelView( );
+        }
+        else
+        {
+            gl::pushModelView( );
+            gl::rotate( Vec3f( 0, 180, 180 ) );
+            ColorA col = HitColor( );
+            col.a = 1.0 / index;
+            gl::color( col );
+            texture->bind( );
+            gl::drawSolidRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
+            texture->unbind( );
+            gl::popModelView( );
+        }
+
+        gl::popModelView( );
+
+        gl::enable( GL_CULL_FACE );
     }
     void EnemyBoss::タイマーが鳴るまで待機( cinder::CameraPersp const& camera )
     {
@@ -172,6 +295,8 @@ namespace User
     }
     void EnemyBoss::左右に高速移動しながらカメラへ近づく( cinder::CameraPersp const& camera )
     {
+        if ( 3 < objects.size( ) ) objects.pop_front( );
+
         if ( !IsInTheScreen( camera ) )
         {
             moveLeftRightSpeed *= -1;
@@ -191,6 +316,8 @@ namespace User
 
         object.Speed( moveSpeed + moveLeftRightSpeed );
 
+        objects.emplace_back( object );
+
         if ( timer.IsAction( ) )
         {
             auto cameraPos = camera.getEyePoint( ) + camera.getViewDirection( ) * camera.getNearClip( ) + camera.getViewDirection( );
@@ -202,6 +329,7 @@ namespace User
             timer.Advance( 80 ); // 攻撃モーションフレームを代入
             attackTime.AttackFrame( 80 );
 
+            objects.clear( );
             texture = 攻撃モーション画像;
             SetFunction( &EnemyBoss::攻撃モーション );
             return;
@@ -209,9 +337,12 @@ namespace User
     }
     void EnemyBoss::攻撃モーション( cinder::CameraPersp const& camera )
     {
+        auraTex = ( ( frame / 15 ) % 2 == 0 ? オーラ1 : オーラ2 );
+
         // 攻撃モーション後、次の関数へ。
         if ( timer.IsAction( ) )
         {
+            auraTex = nullptr;
             texture = 攻撃画像;
             SetFunction( &EnemyBoss::攻撃 );
             return;
@@ -322,7 +453,6 @@ namespace User
     }
     void EnemyBoss::出現した時のセリフ( cinder::CameraPersp const & camera )
     {
-        serifDrawPosition = camera.worldToScreen( object.Position( ) + Vec3f( 0, object.Size( ).y, 0 ), env.getWindowWidth( ), env.getWindowHeight( ) );
         SetSerifFunction( u8"がっはっは、何用だ貴様", &EnemyBoss::セリフ );
 
         if ( timer.IsAction( ) )
@@ -335,8 +465,6 @@ namespace User
     void EnemyBoss::HPが半分以下になった時のセリフ( cinder::CameraPersp const & camera )
     {
         isHalfHPSerif = false;
-
-        serifDrawPosition = camera.worldToScreen( object.Position( ) + Vec3f( 0, object.Size( ).y, 0 ), env.getWindowWidth( ), env.getWindowHeight( ) );
         SetSerifFunction( u8"なかなかやるな貴様", &EnemyBoss::セリフ );
 
         if ( timer.IsAction( ) )
@@ -349,8 +477,6 @@ namespace User
     void EnemyBoss::死ぬ時のセリフ( cinder::CameraPersp const & camera )
     {
         isDeadSerif = false;
-
-        serifDrawPosition = camera.worldToScreen( object.Position( ) + Vec3f( 0, object.Size( ).y, 0 ), env.getWindowWidth( ), env.getWindowHeight( ) );
         SetSerifFunction( u8"っく、我は滅びぬ", &EnemyBoss::セリフ );
 
         if ( timer.IsAction( ) )
@@ -367,12 +493,46 @@ namespace User
     }
     void EnemyBoss::セリフ( )
     {
+        auto textSize = font.BoundingBox( serif ).getSize( );
+        auto messageBoxHeight = messageBoxLeft->getHeight( );
+        auto rectLeft = Rectf( Vec2f::zero( ), messageBoxLeft->getSize( ) );
+        auto rectCenter = Rectf( Vec2f::zero( ), Vec2f( textSize.x, messageBoxHeight ) );
+        auto rectRight = Rectf( Vec2f::zero( ), messageBoxRight->getSize( ) );
+
+        int ue = 34;
+        int inMessageHeight = 111;
+        int fontStartHeightPosition = ue + ( inMessageHeight - textSize.y ) / 2;
+
+        // メッセージボックスの表示
         gl::pushModelView( );
-        gl::translate( serifDrawPosition );
-        gl::color( Color::white( ) );
-        auto size = font.BoundingBox( serif ).getSize( );
-        gl::drawSolidRect( Rectf( -size.x / 2.0F, 0, size.x / 2.0F, size.y ) );
-        font.Draw( serif, Vec2f::zero( ), Color::black( ), Fonts::Mode::CENTERUP );
+
+        gl::translate( -( rectLeft.getWidth( ) + rectCenter.getWidth( ) + rectRight.getWidth( ) ) / 2, 0 );
+
+        Vec2f position = env.getWindowCenter( );
+        position.y = 300;
+        gl::translate( position + Vec2f( 0, -messageBoxHeight ) );
+        messageBoxLeft->enableAndBind( );
+        gl::color( ColorA::white( ) );
+        gl::drawSolidRect( rectLeft );
+        messageBoxLeft->unbind( );
+
+        gl::translate( Vec2f( rectLeft.getWidth( ), 0 ) );
+        messageBoxCenter->enableAndBind( );
+        gl::color( ColorA::white( ) );
+        gl::drawSolidRect( rectCenter );
+        messageBoxCenter->unbind( );
+
+        gl::pushModelView( );
+        gl::translate( 0, fontStartHeightPosition );
+        font.Draw( serif, Vec2f::zero( ), Color::white( ), Fonts::Mode::LEFTUP );
+        gl::popModelView( );
+
+        gl::translate( Vec2f( rectCenter.getWidth( ), 0 ) );
+        messageBoxRight->enableAndBind( );
+        gl::color( ColorA::white( ) );
+        gl::drawSolidRect( rectRight );
+        messageBoxRight->unbind( );
+
         gl::popModelView( );
     }
     bool EnemyBoss::IsHalfHPSerif( )
@@ -381,7 +541,7 @@ namespace User
     }
     bool EnemyBoss::IsDeadSerif( )
     {
-        return isDeadSerif && IsLive( ) == false;
+        return isLive == false;
     }
     void EnemyBoss::SetFunction( void( EnemyBoss::* function )( cinder::CameraPersp const &camera ) )
     {

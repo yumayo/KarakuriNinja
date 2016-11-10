@@ -14,6 +14,7 @@ namespace User
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera )
         : object( pos, Vec3f( 1.7, 1.7, 0.01 ), Vec3f::zero( ) )
         , texture( &GData::FindTexture( "Enemy/Base/Base (1).png" ) )
+        , knockBackTexture( &GData::FindTexture( "Enemy/Base/Base (1).png" ) )
         , hitColor( Color::white( ) )
         , isLanding( true )
         , isLive( true )
@@ -28,6 +29,7 @@ namespace User
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, Status status, float sizeScale )
         : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
         , texture( &GData::FindTexture( "Enemy/Base/Base (1).png" ) )
+        , knockBackTexture( &GData::FindTexture( "Enemy/Base/Base (1).png" ) )
         , hitColor( Color::white( ) )
         , isLanding( true )
         , isLive( true )
@@ -41,22 +43,25 @@ namespace User
     }
     void EnemyBase::update( cinder::CameraPersp const& camera )
     {
+        frame += 1;
         CameraSee( camera );
 
         if ( IsLive( ) )
         {
-            object.PositionAdd( object.Speed( ) );
             LiveCheck( );
-            DamageEffect( );
-            attackTime.Update( );
+            if ( !IsKnockBack( ) )
+            {
+                object.PositionAdd( object.Speed( ) );
+                attackTime.Update( );
+            }
         }
+        DamageEffect( );
         CollideGround( );// 死んでいても実行します。
         CollideField( );// 死んでいても実行します。
         Dying( );// 死んでいても実行します。
 
         // デバッグダメージ
-        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_0 ) )
-            Kill( );
+        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_0 ) ) Kill( );
     }
     void EnemyBase::draw( )
     {
@@ -81,13 +86,27 @@ namespace User
         gl::translate( object.Position( ) );
         gl::multModelView( object.Quaternion( ).toMatrix44( ) );
 
-        gl::pushModelView( );
-        gl::rotate( Vec3f( 0, 180, 180 ) );
-        gl::color( HitColor( ) );
-        texture->bind( );
-        gl::drawSolidRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
-        texture->unbind( );
-        gl::popModelView( );
+        if ( IsKnockBack( ) )
+        {
+            gl::pushModelView( );
+            gl::rotate( Vec3f( 0, 180, 180 ) );
+            gl::color( HitColor( ) );
+            knockBackTexture->bind( );
+            gl::drawSolidRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
+            knockBackTexture->unbind( );
+            gl::popModelView( );
+        }
+        else
+        {
+            gl::pushModelView( );
+            gl::rotate( Vec3f( 0, 180, 180 ) );
+            gl::color( HitColor( ) );
+            texture->bind( );
+            gl::drawSolidRect( Rectf( -object.Size( ).xy( ) / 2.0F, object.Size( ).xy( ) / 2.0F ) );
+            texture->unbind( );
+            gl::popModelView( );
+        }
+
 
     #ifdef _DEBUG
         gl::color( Color::white( ) );
@@ -97,45 +116,59 @@ namespace User
         gl::popModelView( );
 
         gl::enable( GL_CULL_FACE );
-    }
+        }
     void EnemyBase::drawUI( cinder::CameraPersp const& camera )
     {
 
     }
-    int EnemyBase::Hit( float length, float value )
+    int EnemyBase::Hit( cinder::CameraPersp const& camera, float length, int scoreRate, float value )
     {
+        int drainMP = 0;
         if ( length <= 0.2F )
         {
             status.HP = std::max( status.HP - 3.0F * value, 0.0F );
-            hitColor = Color( 1, 0, 0 );
-            return 7;
+            hitColor = Color( 1, 0.1, 0.1 );
+            drainMP = 7;
         }
         else if ( length <= 0.5F )
         {
             status.HP = std::max( status.HP - 2.5F * value, 0.0F );
             hitColor = Color( 1, 0.3, 0.3 );
-            return 5;
+            drainMP = 5;
         }
         else if ( length <= 1.0F )
         {
             status.HP = std::max( status.HP - 1.5F * value, 0.0F );
-            hitColor = Color( 1, 0.6, 0.6 );
-            return 2;
+            hitColor = Color( 1, 0.5, 0.5 );
+            drainMP = 2;
         }
-        return 0;
+
+        if ( drainMP != 0 )
+        {
+            Vec2f vec = camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+
+            vec.x = randFloat( vec.x - 100, vec.x + 100 );
+            vec.y = randFloat( vec.y - 100, vec.y + 100 );
+
+            EffectCreate( EffectScore( vec, drainMP * scoreRate ) );
+        }
+
+        if ( !isLive ) hitColor = Color( 1, 0, 0 );
+
+        return drainMP;
     }
     int EnemyBase::Damage( int damage )
     {
         if ( damage < 0 ) return 0;
         status.HP = std::max( status.HP - damage, 0.0F );
-        hitColor = Color( 1, 0, 0 );
+        hitColor = Color( 1, 0.1, 0.1 );
 
         return 2;
     }
     void EnemyBase::Kill( )
     {
         status.HP = 0.0F;
-        hitColor = Color( 1, 0, 0 );
+        hitColor = Color( 1, 0.1, 0.1 );
     }
     bool EnemyBase::IsActive( )
     {
@@ -177,6 +210,12 @@ namespace User
         auto x = object.Position( ).x;
         return -1 <= x && x <= 1;
     }
+    bool EnemyBase::IsKnockBack( )
+    {
+        // 真っ赤でない時かつ白色でない時。
+        // つまり、中途半端な色の時はノックバックであると仮定します。
+        return ( hitColor != Color( 1, 0, 0 ) ) && ( hitColor != Color::white( ) );
+    }
     void EnemyBase::CollideField( )
     {
         if ( !IsInField( ) )
@@ -213,12 +252,12 @@ namespace User
     }
     void EnemyBase::LiveCheck( )
     {
-        if ( isLive == false ) return;
+        if ( !isLive ) return;
         isLive = 0.0F < status.HP;
     }
     void EnemyBase::Dying( )
     {
-        if ( isLive == false )
+        if ( !IsLive( ) )
         {
             deadTime = std::max( deadTime - 1, 0 );
         }
@@ -226,7 +265,12 @@ namespace User
     void EnemyBase::DamageEffect( )
     {
         if ( isLive )
+        {
             hitColor += Color( 0.03, 0.03, 0.03 );
+            if ( 1 < hitColor.r )
+                if ( 1 < hitColor.g )
+                    if ( 1 < hitColor.b ) hitColor = Color::white( );
+        }
         else
             hitColor = Color( 1, 0, 0 );
 
@@ -247,10 +291,10 @@ namespace User
         Vec2f vec = camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
         Vec2f size = camera.worldToScreen( object.Position( ) + object.Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
         EffectCreate( EffectAlpha( "Textures/Effect/kumo2.png",
-                                  vec,
-                                  Vec2f( vec - size ) * 2.5F,
-                                  Vec2f( 600, 300 ),
-                                  EffectBase::Mode::CENTERCENTER
+                                   vec,
+                                   Vec2f( vec - size ) * 2.5F,
+                                   Vec2f( 600, 300 ),
+                                   EffectBase::Mode::CENTERCENTER
         ) );
     }
 }

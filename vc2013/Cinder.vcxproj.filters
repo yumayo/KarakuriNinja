@@ -354,6 +354,12 @@
     <ClInclude Include="..\src\User\Effect\EffectManager.h">
       <Filter>User\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\User\Effect\EffectScore.h">
+      <Filter>User\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\HandAnimation.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -602,6 +608,12 @@
     </ClCompile>
     <ClCompile Include="..\src\User\Effect\EffectManager.cpp">
       <Filter>User\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Effect\EffectScore.cpp">
+      <Filter>User\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\HandAnimation.cpp">
+      <Filter>User\Utilitys</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

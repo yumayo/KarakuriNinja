@@ -29,6 +29,7 @@ namespace User
         damageColor = ColorA( 1, 0, 0, 0 );
         talk = std::make_shared<Talk>( );
         description = std::make_shared<Description>( );
+        handAnimation = std::make_shared<HandAnimation>( );
         kougeki = &GData::FindTexture( "Textures/kougeki.png" );
         bougyo = &GData::FindTexture( "Textures/bougyo.png" );
 
@@ -96,7 +97,7 @@ namespace User
         {
             int AP = 0;
             float damagerate = ( special.getSpecialType( ) == SpecialType::FIRE ) ? 1.3f : 1.0f;
-            AP += enemyManager->PlayerToEnemyDamage( obj, camera, damagerate );
+            AP += enemyManager->PlayerToEnemyDamage( obj, camera, damagerate, UI->ComboNumber( ) );
             AP += enemyBulletManager->PlayerToEnemyDamage( obj, camera );
             player.TranseNowMp( AP );
         }
@@ -112,6 +113,10 @@ namespace User
     }
     void SceneTutorial::UpdateCombo( )
     {
+        UI->update( );
+
+        if ( moveInput.Lines( ).empty( ) ) return;
+
         bool isHit = false;
         for ( auto& obj : moveInput.Lines( ) )
         {
@@ -122,7 +127,7 @@ namespace User
             }
         }
 
-        UI->update( isHit );
+        UI->PlusCombo( isHit );
     }
     void SceneTutorial::UpdateDamageExpression( )
     {
@@ -281,6 +286,10 @@ namespace User
                 return;
             }
 
+            Vec2f left( env.getWindowWidth( ) / 2 - 256, env.getWindowHeight( ) / 2 );
+            Vec2f right( env.getWindowWidth( ) / 2 + 256, env.getWindowHeight( ) / 2 );
+            handAnimation->updateGuard( left, right, Vec2f( 512, 512 ) );
+
             description->SetMode( Description::Mode::BOUGYO );
 
             // ディフェンスに使う関数。
@@ -324,6 +333,10 @@ namespace User
                 if ( TRData::IsSerifTalked( ) ) isTalked = true;
                 return;
             }
+
+            Vec2f end( env.getWindowWidth( ) / 2 - 256, env.getWindowHeight( ) / 2 );
+            Vec2f begin( env.getWindowWidth( ) / 2 + 256, env.getWindowHeight( ) / 2 );
+            handAnimation->updateAttack( begin, end, Vec2f( 512, 512 ) );
 
             description->SetMode( Description::Mode::KOUGEKI );
 
@@ -503,21 +516,35 @@ namespace User
 
             moveInput.Draw( );
 
+            enemyManager->drawUI( camera );
+
             enemyManager->DrawAttackCircle( camera );
 
             enemyBulletManager->DrawBulletCircle( camera );
 
             effectManager->Draw( );
 
-            UI->draw( player.NormalizedMp( ), player.NormalizedHp( ),
-                ( player.NowMp( ) == player.MaxMp( ) ) && ( special.getSpecialType( ) == SpecialType::NOTSELECTED ),
+            enemyManager->DrawEnemyHitPoint( );
+
+            UI->draw( player.NormalizedMp( ),
+                      player.NormalizedHp( ),
+                      ( player.NowMp( ) == player.MaxMp( ) ) && ( special.getSpecialType( ) == SpecialType::NOTSELECTED ),
                       int( special.getSpecialType( ) ) );
 
-            talk->Draw( Vec2f( 0, env.getWindowHeight( ) ) + Vec2f( 0, -300 ) );
-            description->Draw( env.getWindowSize( ) + Vec2f( 0, -300 ) );
+            talk->Draw( Vec2f( 0, env.getWindowHeight( ) ) + Vec2f( 0, -360 ) );
+            description->Draw( Vec2f( 256, env.getWindowHeight( ) ) + Vec2f( 0, -360 ) );
         }
 
         special.draw( );
+
+        if ( TRData::guard.IsStopUpdate( ) )
+        {
+            handAnimation->drawGuard( );
+        }
+        else if ( TRData::playerAttack.IsStopUpdate( ) )
+        {
+            handAnimation->drawAttack( );
+        }
 
         if ( TRData::attackCircle.IsStopUpdate( ) || TRData::guard.IsStopUpdate( ) )
         {

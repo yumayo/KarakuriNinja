@@ -28,6 +28,10 @@ namespace User
         Audio* playerdamaged_se;
         Audio* adddamage;
         Audio* dead;
+        int frame = 0;
+        cinder::gl::Texture* attackCircleTex;
+        int maxEnemyHitPoint = 0;
+        int enemyHitPoint = 0;
     private:
         EnemyList enemyList;
     private:
@@ -45,7 +49,7 @@ namespace User
         // エネミーが一体でも攻撃していたら true になります。
         bool IsAttack( const cinder::CameraPersp& camera );
         // プレイヤーからエネミーへのダメージラインとの当たり判定も込み
-        int PlayerToEnemyDamage( Line& line_, const cinder::CameraPersp& camera, float value = 1.0F );
+        int PlayerToEnemyDamage( Line& line_, const cinder::CameraPersp& camera, float value = 1.0F, float combo = 0.0F );
         // プレイヤーからの攻撃が何体のエネミーに当たったのかを判定します。
         int PlayerToEnemyAttackCheck( Line& line_, const cinder::CameraPersp& camera );
         // プレイヤーの必殺技をエネミーへと与えます。
@@ -62,6 +66,8 @@ namespace User
         int ScoreRecovery( ) { auto temp = score; score = 0; return temp; }
         // エネミーの攻撃が当たる場所を描画します。
         void DrawAttackCircle( cinder::CameraPersp const & camera );
+        // エネミーの合計体力を表示します。
+        void DrawEnemyHitPoint( );
         // 発射した弾を全て回収します。この関数を呼ぶとこのクラスが持っている弾を全てクリアします。
         EnemyBulletList BulletsRecovery( );
         // エフェクトを全て回収します。この関数を呼ぶとこのクラスが持っているエフェクトを全てクリアします。
@@ -82,6 +88,8 @@ namespace User
         void EnemyEffectsRecovery( );
     private:
         bool IsDamage( Line line_, cinder::Vec2f pos_, float size_ );
+
+        float NormalizedHitPoint( ) { return static_cast<float>( enemyHitPoint ) / maxEnemyHitPoint; }
     };
 
     using EnemyManagerRef = std::shared_ptr<EnemyManager>;

@@ -22,9 +22,12 @@ namespace User
         bool isHalfHPSerif;
         bool isDeadSerif;
         Fonts font;
+        cinder::gl::Texture* messageBoxLeft;
+        cinder::gl::Texture* messageBoxCenter;
+        cinder::gl::Texture* messageBoxRight;
         std::string serif;
-        cinder::Vec2f serifDrawPosition;
         std::function<void( )> serifBehavior;
+        std::list<EnemyObject> objects;
     private:
         cinder::gl::Texture* 待機;
         cinder::gl::Texture* 投げるモーション画像;
@@ -35,16 +38,22 @@ namespace User
         cinder::gl::Texture* 右に移動;
         cinder::gl::Texture* 倒れかけるモーション;
         cinder::gl::Texture* 倒れるモーション;
-
+    private:
+        cinder::gl::Texture* オーラ1;
+        cinder::gl::Texture* オーラ2;
+        cinder::gl::Texture* auraTex;
+        void DrawAura( );
     public:
         EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera );
         void update( cinder::CameraPersp const& camera ) override;
         void draw( ) override;
         void drawUI( const cinder::CameraPersp& camera ) override;
         bool Attack( const cinder::CameraPersp& camera ) override;
+        bool IsLive( ) override;
     private:
         // 重力をかけます。
         void Gravitate( );
+        void DrawAfterimage( EnemyObject& object, int index );
     private:
         void タイマーが鳴るまで待機( cinder::CameraPersp const& camera );
         void どっちの攻撃を出すかの確認( cinder::CameraPersp const& camera );

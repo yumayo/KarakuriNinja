@@ -12,6 +12,7 @@
 # include "../Utilitys/Yumayo.h"
 # include "../Interfaces/Talk.h"
 # include "../Interfaces/Description.h"
+# include "../Utilitys/HandAnimation.h"
 
 //Nomoto's include
 # include "../Player/Player.h"
@@ -72,6 +73,7 @@ namespace User
         cinder::gl::Texture* kougeki;
         cinder::gl::Texture* bougyo;
         MoveInput moveInput;
+        HandAnimationRef handAnimation;
         //=======================================
 
 

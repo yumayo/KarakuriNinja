@@ -23,12 +23,12 @@ namespace User
 		Fonts font;
 		int comboNumber;
 		int maxComboNumber;
-		int comboFrame;
 	public:
 		Combo();
         int ComboNumber( ) { return comboNumber; }
 		int MaxComboNumber() { return maxComboNumber; }
-		void Update(bool isSuccess);
+		void Update( );
+        void PlusCombo( bool isSuccess);
 		void Draw(cinder::Vec2f position);
 	};
 
@@ -37,7 +37,8 @@ namespace User
 	public:
 		Interface();
 		void draw(float APNormalized, float HPNormalized, bool ismpmax = false, int specialsubtime = 3);
-		void update(bool isAttackSuccess);
+		void update();
+        void PlusCombo( bool isAttackSuccess );
 		void AddScore(int score) { scorePoint += score; }
 		int Score() { return scorePoint; }
         int ComboNumber( ) { return combo.ComboNumber( ); }

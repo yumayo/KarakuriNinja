@@ -46,28 +46,29 @@ namespace User
         int num = touchToNext->getWidth( ) / cutSize.x;
         float x_offset = ( index % num ) * cutSize.x;
         float y_offset = ( index / num ) * cutSize.y;
-
         Vec2f offset( x_offset, y_offset );
 
-        DrawCutTexture( touchToNext, position, offset, cutSize );
+        DrawCutTexture( touchToNext, position, cutSize / 2, offset, cutSize );
     }
     void Description::DrawKOUGEKI( cinder::Vec2f position )
     {
         Vec2f cutSize( 768, 256 );
         Vec2f offset( Vec2f::zero( ) );
-        DrawCutTexture( kougeki, position, offset, cutSize );
+
+        DrawCutTexture( kougeki, position, cutSize / 2, offset, cutSize );
     }
     void Description::DrawBOUGYO( cinder::Vec2f position )
     {
         Vec2f cutSize( 768, 256 );
         Vec2f offset( Vec2f::zero( ) );
-        DrawCutTexture( bougyo, position, offset, cutSize );
+
+        DrawCutTexture( bougyo, position, cutSize / 2, offset, cutSize );
     }
-    void Description::DrawCutTexture( cinder::gl::Texture* texture, cinder::Vec2f position, cinder::Vec2f offset, cinder::Vec2f cutSize )
+    void Description::DrawCutTexture( cinder::gl::Texture* texture, cinder::Vec2f position, cinder::Vec2f size, cinder::Vec2f offset, cinder::Vec2f cutSize )
     {
         gl::pushModelView( );
-        gl::translate( -offset + position - cutSize );
-        gl::draw( *texture, Area( offset, offset + cutSize ), Area( offset, offset + cutSize ) );
+        gl::translate( -offset + position );
+        gl::draw( *texture, Area( offset, offset + cutSize ), Area( offset, offset + size ) );
         gl::popModelView( );
     }
 }

@@ -23,7 +23,7 @@ namespace User
         int speed;
         cinder::Vec2f position;
         cinder::Vec2f cutSize;
-        cinder::Vec2f size_;
+        cinder::Vec2f size;
         int maxIndex;
         Mode mode;
 	protected:

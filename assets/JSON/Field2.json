@@ -85,17 +85,21 @@
 
   ],
   "Enemy": [
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Slash",
-    "Bullet"
+    {
+      "type": "slash",
+      "position": [ 0.0, 0.0, 1.0 ]
+    },
+    {
+      "type": "bullet",
+      "position": [ 0.0, 2.0, 1.0 ]
+    },
+    {
+      "type": "base",
+      "position": [ 2.0, 0.0, -1.0 ]
+    },
+    {
+      "type": "base",
+      "position": [ -2.0, 0.0, -1.0 ]
+    }
   ]
 }

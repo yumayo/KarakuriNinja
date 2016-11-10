@@ -85,6 +85,9 @@
 
   ],
   "Enemy": [
-    "Tutorial"
+    {
+      "type": "tutorial",
+      "position": [ 0.0, 0.0, -1.0 ]
+    }
   ]
 }

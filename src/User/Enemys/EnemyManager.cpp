@@ -29,25 +29,27 @@ namespace User
 
         for ( auto& obj : params["Enemy"] )
         {
-            if ( obj.getValue( ) == "Base" )
+            auto type = obj.getValueForKey<std::string>( "type" );
+            auto position = getVec3f( obj["position"] );
+            if ( type == "base" )
             {
-                Create<EnemyBase>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( 0, 4 ) ), camera );
+                Create<EnemyBase>( position, camera );
             }
-            else if ( obj.getValue( ) == "Tutorial" )
+            else if ( type == "tutorial" )
             {
-                Create<EnemyTutorial>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera );
+                Create<EnemyTutorial>( position, camera );
             }
-            else if ( obj.getValue( ) == "Bullet" )
+            else if ( type == "bullet" )
             {
-                Create<EnemyBullet>( Vec3f( randFloat( -2.0F, 2.0F ), 2, randFloat( -2, 1 ) ), camera );
+                Create<EnemyBullet>( position, camera );
             }
-            else if ( obj.getValue( ) == "Slash" )
+            else if ( type == "slash" )
             {
-                Create<EnemySlash>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera );
+                Create<EnemySlash>( position, camera );
             }
-            else if ( obj.getValue( ) == "Boss" )
+            else if ( type == "boss" )
             {
-                Create<EnemyBoss>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera );
+                Create<EnemyBoss>( position, camera );
             }
         }
 
@@ -55,11 +57,25 @@ namespace User
         playerdamaged_se = &GData::FindAudio( "SE/damage.wav" );
         adddamage = &GData::FindAudio( "SE/adddamage.wav" );
         dead = &GData::FindAudio( "SE/dead.wav" );
+        attackCircleTex = &GData::FindTexture( "UI/ac.png" );
+
+        Each( [ &, this ] ( EnemyBaseRef& enemyRef )
+        {
+            maxEnemyHitPoint += enemyRef->GetStatus( ).maxHP;
+        } );
     }
 
     void EnemyManager::update( cinder::CameraPersp const& camera )
     {
+        frame += 1;
+
         Each( [ &camera ] ( EnemyBaseRef& enemyRef ) { enemyRef->update( camera ); } );
+
+        enemyHitPoint = 0;
+        Each( [ &, this ] ( EnemyBaseRef& enemyRef )
+        {
+            enemyHitPoint += enemyRef->GetStatus( ).HP;
+        } );
 
         EnemyEraser( camera );
 
@@ -92,7 +108,7 @@ namespace User
         return isAttack;
     }
 
-    int EnemyManager::PlayerToEnemyDamage( Line& line_, const cinder::CameraPersp& camera, float value )
+    int EnemyManager::PlayerToEnemyDamage( Line& line_, const cinder::CameraPersp& camera, float value, float combo )
     {
         struct EnemyAndLength
         {
@@ -116,56 +132,37 @@ namespace User
         } );
 
         int drainMp = 0;
-        if ( map.empty( ) ) return 0;
+        if ( map.empty( ) ) return drainMp;
         else
         {
             for ( auto itr = map.rbegin( ); itr != map.rend( ); ++itr )
             {
                 auto& enemy = *itr->second.enemyRef;
                 auto length = itr->second.length;
+
+                auto scoreRate = 100 * ( 1 + std::min( combo / 5.0F, 4.0F ) );
+
                 if ( enemy.IsLive( ) )
                 {
-                    drainMp += enemy.Hit( length, value );
+                    drainMp += enemy.Hit( camera, length, scoreRate, value );
+                    score += drainMp * scoreRate;
                     break;
                 }
                 else
                 {
-                    drainMp += enemy.Hit( length, value );
+                    drainMp += enemy.Hit( camera, length, scoreRate, value );
+                    score += drainMp * scoreRate;
                 }
             }
         }
 
+        // ダメージを与えていたら。
         if ( drainMp != 0 )
         {
             adddamage->Play( );
         }
-        score += drainMp * 100;
-        return drainMp;
 
-        /*int drainMp = 0;
-        Each( [ &drainMp, &line_, &camera, &value, this ] ( EnemyBaseRef& enemyRef )
-        {
-            Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            float radius = Vec2f( size - vec ).length( ) / 2.0F * playerAttackColliedSize;
-            float length = CheckDefLineOfCircle( line_, vec, radius );
-            drainMp += enemyRef->Hit( length, value );
-            if ( length < 1.0F )
-            {
-                EffectCreate( EffectAlpha( "Textures/Effect/pipo-btleffect085.png",
-                                           vec,
-                                           Vec2f( vec - size ),
-                                           Vec2f( 240, 240 ),
-                                           EffectBase::Mode::CENTERCENTER
-                ) );
-            }
-        } );
-        if ( drainMp != 0 )
-        {
-            adddamage->Play( );
-        }
-        score += drainMp * 100;
-        return drainMp;*/
+        return drainMp;
     }
 
     int EnemyManager::PlayerToEnemyAttackCheck( Line & line_, const cinder::CameraPersp & camera )
@@ -314,13 +311,34 @@ namespace User
             Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
             float radius = Vec2f( size - vec ).length( ) / 2.0F * enemyAttackColliedSize;
 
-            gl::color( ColorA( 1, 0, 0, 0.5F ) );
-            gl::drawSolidCircle( vec, radius, radius );
+            gl::color( Color::white( ) );
+            Rectf rect( -radius, -radius, radius, radius );
+            gl::pushModelView( );
+            gl::translate( vec );
+            gl::rotate( Vec3f( 0, 0, frame ) );
+            gl::draw( *attackCircleTex, rect );
+            gl::popModelView( );
+
             gl::color( ColorA( 1, 1, 0, 1.0F ) );
             float time = 1.8 - 0.8 * enemyRef->NormalizedAttackFrame( );
             gl::drawStrokedCircle( vec, radius * time, radius * time );
         } );
         glLineWidth( 1 );
+    }
+
+    void EnemyManager::DrawEnemyHitPoint( )
+    {
+        Vec2f pos( env.getWindowWidth( ) * 0.15, 50 );
+        Rectf rect( Vec2f::zero( ), Vec2f( env.getWindowWidth( ) * 0.7, 50 ) );
+        gl::pushModelView( );
+        gl::translate( pos );
+        gl::color( Color::white( ) );
+        gl::drawStrokedRect( rect );
+        gl::color( Color::black( ) );
+        gl::drawSolidRect( rect );
+        gl::color( Color( 1, 0, 0 ) );
+        gl::drawSolidRect( Rectf( Vec2f::zero( ), Vec2f( rect.getWidth( ) * NormalizedHitPoint( ), rect.getHeight( ) ) ) );
+        gl::popModelView( );
     }
 
     EnemyBulletList EnemyManager::BulletsRecovery( )

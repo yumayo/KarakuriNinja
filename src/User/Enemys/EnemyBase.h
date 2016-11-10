@@ -65,18 +65,21 @@ namespace User
             float HP;
             int attackPoint;
         };
+        // 公開情報
     protected:
         EnemyObject object;
         EnemyObject initObject;
         bool isLanding;
+        bool isLive;
         cinder::gl::Texture* texture;
+        cinder::gl::Texture* knockBackTexture;
         AttackTime attackTime;
+        int frame = 0;
+        // 非公開情報
     private:
         cinder::Color hitColor;
-        bool isLive;
         int deadTime;
         Status status;
-    private:
         EnemyBulletList bulletList;
         EffectList effectList;
     public:
@@ -92,20 +95,22 @@ namespace User
         // エネミーが攻撃しているなら true が返って来ます。
         // 継承して攻撃方法を入れてください。
         virtual bool Attack( const cinder::CameraPersp& camera );
+        // 生きているかの状態
+        virtual bool IsLive( ) { return isLive; }
     public: // ゲッター
         cinder::Vec3f Position( ) { return object.Position( ); }
         cinder::Vec3f Size( ) { return object.Size( ); }
         int AttackPoint( ) { return status.attackPoint; }
-        bool IsLive( ) { return isLive; }
         cinder::Color HitColor( ) { return hitColor; }
         float NormalizedHitPoint( ) { return status.HP / status.maxHP; }
+        Status GetStatus( ) { return status; }
     public:
         bool IsAttackMotion( ) { return attackTime.IsAttackMotion( ); }
         bool IsAttackOneFramePrev( ) { return attackTime.IsAttackOneFramePrev( ); }
         float NormalizedAttackFrame( ) { return attackTime.NormalizedAttackFrame( ); }
     public:
         // 引数 : あたった時の中心からの距離(正規化済み) : 0.0 ~ 1.0(半径)
-        int Hit( float length, float value = 1.0F );
+        int Hit( cinder::CameraPersp const& camera, float length, int scoreRate, float value = 1.0F);
         // 強制的にダメージを与える関数
         int Damage( int damage );
         // 敵を強制的に殺す関数
@@ -118,17 +123,19 @@ namespace User
         bool IsUnderGround( );
         // スクリーンの中にいる時はtrueが返ってきます。
         bool IsInTheScreen( cinder::CameraPersp const& camera );
-
+        // フィールドの中にいる時はtrueが返ってきます。
         bool IsInField( );
-        void CollideField( );
+        // ノックバックしているかどうか。
+        bool IsKnockBack( );
     protected: // 以下 アップデートに記入推奨
+        void CollideField( );
         // 地面の中にいたら地上に引き戻します。
         void CollideGround( );
-        // 生きているかを確認します。
-        void LiveCheck( );
-    protected:
         // HPがなくなったら死ぬまでカウントします。
         void Dying( );
+    protected:
+        // 生きているかを確認します。
+        void LiveCheck( );
         // ダメージを受けた時に体の色を徐々に元通りにします。
         void DamageEffect( );
     protected:

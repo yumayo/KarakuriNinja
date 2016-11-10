@@ -70,8 +70,7 @@ namespace User
     {
         // ÉNÉäÉR
         gl::pushModelView( );
-        gl::translate( env.getWindowCenter( ) - kuriko.getSize( ) / 4 );
-        gl::draw( kuriko, Rectf( Vec2f::zero( ), kuriko.getSize( ) / 2 ) );
+        gl::draw( kuriko, Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
         kuriko.unbind( );
         gl::popModelView( );
 

@@ -15,7 +15,7 @@ namespace User
 
     Field::Field( std::string const & path )
         : count( 0 )
-        , maxCount( 60 * 4 )
+        , maxCount( 60 * 3 )
         , isEnd( false )
     {
         JsonTree params( app::loadAsset( path ) );
@@ -27,7 +27,6 @@ namespace User
         for ( auto& obj : params["MeshObject"] )
         {
             karakuriMeshObjects.emplace_back( std::make_shared<KarakuriMeshObj>( obj ) );
-            //editor->addParam( "[Position]", &karakuris.back( )->Position( ) ).group( std::to_string( i ) );
         }
         for ( auto& obj : params["RectObject"] )
         {

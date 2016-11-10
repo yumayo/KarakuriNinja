@@ -125,6 +125,7 @@
     <ClCompile Include="..\src\User\Effect\EffectBase.cpp" />
     <ClCompile Include="..\src\User\Effect\EffectCombo.cpp" />
     <ClCompile Include="..\src\User\Effect\EffectManager.cpp" />
+    <ClCompile Include="..\src\User\Effect\EffectScore.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyBoss.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyBullet.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyBase.cpp" />
@@ -179,6 +180,7 @@
     <ClCompile Include="..\src\User\Utilitys\GlobalData.cpp" />
     <ClCompile Include="..\src\User\Utilitys\GlobalDraw.cpp" />
     <ClCompile Include="..\src\User\Utilitys\GlobalEditor.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\HandAnimation.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Hirasawa.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Nomoto.cpp" />
     <ClCompile Include="..\src\User\Utilitys\ObjRender.cpp" />
@@ -217,6 +219,7 @@
     <ClInclude Include="..\src\User\Effect\EffectBase.h" />
     <ClInclude Include="..\src\User\Effect\EffectCombo.h" />
     <ClInclude Include="..\src\User\Effect\EffectManager.h" />
+    <ClInclude Include="..\src\User\Effect\EffectScore.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyBoss.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyBullet.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyBase.h" />
@@ -278,6 +281,7 @@
     <ClInclude Include="..\src\User\Utilitys\GlobalData.h" />
     <ClInclude Include="..\src\User\Utilitys\GlobalDraw.h" />
     <ClInclude Include="..\src\User\Utilitys\GlobalEditor.h" />
+    <ClInclude Include="..\src\User\Utilitys\HandAnimation.h" />
     <ClInclude Include="..\src\User\Utilitys\Hirasawa.h" />
     <ClInclude Include="..\src\User\Utilitys\Nomoto.h" />
     <ClInclude Include="..\src\User\Utilitys\ObjRender.h" />

@@ -6,21 +6,33 @@
 
   ],
   "Enemy": [
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Base",
-    "Boss"
+    {
+      "type": "boss",
+      "position": [ 0.0, 0.0, 2.0 ]
+    },
+    {
+      "type": "base",
+      "position": [ 2.0, 0.0, -1.0 ]
+    },
+    {
+      "type": "base",
+      "position": [ -2.0, 0.0, -1.0 ]
+    },
+    {
+      "type": "base",
+      "position": [ 3.0, 1.0, 0.0 ]
+    },
+    {
+      "type": "base",
+      "position": [ -3.0, 1.0, 0.0 ]
+    },
+    {
+      "type": "base",
+      "position": [ 4.0, 2.0, 1.0 ]
+    },
+    {
+      "type": "base",
+      "position": [ -4.0, 2.0, 1.0 ]
+    }
   ]
 }

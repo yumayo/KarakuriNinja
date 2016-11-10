@@ -23,14 +23,14 @@ namespace User
 
 		gl::pushModelView();
 		gl::translate(position);
-		gl::scale(size_);
+		gl::scale( size );
 
 		switch (mode)
 		{
-		case User::EffectAlpha::Mode::LEFTUP:
+		case User::EffectBase::Mode::LEFTUP:
 			gl::draw(*texture, Area(cutPosition, cutPosition + cutSize), Rectf(Vec2f::zero(), normalized));
 			break;
-		case User::EffectAlpha::Mode::CENTERCENTER:
+		case User::EffectBase::Mode::CENTERCENTER:
 			gl::draw(*texture, Area(cutPosition, cutPosition + cutSize), Rectf(-normalized_2, normalized_2));
 			break;
 		default:

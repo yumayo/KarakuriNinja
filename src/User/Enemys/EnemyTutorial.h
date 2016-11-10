@@ -18,6 +18,8 @@ namespace User
         cinder::gl::Texture* 待機;
         cinder::gl::Texture* 攻撃モーション画像;
         cinder::gl::Texture* 攻撃画像;
+        cinder::gl::Texture* 左に移動;
+        cinder::gl::Texture* 右に移動;
     public:
         EnemyTutorial( cinder::Vec3f pos, const cinder::CameraPersp& camera );
         ~EnemyTutorial( );
