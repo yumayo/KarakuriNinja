@@ -22,6 +22,8 @@ namespace User
 
         auto translatePlayerIconEdge = Vec2f( 10 + 128, -10 - 128 );
 
+        gl::color( Color::white( ) );
+
         textureDraw( APEdgeBase, leftDown + translatePlayerIconEdge + Vec2f( APEdgeBase.getWidth( ) / 2.0F, 0 ) + Vec2f( 128, -64 ),
                      Area( 94, 0, 314, APEdgeBase.getHeight( ) ), APNormalized );
         textureDraw( APEdge, leftDown + translatePlayerIconEdge + Vec2f( APEdge.getWidth( ) / 2.0F, 0 ) + Vec2f( 128, -64 ) );

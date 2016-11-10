@@ -15,11 +15,15 @@ public:
 		start_t = 0.0f;
 		go_next_ = false;
 		ischoosed_ = false;
+		end_t_ = 0.0f;
+		last_t_ = 0.0f;
+		isshifteasing_ = false;
 		for (int i = 0;i < ICONNUM;i++) {
 			Icon icon;
-			icon.startpos = Vec2f(app::getWindowWidth() / 2 + float((i - 1)*450.f), app::getWindowHeight() / 2 + 500);
+			icon.startpos = Vec2f(app::getWindowWidth() / 2 + float((i - 1)*450.f), app::getWindowHeight() / 2 + 700);
 			icon.pos = icon.startpos;
-			icon.endpos = icon.startpos + Vec2f(0, -600);
+			icon.endpos = icon.startpos + Vec2f(0, -800);
+			icon.shiftpos = icon.startpos;
 			icon.size = Vec2f(250.f, 250.f);
 			icon.angle_t = 0.0f;
 			icon.startangle = 5.f;
@@ -46,17 +50,21 @@ private:
 		float angle_t;
 		float angle;
 		Vec2f size;//四角形としてのサイズです。円なら半分にしてください
+		Vec2f shiftpos;
 	};
 
 	std::vector<Icon>icons;
 	void drawIcon();
 	Vec2f iconsize;
 	bool is_special;
+	bool isshifteasing_;
 	bool go_next_;
 	bool ischoosed_;
 	SpecialType specialtype_;
 	void updateIcon();
 	float start_t;
+	float end_t_;
+	float last_t_;
 	bool isCanChoose() {
 		return (icons[icons.size() - 1].angle_t >= 1.0f)&&(ischoosed_==false);
 	}

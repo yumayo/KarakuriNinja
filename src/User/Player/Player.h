@@ -89,6 +89,21 @@ public:
 
 	CommandType Command() { return nowCommand; }
 
+	SpecialType getSpecialtype(){
+		return special.getSpecialType();
+	}
+	bool getisSpecial() {
+		return special.getIsSpecial();
+	}
+	bool getisMinigame() {
+		return special.isMinigame();
+	}
+    bool getisEffetEnd( ) {
+        return special.getEffectEnd( );
+    }
+    bool getisEffecting( ) {
+        return special.isEffecting( );
+    }
 private:
 	int nowHp;
 	int maxHp;

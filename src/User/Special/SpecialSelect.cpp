@@ -47,6 +47,24 @@ void SpecialSelect::updateIcon()
 		icons[i].angle = EasingQuintIn(icons[i].angle_t, icons[i].startangle, 0);
 
 	}
+	if (isshifteasing_) {
+		for (int i = 0;i < icons.size();i++) {
+			icons[i].pos.x = EasingCubicIn(end_t_, icons[i].endpos.x, icons[i].shiftpos.x);
+			icons[i].pos.y = EasingCubicIn(end_t_, icons[i].endpos.y, icons[i].shiftpos.y);
+		}
+		end_t_ += 1.0f / (60.0f*0.5f);
+		end_t_ = std::min(end_t_, 1.0f);
+		if (end_t_ >= 1.0f) {
+			last_t_ += 1.0f / (60.0f*1.0f);
+			last_t_ = std::min(last_t_, 1.0f);
+			Vec2f startpos = Vec2f(app::getWindowWidth() / 2 , app::getWindowHeight() / 2-100);
+			icons[int(specialtype_)].pos.y= EasingBackIn(last_t_, startpos.y,startpos.y-600);
+			if (last_t_ >= 1.0f) {
+				go_next_ = true;
+			}
+		}
+	}
+
 }
 
 void SpecialSelect::chooseSpecial()//‚Æ‚è‚ ‚¦‚¸ƒ^ƒbƒ`‚ÌƒvƒbƒVƒ…‚Å‚â‚Á‚Ä‚¨‚«‚Ü‚µ‚½
@@ -63,7 +81,8 @@ void SpecialSelect::chooseSpecial()//‚Æ‚è‚ ‚¦‚¸ƒ^ƒbƒ`‚ÌƒvƒbƒVƒ…‚Å‚â‚Á‚Ä‚¨‚«‚Ü‚µ‚
 				if (circleCollision(touch.getPos(), icons[i].pos, icons[i].size.x / 2.f)) {
 					ischoosed_ = true;
 					specialtype_ = (SpecialType)(i);
-					go_next_ = true;
+					isshifteasing_ = true;
+					icons[i].shiftpos = Vec2f(app::getWindowWidth()/2, icons[i].endpos.y);
 					return;
 				}
 			}

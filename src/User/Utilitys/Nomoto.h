@@ -89,3 +89,4 @@ std::string GetFileFullPath(const char* file);
 
 //Texture•`‰æ
 void drawTexture(ci::Vec2f pos, ci::Vec2f size, ci::gl::Texture& texture, ci::ColorA color);
+void drawCenterTexture(ci::Vec2f pos, ci::Vec2f size, ci::gl::Texture& texture, ci::ColorA color);

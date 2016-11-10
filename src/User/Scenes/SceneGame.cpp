@@ -1,5 +1,6 @@
 # include "ZKOO.hpp"
 #include "SceneGame.h"
+#include "cinder/Rand.h"
 
 namespace User
 {
@@ -7,7 +8,8 @@ namespace User
 
     SceneGame::SceneGame( )
     {
-        cameraPersp.lookAt( Vec3f( 0, 0.5, -5 ), Vec3f( 0, 0.5, 0 ) );
+        cameraEyePosition = Vec3f( 0, 0.5, -5 );
+        cameraPersp.lookAt( cameraEyePosition, Vec3f( 0, 0.5, 0 ) );
         cameraPersp.setWorldUp( Vec3f( 0, 1, 0 ) );
         cameraPersp.setPerspective( 60.0F, env.getWindowAspectRatio( ), 1.0F, 100.0F );
 
@@ -54,11 +56,34 @@ namespace User
     }
     void SceneGame::update( )
     {
+        // プレイヤーのスペシャルエフェクト時にカメラを揺らします。
+        if ( player.getisEffecting( ) )
+        {
+            cameraPersp.lookAt( Vec3f( randFloat( -0.05F, 0.05F ), randFloat( -0.05F, 0.05F ), 0.0F ) + cameraEyePosition, cameraPersp.getCenterOfInterestPoint( ) );
+        }
+        // それが終わったら、カメラを元通りにします。
+        if ( player.getisEffetEnd( ) )
+        {
+            cameraPersp.lookAt( cameraEyePosition, cameraPersp.getCenterOfInterestPoint( ) );
+        }
+
+        // カラクリアップデート
         field->update( );
 
-        enemyController->update( );
-        enemyBulletManager->BulletRegister( enemyController->BulletsRecovery( ) );
-        enemyBulletManager->update( );
+        // スペシャル選択時から、エフェクトが終わるまでエネミーの動作を止めます。
+        if ( !player.getisSpecial( ) )
+        {
+            enemyController->update( );
+            enemyBulletManager->BulletRegister( enemyController->BulletsRecovery( ) );
+            enemyBulletManager->update( );
+        }
+
+        // エフェクト終了時、全てのエネミー及び弾にダメージを与えます。
+        if ( player.getisEffetEnd( ) )
+        {
+            player.TranseNowMp( enemyController->PlayerSpecialAttackToEnemyDamage( 5.0F ) );
+            player.TranseNowMp( enemyBulletManager->PlayerSpecialAttackToEnemyDamage( ) );
+        }
 
         UpdatePlayer( );
         auto touch = inputs.touch( );
@@ -133,9 +158,12 @@ namespace User
     }
     void SceneGame::drawUI( )
     {
+    #ifdef _DEBUG
+        enemyController->DrawCollisionCircle( cameraPersp );
+        enemyBulletManager->DrawCollisionCircle( cameraPersp );
+    #endif
+
         player.Draw( );
-
-
 
         if ( zkoo.IsHandUsing( ) )
         {
@@ -154,7 +182,10 @@ namespace User
             }
         }
 
-        UI.draw( player.NormalizedMp( ), player.NormalizedHp( ) );
+        if ( !player.getisMinigame( ) )
+        {
+            UI.draw( player.NormalizedMp( ), player.NormalizedHp( ) );
+        }
     }
     void SceneGame::endDrawUI( )
     {

@@ -26,10 +26,15 @@ void Special::shift()
 		break;
 	case Special::EFFECT:
 		special_type_ = special_->getSpecialType();
-		special_ = std::make_shared<NotSpecial>();
-		mode = NOTSPECIAL;
+		special_ = std::make_shared<SubTime>(special_type_);
+		mode = SUBTIME;
 		isspesial = false;
 		effectend_ = true;
+		break;
+	case Special::SUBTIME:
+		special_type_ = special_->getSpecialType();
+		special_ = std::make_shared<NotSpecial>();
+		mode = NOTSPECIAL;
 		break;
 	default:
 		break;

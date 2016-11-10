@@ -104,7 +104,7 @@ void Player::MakeAttackMotionOfZkoo()
 void Player::Touch()
 {
 
-	CONSOLE << nowCommand << std::endl;
+	//CONSOLE << nowCommand << std::endl;
 
 	auto touch = inputs.touch();
 	auto ids = inputs.GetTouchHandleIDs();

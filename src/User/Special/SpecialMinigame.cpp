@@ -4,28 +4,67 @@ const int STEPNUM = 3;
 
 void SpecialMinigame::draw()
 {
+	drawBackground();
+
+	drawBackCircles();
+
+	drawInfo();
+	drawBackninja();
+	if(startend())
+	gage_.draw();
 	for (auto &itr : circles) {
 		itr.draw();
 	}
+	for (auto &itr : inobject) {
+		itr.draw();
+	}
+	
 }
 
 void SpecialMinigame::update()
 {
 	updateTouch();
-
+	if(!startend())
+	startBackgroundEasing();
+    infoUpdate();
+	if (info_t_ >= 1.0f && (!ispush_back_circles_)) {
+		for (int i = 0;i < 10;i++) {
+			BackCircle backcircle;
+			backcircle.pos = Vec2f(i*app::getWindowWidth()/10,randFloat(0,app::getWindowHeight()));
+			backcircle.size = Vec2f(70, 25);
+			backcircles.push_back(backcircle);
+		}
+		create2Circles();
+		ispush_back_circles_ = true;
+	}
 	for (auto &itr : circles) {
 		itr.update();
 	}
-	if (isSuccessTouchDoubleCircle()) {
-		success_count_++;
+	for (int i = 0;i < backcircles.size();i++) {
+		backcircles[i].pos.x += 20;
+		if (backcircles[i].pos.x>app::getWindowWidth() + 100) {
+			backcircles[i].pos.x = -100;
+			backcircles[i].pos.y = randFloat(0, app::getWindowHeight());
+		}
 	}
-	if (success_count_ > 100) {
-		success_count_ = 0;
-		step_++;
-		clearCircles();
-		create2Circles();
+	for (auto &itr : inobject) {
+		itr.update();
 	}
-	if (step_ == 3) {
+	if (circles.size() == 2) {
+		if (circles[0].getClear() && circles[1].getClear()) {
+			inobject.push_back(getInObject());
+			clearCircles();
+		}
+	}
+	if (inobject.size() == 1) {
+		if (inobject[0].Mydelete() == true) {
+			inobject.clear();
+			step_++;
+			if (step_ != STEPNUM)
+				create2Circles();
+		}
+	}
+if (step_ == STEPNUM) {
 		clearCircles();
 		go_next_ = true;
 	}
@@ -33,9 +72,24 @@ void SpecialMinigame::update()
 
 void SpecialMinigame::create2Circles()
 {
-	
-	circles.push_back(Circle(Vec2f(100+step_*150, 100+type_*100), LEFT));//É|ÉXÇÕç°ÇÕìKìñ
-	circles.push_back(Circle(Vec2f(500 - (step_ * 150), 500), RIGHT));
+	RouteType _type;
+	switch (type_)
+	{
+	case SpecialType::FIRE:
+		setFireRoute(_type);
+		break;
+	case SpecialType::WATER:
+		setWaterRoute(_type);
+		break;
+	case SpecialType::TREE:
+		setTreeRoute(_type);
+		break;
+	default:
+		break;
+	}
+
+	circles.push_back(Circle(LEFT,RouteType(_type)));
+	circles.push_back(Circle(RIGHT, RouteType(_type)));
 }
 
 void SpecialMinigame::updateTouch()
@@ -60,6 +114,166 @@ void SpecialMinigame::clearCircles()
 {
 	circles.clear();
 }
+void SpecialMinigame::startBackgroundEasing()
+{
+	backangle = 0.0f;
+	if (start_t_x_ < 1.0f) {
+		Easing::tCount(start_t_x_, 0.5f);
+		backsize.x = app::getWindowWidth() / 20.f;
+		backsize.y = EasingCubicIn(start_t_x_, 0, app::getWindowHeight() / 2);
+	}
+	if (start_t_x_ >= 1.0f) {
+		Easing::tCount(start_angle_t_, 0.5f);
+		backangle = EasingQuartIn(start_angle_t_, 0, 180);
+		backsize.x = app::getWindowWidth() / 20.f;
+		backsize.y = app::getWindowHeight() / 2;
+	}
+	if (start_angle_t_ >= 1.0f) {
+		Easing::tCount(start_t_y_,0.5f);
+		backsize.x = EasingQuadIn(start_t_y_, app::getWindowWidth() / 20.f, app::getWindowWidth() / 2);
+		backsize.y = app::getWindowHeight() / 2;
+	}
+}
+void SpecialMinigame::drawInfo()
+{
+	if (startend()) {
+		gl::pushModelView();
+		gl::translate(Vec2f(app::getWindowWidth() / 2, 100-50*info_t_));
+		gl::color(ColorA(0, 0, 0, infoalfa_));
+		cursor_.enableAndBind();
+		gl::drawSolidRect(ci::Rectf(-infosize, infosize));
+		cursor_.disable();
+		gl::color(ColorA(1, 1, 1, 1));
+		gl::popModelView();
+	}
+}
+void SpecialMinigame::drawBackninja()
+{
+	Vec2f size = Vec2f(200,200);
+	gl::pushModelView();
+	gl::translate(Vec2f(app::getWindowWidth() / 2, app::getWindowHeight()/2+100));
+	gl::color(ColorA(1, 1, 1, infoalfa_/2));
+	backninja_.enableAndBind();
+	gl::drawSolidRect(ci::Rectf(-size,size));
+	backninja_.disable();
+	gl::color(ColorA(1, 1, 1, 1));
+	gl::popModelView();
+}
+void SpecialMinigame::infoUpdate()
+{
+	if (startend()) {
+		Vec2f startsize = Vec2f(750, 250);
+		Vec2f endsize = Vec2f(450, 150);
+		Easing::tCount(info_t_,1.0f);
+		infosize.x= EasingBackIn(info_t_, startsize.x, endsize.x);
+		infosize.y = EasingBackIn(info_t_, startsize.y, endsize.y);
+		infoalfa_ = std::min(1.f, 2*info_t_);
+	}
+}
+void SpecialMinigame::drawBackCircles()
+{
+	for (int i = 0;i < backcircles.size();i++) {
+		gl::pushModelView();
+		gl::translate(backcircles[i].pos);
+		gl::scale(backcircles[i].size);
+		gl::enableAlphaBlending();
+		gl::color(ColorA(0, 0, 0, 0.2));
+		gl::drawSolidCircle(Vec2f(0, 0), 1, 20);
+		gl::color(ColorA(1, 1, 1, 1));
+		gl::popModelView();
+	}
+}
+void SpecialMinigame::setFireRoute(RouteType & routetype)
+{
+	switch (step_)
+	{
+	case 0:
+		routetype = RouteType::ZEN;
+		break;
+	case 1:
+		routetype = RouteType::ZAI;
+		break;
+	case 2:
+		routetype = RouteType::RETU;
+		break;
+	default:
+		break;
+	}
+}
+void SpecialMinigame::setWaterRoute(RouteType & routetype)
+{
+	switch (step_)
+	{
+	case 0:
+		routetype = RouteType::ZIN;
+		break;
+	case 1:
+		routetype = RouteType::UI;
+		break;
+	case 2:
+		routetype = RouteType::SHA;
+		break;
+	default:
+		break;
+	}
+}
+void SpecialMinigame::setTreeRoute(RouteType & routetype)
+{
+	switch (step_)
+	{
+	case 0:
+		routetype = RouteType::SHA;
+		break;
+	case 1:
+		routetype = RouteType::TOU;
+		break;
+	case 2:
+		routetype = RouteType::HYOU;
+		break;
+	default:
+		break;
+	}
+}
+
+void SpecialMinigame::drawMyFillBox(Vec2f pos, Vec2f size)
+{
+	gl::pushModelView();
+	gl::translate(pos);
+	gl::translate(Vec2f(size.x/2,-size.y/2));
+	gl::scale(size.x,-size.y);
+	gl::drawSolidRect(Rectf(-Vec2f(0.5f,0.5f), Vec2f(0.5f, 0.5f)));
+	gl::popModelView();
+}
+
+void SpecialMinigame::drawBackground()
+{
+	gl::pushModelView();
+	gl::translate(app::getWindowWidth() / 2, app::getWindowHeight() / 2);
+	gl::rotate(backangle);
+	backimage_.enableAndBind();
+	gl::drawSolidRect(ci::Rectf(-backsize, backsize));
+	backimage_.disable();
+	gl::popModelView();
+}
+
+int SpecialMinigame::getInObject()
+{
+	switch (type_)
+	{
+	case SpecialType::FIRE:
+		if (step_ == 0) { return (int)RouteType::ZEN; }if (step_ == 1) { return(int)RouteType::ZAI; }if (step_ == 2) { return(int)RouteType::RETU; }
+		break;
+	case SpecialType::WATER:
+		if (step_ == 0) { return(int)RouteType::ZIN; }if (step_ == 1) { return(int)RouteType::UI; }if (step_ == 2) { return(int)RouteType::SHA; }
+		break;
+	case SpecialType::TREE:
+		if (step_ == 0) { return(int)RouteType::TOU; }if (step_ == 1) { return(int)RouteType::HYOU; }if (step_ == 2) { return(int)RouteType::TEN; }
+		break;
+	default:
+		break;
+	}
+}
+
 bool SpecialMinigame::circleCollision(const Vec2f pos1, const Vec2f pos2, const float r_size, float level) {
 	float length = (pos1.x - pos2.x)*(pos1.x - pos2.x) + (pos1.y - pos2.y)*(pos1.y - pos2.y);
 	if (length < ((r_size*r_size)*level)) {

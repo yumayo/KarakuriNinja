@@ -182,3 +182,16 @@ void drawTexture(ci::Vec2f pos, ci::Vec2f size, ci::gl::Texture& texture, ci::Co
 	ci::gl::disableAlphaBlending();
 	ci::gl::popModelView();
 }
+void drawCenterTexture(ci::Vec2f pos, ci::Vec2f size, ci::gl::Texture& texture, ci::ColorA color)
+{
+	ci::gl::pushModelView();
+	ci::gl::translate(pos);
+	ci::gl::scale(size);
+	ci::gl::color(color);
+	ci::gl::enableAlphaBlending();
+	texture.enableAndBind();
+	ci::gl::drawSolidRect(ci::Rectf(ci::Vec2f(-0.5,-0.5),ci::Vec2f(0.5, 0.5)));
+	texture.disable();
+	ci::gl::disableAlphaBlending();
+	ci::gl::popModelView();
+}

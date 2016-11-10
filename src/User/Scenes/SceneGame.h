@@ -39,6 +39,7 @@ namespace User
 		void drawUI();
 		void endDrawUI();
 	private:
+        cinder::Vec3f cameraEyePosition;
 		cinder::CameraPersp cameraPersp;
 
 		// ユーマヨが管理するもののインスタンス化。

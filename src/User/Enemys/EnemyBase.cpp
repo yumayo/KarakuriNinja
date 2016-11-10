@@ -14,7 +14,9 @@ namespace User
         , attackPoint( 3 )
         , deadTime( 60 )
     {
-        object.Direction( camera.getEyePoint( ) - object.Position( )  );
+        auto cameraEyePos = camera.getEyePoint( );
+        cameraEyePos.y = 0;
+        object.Direction( cameraEyePos - object.Position( )  );
         initObject = object;
     }
     void EnemyBase::update( )
@@ -62,6 +64,12 @@ namespace User
             return 2;
         }
         return 0;
+    }
+    int EnemyBase::Damage( int damage )
+    {
+        HP -= damage;
+        hitColor = Color( 1, 0, 0 );
+        return 2;
     }
     bool EnemyBase::IsActive( )
     {

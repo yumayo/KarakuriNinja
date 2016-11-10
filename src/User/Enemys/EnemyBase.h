@@ -38,6 +38,8 @@ namespace User
     public:
         // 引数 : あたった時の中心からの距離(正規化済み) : 0.0 ~ 1.0(半径)
         int Hit( float length );
+        // 強制的にダメージを与える関数
+        int Damage( int damage );
         // エネミーを消していいかの確認
         bool IsActive( );
         // 攻撃モーションをやめ、プレイヤーから遠ざかります。

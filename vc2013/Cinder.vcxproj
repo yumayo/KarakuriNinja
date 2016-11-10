@@ -144,6 +144,7 @@
     <ClCompile Include="..\src\User\Scenes\SceneTitle.cpp" />
     <ClCompile Include="..\src\User\SlashEffect\SlashEffect.cpp" />
     <ClCompile Include="..\src\User\Special\Circle.cpp" />
+    <ClCompile Include="..\src\User\Special\Gage.cpp" />
     <ClCompile Include="..\src\User\Special\Special.cpp" />
     <ClCompile Include="..\src\User\Special\SpecialEffect.cpp" />
     <ClCompile Include="..\src\User\Special\SpecialMinigame.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="..\src\User\Utilitys\Coloring.cpp" />
     <ClCompile Include="..\src\User\Utilitys\ETC.cpp" />
     <ClCompile Include="..\src\User\Utilitys\FileIO.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\Hirasawa.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Nomoto.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Yumayo.cpp" />
     <ClCompile Include="..\src\User\ZKOO\InputZKOO.cpp" />
@@ -210,12 +212,16 @@
     <ClInclude Include="..\src\User\Scenes\SceneTitle.h" />
     <ClInclude Include="..\src\User\SlashEffect\SlashEffect.h" />
     <ClInclude Include="..\src\User\Special\Circle.h" />
+    <ClInclude Include="..\src\User\Special\Gage.h" />
+    <ClInclude Include="..\src\User\Special\InObject.h" />
     <ClInclude Include="..\src\User\Special\NotSpecial.h" />
+    <ClInclude Include="..\src\User\Special\RouteCircle.h" />
     <ClInclude Include="..\src\User\Special\Special.h" />
     <ClInclude Include="..\src\User\Special\SpecialEffect.h" />
     <ClInclude Include="..\src\User\Special\SpecialMinigame.h" />
     <ClInclude Include="..\src\User\Special\SpecialSceneBase.h" />
     <ClInclude Include="..\src\User\Special\SpecialSelect.h" />
+    <ClInclude Include="..\src\User\Special\SubTime.h" />
     <ClInclude Include="..\src\User\UnityLike\Actor.hpp" />
     <ClInclude Include="..\src\User\UnityLike\Component.hpp" />
     <ClInclude Include="..\src\User\UnityLike\CPMeshFilter.hpp" />

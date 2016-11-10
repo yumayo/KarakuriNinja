@@ -55,6 +55,16 @@ namespace User
         return drainMp;
     }
 
+    int EnemyController::PlayerSpecialAttackToEnemyDamage( int damage )
+    {
+        int drainMp = 0;
+        std::for_each( enemyList.begin( ), enemyList.end( ), [ &drainMp, &damage ] ( EnemyBaseRef& enemyRef )
+        {
+            drainMp += enemyRef->Damage( damage );
+        } );
+        return drainMp;
+    }
+
     int EnemyController::EnemyToPlayerDamage( const cinder::CameraPersp& camera )
     {
         int damage = 0;
@@ -93,6 +103,19 @@ namespace User
         auto ret = bulletList;
         bulletList.clear( );
         return ret;
+    }
+
+    void EnemyController::DrawCollisionCircle( cinder::CameraPersp const & camera )
+    {
+        std::for_each( enemyList.begin( ), enemyList.end( ), [ &camera ] ( EnemyBaseRef& enemyRef )
+        {
+            Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+            Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+            float radius = Vec3f( size - vec ).length( ) / 2.0F;
+
+            gl::color( ColorA( 1, 1, 1, 0.25F ) );
+            gl::drawSolidCircle( vec, radius, radius );
+        } );
     }
 
     void EnemyController::EnemyEraser( )

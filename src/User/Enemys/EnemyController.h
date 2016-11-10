@@ -28,6 +28,8 @@ namespace User
         bool IsAttack( const cinder::CameraPersp& camera );
         // プレイヤーからエネミーへのダメージラインとの当たり判定も込み
         int PlayerToEnemyDamage( Line& line_, const cinder::CameraPersp& camera );
+        // プレイヤーの必殺技をエネミーへと与えます。
+        int PlayerSpecialAttackToEnemyDamage( int damage );
         // エネミーからプレイヤーへの攻撃（直接ダメージを通します）
         int EnemyToPlayerDamage( const cinder::CameraPersp& camera );
         // エネミーからプレイヤーへの攻撃（プレイヤーがガードをしている時の判定に使います）
@@ -36,6 +38,8 @@ namespace User
         void ResetPosition( const cinder::CameraPersp& camera );
         // 発射した弾を全て回収します。この関数を呼ぶとこのクラスが持っている弾を全てクリアします。
         EnemyBulletList BulletsRecovery( );
+        // エネミーの当たり判定域を描画します。
+        void DrawCollisionCircle( cinder::CameraPersp const& camera );
     private:
         // エネミーのHPが０だったら削除
         void EnemyEraser( );

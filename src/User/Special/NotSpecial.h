@@ -13,7 +13,7 @@ public:
 		//‰½‚à‚µ‚Ü‚¹‚ñ
 	}
 	void update() override {
-		//‰½‚à‚µ‚Ü‚¹‚ñ
+	
 	}
 	bool shift() override {
 		return false;
@@ -22,5 +22,5 @@ public:
 		return false;
 	}
 private:
-
+	
 };

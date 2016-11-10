@@ -53,6 +53,12 @@ namespace User
         return 0;
     }
 
+    int EnemyBulletBase::Kill( )
+    {
+        Erase( );
+        return 5;
+    }
+
     bool EnemyBulletBase::IsActive( )
     {
         return activeTime <= 0 || isActive;

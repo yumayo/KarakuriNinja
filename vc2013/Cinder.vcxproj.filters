@@ -204,38 +204,11 @@
     <ClInclude Include="..\src\User\Deffence\Deffence.h">
       <Filter>User\Player\Deffence</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\User\Utilitys\Nomoto.h">
-      <Filter>User\Utilitys</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\User\SlashEffect\SlashEffect.h">
       <Filter>User\Player\SlashEffect</Filter>
     </ClInclude>
     <ClInclude Include="..\src\User\Camera\Camera.h">
       <Filter>User\Player\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\User\Special\Circle.h">
-      <Filter>User\Player\Special</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\User\Special\NotSpecial.h">
-      <Filter>User\Player\Special</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\User\Special\Special.h">
-      <Filter>User\Player\Special</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\User\Special\SpecialEffect.h">
-      <Filter>User\Player\Special</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\User\Special\SpecialMinigame.h">
-      <Filter>User\Player\Special</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\User\Special\SpecialSceneBase.h">
-      <Filter>User\Player\Special</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\User\Special\SpecialSelect.h">
-      <Filter>User\Player\Special</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\User\Utilitys\Hirasawa.h">
-      <Filter>User\Utilitys</Filter>
     </ClInclude>
     <ClInclude Include="..\src\User\Scenes\SceneGame.h">
       <Filter>User\Scenes</Filter>
@@ -287,6 +260,45 @@
     </ClInclude>
     <ClInclude Include="..\src\User\Field\KarakuriBase.h">
       <Filter>User\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\Hirasawa.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\Nomoto.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\Circle.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\Gage.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\InObject.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\NotSpecial.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\RouteCircle.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\Special.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\SpecialEffect.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\SpecialMinigame.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\SpecialSceneBase.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\SpecialSelect.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\SubTime.h">
+      <Filter>User\Player\Special</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -399,29 +411,11 @@
     <ClCompile Include="..\src\User\Deffence\Deffence.cpp">
       <Filter>User\Player\Deffence</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\User\Utilitys\Nomoto.cpp">
-      <Filter>User\Utilitys</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\User\SlashEffect\SlashEffect.cpp">
       <Filter>User\Player\SlashEffect</Filter>
     </ClCompile>
     <ClCompile Include="..\src\User\Camera\Camera.cpp">
       <Filter>User\Player\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\User\Special\Circle.cpp">
-      <Filter>User\Player\Special</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\User\Special\Special.cpp">
-      <Filter>User\Player\Special</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\User\Special\SpecialEffect.cpp">
-      <Filter>User\Player\Special</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\User\Special\SpecialMinigame.cpp">
-      <Filter>User\Player\Special</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\User\Special\SpecialSelect.cpp">
-      <Filter>User\Player\Special</Filter>
     </ClCompile>
     <ClCompile Include="..\src\User\Scenes\SceneGame.cpp">
       <Filter>User\Scenes</Filter>
@@ -473,6 +467,30 @@
     </ClCompile>
     <ClCompile Include="..\src\User\Field\KarakuriBase.cpp">
       <Filter>User\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\Hirasawa.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\Nomoto.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Special\Circle.cpp">
+      <Filter>User\Player\Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Special\Gage.cpp">
+      <Filter>User\Player\Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Special\Special.cpp">
+      <Filter>User\Player\Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Special\SpecialEffect.cpp">
+      <Filter>User\Player\Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Special\SpecialMinigame.cpp">
+      <Filter>User\Player\Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Special\SpecialSelect.cpp">
+      <Filter>User\Player\Special</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

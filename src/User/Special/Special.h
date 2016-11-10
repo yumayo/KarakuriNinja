@@ -7,6 +7,7 @@
 #include"SpecialMinigame.h"
 #include"SpecialEffect.h"
 #include"NotSpecial.h"
+#include"SubTime.h"
 #include<memory>
 
 class Special {
@@ -68,7 +69,7 @@ private:
 	std::shared_ptr<SpecialSceneBase>special_;
 	void shift();
 	enum MODE {
-		NOTSPECIAL, SELECT, MINIGAME, EFFECT
+		NOTSPECIAL, SELECT, MINIGAME, EFFECT,SUBTIME
 	};
 	MODE mode;
 	bool isspesial;

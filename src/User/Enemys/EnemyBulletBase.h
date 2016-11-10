@@ -25,6 +25,8 @@ namespace User
     public:
         // 引数 : あたった時の中心からの距離(正規化済み) : 0.0 ~ 1.0(半径)
         int Hit( float length );
+        // 強制的に消滅させます。
+        int Kill( );
         // 弾を消していいかの確認
         bool IsActive( );
         // 弾を消す命令
