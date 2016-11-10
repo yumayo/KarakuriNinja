@@ -87,19 +87,19 @@
   "Enemy": [
     {
       "type": "slash",
-      "position": [ 0.0, 0.0, 1.0 ]
+      "position": [ -3.0, 0.0, -1.0 ]
     },
     {
       "type": "bullet",
-      "position": [ 0.0, 2.0, 2.0 ]
+      "position": [ -1.8, 3.0, -1.5 ]
+    },
+    {
+      "type": "bullet",
+      "position": [ 3.3, 4.7, 1.2 ]
     },
     {
       "type": "slashWalk",
-      "position": [ 3.0, 0.0, -1.0 ]
-    },
-    {
-      "type": "bulletWalk",
-      "position": [ -3.0, 0.0, 0.0 ]
+      "position": [ 3.0, 0.0, -2.0 ]
     }
   ]
 }

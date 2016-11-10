@@ -70,6 +70,7 @@ namespace User
             }
             else if ( type == "boss" )
             {
+                bossProduction.Start( );
                 EnemyCreate<EnemyBoss>( position, camera );
             }
         }
@@ -105,6 +106,8 @@ namespace User
         EnemyBulletIntegration( );
 
         EnemyEffectIntegration( );
+
+        bossProduction.Update( );
     }
 
     void EnemyManager::draw( cinder::CameraPersp const& camera )
@@ -118,6 +121,27 @@ namespace User
     void EnemyManager::drawUI( cinder::CameraPersp const& camera )
     {
         Each( [ camera ] ( EnemyBaseRef& enemyRef ) { enemyRef->drawUI( camera ); } );
+
+    }
+
+    bool EnemyManager::IsMainBGMGainDown( )
+    {
+        return bossProduction.IsMainBGMGainDown( );
+    }
+
+    bool EnemyManager::IsMainBGMStop( )
+    {
+        return bossProduction.IsMainBGMStop( );
+    }
+
+    bool EnemyManager::IsBossBGMStart( )
+    {
+        return bossProduction.IsBossBGMStart( );
+    }
+
+    void EnemyManager::drawProduction( )
+    {
+        bossProduction.Draw( );
     }
 
     bool EnemyManager::IsAttack( const cinder::CameraPersp& camera )
@@ -209,15 +233,17 @@ namespace User
         return successNum;
     }
 
-    int EnemyManager::PlayerSpecialAttackToEnemyDamage( int damage, const cinder::CameraPersp& camera, SpecialType specialState )
+    int EnemyManager::PlayerSpecialAttackToEnemyDamage( int damage, const cinder::CameraPersp& camera, SpecialType specialState, float combo )
     {
         int drainMp = 0;
-        Each( [ &drainMp, &damage, &camera, &specialState, this ] ( EnemyBaseRef& enemyRef )
+            auto scoreRate = 50 * ( 1 + std::min( combo / 5.0F, 4.0F ) );
+        Each( [ &drainMp, &damage, &camera, &specialState, &combo, &scoreRate, this ] ( EnemyBaseRef& enemyRef )
         {
             Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
             Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
 
-            drainMp += enemyRef->Damage( damage );
+
+            drainMp += enemyRef->Damage( camera, damage, scoreRate );
             switch ( specialState )
             {
             case SpecialType::FIRE: // ‰Î
@@ -251,7 +277,7 @@ namespace User
                 break;
             }
         } );
-        score += drainMp * 100;
+        score += drainMp * scoreRate;
         return drainMp;
     }
 
@@ -422,7 +448,7 @@ namespace User
                                            env.getWindowSize( ) + Vec2f( -80, -135 )
                 ) );
                 dead->Play( );
-                score += 1000;
+                score += 10000;
                 return true;
             }
             return false;

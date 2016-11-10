@@ -5,6 +5,9 @@
 # include "../Utilitys/Yumayo.h"
 #include"../Utilitys/Hirasawa.h"
 #include"../Utilitys/TitleCircle.h"
+#include"../Utilitys/Haguruma.h"
+#include "../Utilitys/GameStartGauge.h"
+
 namespace User
 {
     class SceneTitle : public SceneBase
@@ -32,7 +35,7 @@ namespace User
         enum TexType {
             T_KURIKO, T_BOSS, T_KURIKOBACK, T_BOSSBACK, T_SHURIKEN,
             T_KUNAI, T_SLASH, T_BACKGROUND, T_LOGO, T_MAINKURIKO,
-            T_START,T_MAINKUNAI,T_SUBKUNAI,TEXMAX
+            T_START, T_MAINKUNAI, T_SUBKUNAI, MARU, TEXMAX
         };
         enum SE_END {
             SE_CROSS, SE_MAX
@@ -42,10 +45,13 @@ namespace User
         // Yumayo.h のフォントを扱うクラスです。
         float endt_;
         float t_[TitleEasing::TitleMAX];
+        int marucount;
         cinder::gl::Texture* textures[TexType::TEXMAX];
         bool se_ends[SE_END::SE_MAX];
         Audio* bgm;
         Audio* cross_se;
+        Audio* start_se;
+        std::vector<Haguruma> haguruma;
         // シーン遷移に使います。
         std::vector<TitleCircle> kuriko_shuriken;
         std::vector<TitleCircle> boss_kunai;
@@ -54,7 +60,7 @@ namespace User
         bool isStartTouch( );
         bool isblackout;
         float iconangle;
-		float kunaiangle;
+        float kunaiangle;
         void drawfade( );
         void drawInKurio( );
         void drawInBoss( );
@@ -77,6 +83,10 @@ namespace User
         void drawMainKuriko( );
         void drawStartIcon( );
         void skip( );
-		void drawKunai();
+        void drawKunai( );
+        void drawMaru( );
+    private:
+        GameStartGauge gameStartGauge;
+        void drawGameStartGauge( );
     };
 }

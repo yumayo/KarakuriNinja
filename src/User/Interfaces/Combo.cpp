@@ -68,12 +68,12 @@ namespace User
 		gl::color(ColorA(1,1,1,1));
 
 		Vec2f startsize;
-		startsize.x = 340;
+		startsize.x = 500;
 		startsize.y = startsize.x*(float(combo->getSize().y)/float(combo->getSize().x));
 		Vec2f size;
-		size.x = Easing::getEasing[Easing::Return](t_, startsize.x, startsize.x / 3.f);
-		size.y = Easing::getEasing[Easing::Return](t_, startsize.y, startsize.y / 3.f);
-		Easing::tCount(t_,0.2f);
+		size.x = Easing::getEasing[Easing::Return](t_, startsize.x, startsize.x / 2.5f);
+		size.y = Easing::getEasing[Easing::Return](t_, startsize.y, startsize.y / 2.5f);
+		Easing::tCount(t_,0.15f);
 
 		combo->enableAndBind();
 		gl::drawSolidRect(Rectf(-size/2,size/2));

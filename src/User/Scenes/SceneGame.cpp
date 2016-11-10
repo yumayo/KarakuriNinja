@@ -13,12 +13,15 @@ namespace User
     using namespace cinder;
 
     SceneGame::SceneGame( )
+        : mainBGMfadeOut( 100 )
     {
         TRData::Reset( );
 
         // ユーマヨが管理するものを作成。
+        fieldCamera = CameraData::Create( "Camera/FieldWorld.json" );
+        enemyCamera = CameraData::Create( "Camera/EnemyWorld.json" );
         fieldManager = std::make_shared<FieldManager>( "JSON/GameMainField.json" );
-        enemyManager = std::make_shared<EnemyManager>( camera( ), fieldManager->FieldDataPath( ) );
+        enemyManager = std::make_shared<EnemyManager>( enemyCamera->GetCamera( ), fieldManager->FieldDataPath( ) );
         enemyBulletManager = std::make_shared<EnemyBulletManager>( );
         effectManager = std::make_shared<EffectManager>( );
         UI = std::make_shared<Interface>( );
@@ -33,6 +36,11 @@ namespace User
 
         // 大ちゃんが管理するものを作成。
         mainbgm = &GData::FindAudio( "BGM/mainbgm0.wav" );
+        // mainbgmはtutorialSceneで設定してあるので変更はありません。
+
+        bossbgm = &GData::FindAudio( "BGM/lastboss.wav" );
+        bossbgm->Looping( true );
+        bossbgm->Gain( 0.4 );
         watercount = 0;
         fusuma = std::make_shared<Fusuma>( );
         time = 0;
@@ -41,14 +49,22 @@ namespace User
         horagai = &GData::FindAudio( "SE/gamestart.wav" );
         horagai->Play( );
         gameClearSE = &GData::FindAudio( "SE/j_26.wav" );
+        hagurumas.push_back( Haguruma( Vec2f( env.getWindowWidth( )*0.1f, env.getWindowHeight( )*0.15f ),
+                                       Vec2f( 350, 350 ), 1.5f, 0.3f, 5.f, HagurumaType::LEFTHAGURUMA ) );
+        hagurumas.push_back( Haguruma( Vec2f( env.getWindowWidth( )*0.9f, env.getWindowHeight( )*0.15f ),
+                                       Vec2f( 350, 350 ), 1.5f, 0.3f, 5.f, HagurumaType::RIGHTHAGURUMA ) );
+
+        for ( auto& obj : hagurumas ) obj.set_anglescale_t( 1 );
+
     }
     SceneGame::~SceneGame( )
     {
         mainbgm->Stop( );
+        bossbgm->Stop( );
     }
     void SceneGame::resize( )
     {
-        camera( ).setAspectRatio( env.getWindowAspectRatio( ) );
+        enemyCamera->GetCamera( ).setAspectRatio( env.getWindowAspectRatio( ) );
     }
 
     void SceneGame::UpdateGameStart( )
@@ -76,8 +92,8 @@ namespace User
         {
             bool 無敵じゃない = ( !( special.getSpecialType( ) == SpecialType::TREE ) );
             int damage = 0;
-            damage += enemyManager->EnemyToPlayerDamage( camera( ) ) * 無敵じゃない;
-            damage += enemyBulletManager->EnemyToPlayerDamage( camera( ) ) * 無敵じゃない;
+            damage += enemyManager->EnemyToPlayerDamage( enemyCamera->GetCamera( ) ) * 無敵じゃない;
+            damage += enemyBulletManager->EnemyToPlayerDamage( enemyCamera->GetCamera( ) ) * 無敵じゃない;
             player.TranseNowHp( -damage );
         }
 
@@ -85,8 +101,8 @@ namespace User
         if ( player.Command( ) == CommandType::GUARD )
         {
             int damage = 0;
-            damage += enemyManager->EnemyToPlayerDamage( player.GuardLine( ), camera( ) );
-            damage += enemyBulletManager->EnemyToPlayerDamage( player.GuardLine( ), camera( ) );
+            damage += enemyManager->EnemyToPlayerDamage( player.GuardLine( ), enemyCamera->GetCamera( ) );
+            damage += enemyBulletManager->EnemyToPlayerDamage( player.GuardLine( ), enemyCamera->GetCamera( ) );
             player.TranseNowHp( -damage * !( special.getSpecialType( ) == SpecialType::TREE ) );
         }
 
@@ -102,8 +118,8 @@ namespace User
         {
             int AP = 0;
             float damagerate = ( special.getSpecialType( ) == SpecialType::FIRE ) ? 1.3f : 1.0f;
-            AP += enemyManager->PlayerToEnemyDamage( obj, camera( ), damagerate, UI->ComboNumber( ) );
-            AP += enemyBulletManager->PlayerToEnemyDamage( obj, camera( ) );
+            AP += enemyManager->PlayerToEnemyDamage( obj, enemyCamera->GetCamera( ), damagerate, UI->ComboNumber( ) );
+            AP += enemyBulletManager->PlayerToEnemyDamage( obj, enemyCamera->GetCamera( ) );
             player.TranseNowMp( AP );
         }
     }
@@ -118,14 +134,14 @@ namespace User
     }
     void SceneGame::UpdateCombo( )
     {
-        UI->update( );
+        UI->update( player.NowHp( ) );
 
         if ( moveInput.Lines( ).empty( ) ) return;
 
         int hitNum = 0;
         for ( auto& obj : moveInput.Lines( ) )
         {
-            if ( 0 != enemyManager->PlayerToEnemyAttackCheck( obj, camera( ) ) )
+            if ( 0 != enemyManager->PlayerToEnemyAttackCheck( obj, enemyCamera->GetCamera( ) ) )
             {
                 hitNum += 1;
             }
@@ -144,7 +160,7 @@ namespace User
 
         if ( timer.IsCount( ) )
         {
-            camera.Shake( 0.02F );
+            CameraShake( );
         }
 
         if ( timer.IsAction( ) )
@@ -155,20 +171,31 @@ namespace User
     void SceneGame::UpdateNextStage( )
     {
         // エネミーが全滅したら、次のステージを準備。
-        if ( enemyManager->IsEmpty( ) && !fieldManager->IsLastField( ) )
+        if ( enemyManager->IsEmpty( ) && !fieldManager->IsLastField( ) && !fieldManager->IsMoveing( ) )
         {
             fieldManager->End( );
         }
-
-        fieldManager->IsChange( );
 
         // ステージの移動が終了したら次のステージへ。
         if ( !fieldManager->IsLastField( ) && fieldManager->IsChange( ) )
         {
             mojiManager.End( );
             fieldManager->ChangeField( );
-            enemyManager = std::make_shared<EnemyManager>( camera( ), fieldManager->FieldDataPath( ) );
+            enemyManager = std::make_shared<EnemyManager>( enemyCamera->GetCamera( ), fieldManager->FieldDataPath( ) );
             enemyBulletManager = std::make_shared<EnemyBulletManager>( );
+        }
+
+        if ( fieldManager->IsMoveing( ) )
+        {
+            for ( int i = 0; i < hagurumas.size( ); i++ ) {
+                hagurumas[i].setUpdate( UPDATETYPE::STARTUPDATE );
+            }
+        }
+        else
+        {
+            for ( int i = 0; i < hagurumas.size( ); i++ ) {
+                hagurumas[i].setUpdate( UPDATETYPE::ENDUPDATE );
+            }
         }
     }
     void SceneGame::UpdateAllInstans( )
@@ -177,32 +204,54 @@ namespace User
         if ( !special.getIsSpecial( ) )
         {
             fieldManager->Update( );
+        }
 
-            if ( !TRData::IsStopUpdate( ) )
-            {
-                player.Update( );
-                player.UpdateDeffenceOfTouch( );
+        if ( !special.getIsSpecial( ) &&
+             !TRData::bossSpawn.IsStopUpdate( ) &&
+             !TRData::bossSerif.IsStopUpdate( ) &&
+             !TRData::special.IsStopUpdate( ) )
+        {
+            player.Update( );
+            player.UpdateDeffenceOfTouch( );
+        }
 
-                enemyManager->update( camera( ) );
-                enemyBulletManager->BulletRegister( enemyManager->BulletRecovery( ) );
-                enemyBulletManager->update( );
+        if ( !special.getIsSpecial( ) &&
+             !TRData::special.IsStopUpdate( ) )
+        {
+            enemyManager->update( enemyCamera->GetCamera( ) );
+        }
 
-                UpdateDamage( );
-                UpdateColor( );
-                UpdateScore( );
-                UpdateCombo( );
-            }
+        if ( !special.getIsSpecial( ) &&
+             !TRData::bossSpawn.IsStopUpdate( ) &&
+             !TRData::special.IsStopUpdate( ) )
+        {
+            enemyBulletManager->BulletRegister( enemyManager->BulletRecovery( ) );
+            enemyBulletManager->update( );
+        }
 
-            // エフェクトは常に動きます。
+        if ( !special.getIsSpecial( ) &&
+             !TRData::bossSpawn.IsStopUpdate( ) &&
+             !TRData::bossSerif.IsStopUpdate( ) &&
+             !TRData::special.IsStopUpdate( ) )
+        {
+            UpdateDamage( );
+            UpdateColor( );
+            UpdateScore( );
+            UpdateCombo( );
+
+        }
+
+        if ( !special.getIsSpecial( ) )
+        {
             effectManager->EffectRegister( enemyManager->EffectRecovery( ) );
             effectManager->EffectRegister( enemyBulletManager->EffectRecovery( ) );
             effectManager->Update( );
-        }
-        if ( ( !special.getIsSpecial( ) ) && ( !fieldManager->IsMoveing( ) ) ) {
-            time++;
+
+            mojiManager.Update( );
+            UpdateHaguruma( );
         }
 
-        mojiManager.Update( );
+        if ( !fieldManager->IsMoveing( ) ) time += 1;
     }
     void SceneGame::UpdateSpecial( )
     {
@@ -221,6 +270,7 @@ namespace User
             }
             if ( TRData::IsSerifTalked( ) )
             {
+                TRData::bossSpawn.TutorialEnd( );
                 TRData::special.TutorialEnd( );
                 mpmax->Gain( 1.f );
                 mpmax->Play( );
@@ -241,7 +291,7 @@ namespace User
         // プレイヤーのスペシャルエフェクト時にカメラを揺らします。
         if ( special.isEffecting( ) )
         {
-            camera.Shake( 0.05F );
+            CameraShake( );
             player.TranseNowMp( -1 );
         }
 
@@ -249,7 +299,7 @@ namespace User
         if ( special.getEffectEnd( ) )
         {
             const float damagevalue = 10.0F;
-            player.TranseNowMp( enemyManager->PlayerSpecialAttackToEnemyDamage( special.getspecialPower( ) * damagevalue, camera( ), special.getSpecialType( ) ) );
+            player.TranseNowMp( enemyManager->PlayerSpecialAttackToEnemyDamage( special.getspecialPower( ) * damagevalue, enemyCamera->GetCamera( ), special.getSpecialType( ), UI->ComboNumber( ) ) );
             player.TranseNowMp( enemyBulletManager->PlayerSpecialAttackToEnemyDamage( ) );
         }
     }
@@ -263,10 +313,11 @@ namespace User
 
 
             float gain = ( static_cast<float>( sceneChangeFrame ) / maxSceneChangeFrame ) * 0.4F;
+            bossbgm->Gain( gain );
             mainbgm->Gain( gain );
             sceneChangeFrame = std::max( sceneChangeFrame - 1, 0 );
 
-            camera.Shake( 0.05F );
+            CameraShake( );
 
             mojiManager.ReCall( "JSON/GameClear.json" );
         }
@@ -276,6 +327,7 @@ namespace User
             isGameClear = false;
 
             float gain = ( static_cast<float>( sceneChangeFrame ) / maxSceneChangeFrame ) * 0.4F;
+            bossbgm->Gain( gain );
             mainbgm->Gain( gain );
             sceneChangeFrame = std::max( sceneChangeFrame - 1, 0 );
 
@@ -284,14 +336,54 @@ namespace User
             mojiManager.ReCall( "JSON/GameOver.json" );
         }
     }
+    void SceneGame::UpdateBGM( )
+    {
+        if ( enemyManager->IsMainBGMGainDown( ) )
+        {
+            float gain = ( 1.0F - mainBGMfadeOut.NormalizedRectSizeFrame( ) ) * 0.4F;
+            mainbgm->Gain( gain );
+            mainBGMfadeOut.Update( );
+        }
+
+        if ( mainBGMfadeOut.IsMax( ) )
+        {
+            mainbgm->Stop( );
+        }
+
+        if ( enemyManager->IsBossBGMStart( ) && !bossbgm->IsPlaying( ) )
+        {
+            bossbgm->Play( );
+        }
+    }
+    void SceneGame::UpdateHaguruma( )
+    {
+        for ( int i = 0; i < hagurumas.size( ); i++ ) {
+            hagurumas[i].update( );
+        }
+    }
+    void SceneGame::CameraShake( )
+    {
+        fieldCamera->Shake( 0.02F );
+        enemyCamera->Shake( 0.02F );
+    }
     void SceneGame::update( )
     {
-        camera.Update( );
+        enemyCamera->Update( );
 
-        if ( !special.getIsSpecial( ) )
+        if ( !special.getIsSpecial( ) &&
+             !TRData::bossSpawn.IsStopUpdate( ) &&
+             !TRData::bossSerif.IsStopUpdate( ) &&
+             !TRData::special.IsStopUpdate( ) )
         {
             moveInput.Begin( UI->ComboNumber( ) );
-            if ( player.Command( ) == GUARD ) moveInput.InputInvalidation( );
+        }
+        if ( player.Command( ) == GUARD )
+        {
+            moveInput.InputInvalidation( );
+        }
+        if ( TRData::bossSpawn.IsStopUpdate( ) )
+        {
+            moveInput.Clear( );
         }
 
         UpdateGameStart( );
@@ -305,6 +397,8 @@ namespace User
         UpdateNextStage( );
 
         UpdateGameEnd( );
+
+        UpdateBGM( );
 
         if ( !special.getIsSpecial( ) ) moveInput.End( );
     }
@@ -322,7 +416,7 @@ namespace User
     {
         if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_r ) )
         {
-            create( new SceneResult( UI->Score( ), UI->MaxComboNumber( ), player.NowHp( ) + player.NowMp( ), time / 60, false ) );///////ここ！！
+            create( new SceneResult( UI->Score( ), UI->MaxComboNumber( ), player.NowHp( ), time / 60, false ) );///////ここ！！
             return;
         }
 
@@ -336,7 +430,7 @@ namespace User
 
                 if ( fusuma->IsMoveFinished( ) )
                 {
-                    create( new SceneResult( UI->Score( ), UI->MaxComboNumber( ), player.NowHp( ) + player.NowMp( ), time / 60, isGameClear ) );
+                    create( new SceneResult( UI->Score( ), UI->MaxComboNumber( ), player.NowHp( ), time / 60, isGameClear ) );
                     return;
                 }
             }
@@ -359,15 +453,22 @@ namespace User
         //glLightModeli( GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR );
 
         gl::setViewport( env.getWindowBounds( ) );
-        gl::setMatrices( camera( ) );
+
     }
     void SceneGame::drawMain( )
     {
         if ( special.isMinigame( ) ) return;
 
-        fieldManager->Draw( camera( ) );
-        enemyManager->draw( camera( ) );
-        enemyBulletManager->draw( camera( ) );
+        gl::setMatrices( fieldCamera->GetCamera( ) );
+
+        fieldManager->Draw( fieldCamera->GetCamera( ) );
+
+        GlobalDraw::Draw( );
+
+        gl::setMatrices( enemyCamera->GetCamera( ) );
+
+        enemyManager->draw( enemyCamera->GetCamera( ) );
+        enemyBulletManager->draw( enemyCamera->GetCamera( ) );
 
         GlobalDraw::Draw( );
     }
@@ -398,13 +499,15 @@ namespace User
 
             moveInput.Draw( );
 
-            enemyManager->drawUI( camera( ) );
+            enemyManager->drawUI( enemyCamera->GetCamera( ) );
 
-            enemyManager->DrawAttackCircle( camera( ) );
+            enemyManager->DrawAttackCircle( enemyCamera->GetCamera( ) );
 
-            enemyBulletManager->DrawBulletCircle( camera( ) );
+            enemyBulletManager->DrawBulletCircle( enemyCamera->GetCamera( ) );
 
             effectManager->Draw( );
+
+            enemyManager->drawProduction( );
 
             //enemyManager->DrawEnemyHitPoint( );
 
@@ -413,8 +516,10 @@ namespace User
                       ( player.NowMp( ) == player.MaxMp( ) ) && ( special.getSpecialType( ) == SpecialType::NOTSELECTED ),
                       int( special.getSpecialType( ) ) );
 
-            talk->Draw( Vec2f( 0, env.getWindowHeight( ) ) + Vec2f( 0, -220 ) );
-
+            talk->Draw( Vec2f( env.getWindowWidth( ) / 2, env.getWindowHeight( ) / 2 ) );
+            for ( int i = 0; i < hagurumas.size( ); i++ ) {
+                hagurumas[i].draw( );
+            }
         }
 
         special.draw( );

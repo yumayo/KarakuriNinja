@@ -11,9 +11,9 @@ namespace User
 {
     using namespace cinder;
     EnemyBullet::EnemyBullet( cinder::Vec3f pos, const cinder::CameraPersp& camera )
-        : EnemyBase( pos, camera, Status( 6.0F, 4 ) )
+        : EnemyBase( pos, camera, Status( 6.0F, 4 ), true )
     {
-        timer.Advance( 120 );
+        timer.Advance( randInt( 120, 200 ) );
 
         int index = 1;
         待機 = &GData::FindTexture( "Enemy/Bullet/Bullet (" + std::to_string( index++ ) + ").png" );
@@ -50,7 +50,26 @@ namespace User
             texture = knockBackTexture;
         }
 
-        EnemyBase::update( camera );
+        frame += 1;
+        CameraSee( camera );
+
+        if ( IsLive( ) )
+        {
+            LiveCheck( );
+            if ( !IsKnockBack( ) )
+            {
+                object.PositionAdd( object.Speed( ) );
+                attackTime.Update( );
+            }
+        }
+        DamageEffect( );
+        MutekiEffect( );
+        CollideGround( );// 死んでいても実行します。
+        //CollideField( );// 死んでいても実行します。
+        Dying( );// 死んでいても実行します。
+
+                 // デバッグダメージ
+        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_0 ) ) Kill( );
     }
     void EnemyBullet::draw( )
     {
@@ -135,9 +154,9 @@ namespace User
         direction.rotateY( M_PI / 2.0 );
         object.PositionAdd( direction * 0.05 );
 
-        if ( !IsInField( ) )
+        if ( !IsInTheScreen( camera ) )
         {
-            object.PositionAdd( -direction * 0.05 );
+            object.PositionAdd( -direction * 0.1 );
 
             // タイマーをセットしてまた待機状態にします。
             timer.Advance( randInt( 30, 60 ) );
@@ -159,9 +178,9 @@ namespace User
         direction.rotateY( -M_PI / 2.0 );
         object.PositionAdd( direction * 0.05 );
 
-        if ( !IsInField( ) )
+        if ( !IsInTheScreen( camera ) )
         {
-            object.PositionAdd( -direction * 0.05 );
+            object.PositionAdd( -direction * 0.1 );
 
             timer.Advance( randInt( 20, 30 ) );
             texture = 左に移動;

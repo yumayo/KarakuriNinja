@@ -14,6 +14,8 @@
 
 #include "../Special/Special.h"
 
+#include "../Utilitys/BossProduction.h"
+
 namespace User
 {
     class EnemyManager
@@ -38,6 +40,13 @@ namespace User
         void update( cinder::CameraPersp const& camera );
         void draw( cinder::CameraPersp const& camera );
         void drawUI( cinder::CameraPersp const& camera );
+    private:
+        BossProduction bossProduction;
+    public:
+        bool IsMainBGMGainDown( );
+        bool IsMainBGMStop( );
+        bool IsBossBGMStart( );
+        void drawProduction( );
     public:
         // エネミーが一体でも攻撃していたら true になります。
         bool IsAttack( const cinder::CameraPersp& camera );
@@ -46,7 +55,7 @@ namespace User
         // プレイヤーからの攻撃が何体のエネミーに当たったのかを判定します。
         int PlayerToEnemyAttackCheck( Line& line_, const cinder::CameraPersp& camera );
         // プレイヤーの必殺技をエネミーへと与えます。
-        int PlayerSpecialAttackToEnemyDamage( int damage, const cinder::CameraPersp& camera, SpecialType specialState );
+        int PlayerSpecialAttackToEnemyDamage( int damage, const cinder::CameraPersp& camera, SpecialType specialState, float combo = 0.0F );
         // エネミーからプレイヤーへの攻撃（直接ダメージを通します）
         int EnemyToPlayerDamage( const cinder::CameraPersp& camera );
         // エネミーからプレイヤーへの攻撃（プレイヤーがガードをしている時の判定に使います）

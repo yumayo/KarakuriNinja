@@ -402,6 +402,18 @@
     <ClInclude Include="..\src\User\Special\Water.h">
       <Filter>User\Special</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\BossProduction.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\CountFrame.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\Ranking.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\GameStartGauge.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -698,6 +710,18 @@
     </ClCompile>
     <ClCompile Include="..\src\User\Special\Water.cpp">
       <Filter>User\Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\BossProduction.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\CountFrame.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\Ranking.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\GameStartGauge.cpp">
+      <Filter>User\Utilitys</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -2,13 +2,19 @@
 
 void Gage::draw()
 {
+	Vec2f startsize = Vec2f(app::getWindowWidth() / 2, 100);
+	Vec2f size = startsize;
+	if (maxflag) {
+		size.x = Easing::getEasing[Easing::Return](max_t, startsize.x, startsize.x*0.3f);
+		size.y = Easing::getEasing[Easing::Return](max_t, startsize.y, startsize.y*0.3f);
+	}
 
-	gagedraw(*texs[GAGE], Vec2f(600, 70), Vec2f(app::getWindowWidth() / 2, app::getWindowHeight() / 1.1f),
+	gagedraw(*texs[GAGE], size, Vec2f(app::getWindowWidth() / 2, app::getWindowHeight() / 1.2f),
 		cinder::Area(0, 0, texs[GAGE]->getSize().x, texs[GAGE]->getSize().y),count_);
 
 	gl::pushModelView();
-	gl::translate(Vec2f(app::getWindowWidth()/2, app::getWindowHeight() / 1.1f));
-	gl::scale(Vec2f(600,70));
+	gl::translate(Vec2f(app::getWindowWidth() / 2, app::getWindowHeight() / 1.2f));
+	gl::scale(size);
 	gl::color(ColorA(1, 1, 1, 1));
 	gl::enableAlphaBlending();
 	texs[WAKU]->enableAndBind();
@@ -16,24 +22,39 @@ void Gage::draw()
 	texs[WAKU]->disable();
 	gl::popModelView();
 
-
+	if (maxflag) {
+		cinder::gl::pushModelView();
+		cinder::gl::translate(Vec2f(app::getWindowWidth() / 2, app::getWindowHeight() / 1.2f));
+		ci::gl::scale(size);
+		gl::color(ColorA(1, 1, 1, Easing::getEasing[Easing::QuintIn](max_t,1.f,0.f)));
+		gl::drawSolidRect(Rectf(Vec2f(-0.5f, -0.5f), Vec2f(0.5f, 0.5f)));
+		cinder::gl::popModelView();
+	}
 }
 
 void Gage::update()
 {
 	for (int i = 0;i < 2;i++) {
 		if (issuccces_[i]) {
-			float countspeed = 1.0f / (60.0f*5.0f);
+			float countspeed = 1.0f / (60.0f*4.5f);
 			count_ += countspeed;
 			count_ = std::min(count_, 1.0f);
 		}
 	}
-	
-
+	if (count_ >= 1.0f&&(!maxflag)) {
+		maxflag = true;
+		se->Play();
+	}
+	if (maxflag) {
+		Easing::tCount(max_t, 0.3f);
+	}
 }
 
 void Gage::gagedraw(cinder::gl::Texture const & texture, cinder::Vec2f maxsize, cinder::Vec2f position, cinder::Area area, float size)
 {
+
+
+
 	cinder::gl::pushModelView();
 	cinder::gl::translate(position);
 	cinder::gl::pushModelView();
@@ -53,4 +74,5 @@ void Gage::gagedraw(cinder::gl::Texture const & texture, cinder::Vec2f maxsize, 
 	texture.unbind();
 	cinder::gl::popModelView();
 	cinder::gl::popModelView();
+
 }

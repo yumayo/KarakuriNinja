@@ -87,7 +87,17 @@ namespace User
         void TutorialStart( ) override;
     };
 
-    
+    class TutorialBossSpawn : public TutorialBase
+    {
+    public:
+        void TutorialStart( ) override;
+    };
+
+    class TutorialBossSerif : public TutorialBase
+    {
+    public:
+        void TutorialStart( ) override;
+    };
 
     class TutorialData
     {
@@ -100,6 +110,8 @@ namespace User
         static TutorialPlayerAttack playerAttack; // プレイヤーの攻撃のチュートリアル
         static TutorialEnemyKill enemyKill; // エネミーを倒すチュートリアル
         static TutorialSpecial special; // スペシャルが溜まって、それを発動するときのチュートリアル
+        static TutorialBossSpawn bossSpawn;
+        static TutorialBossSerif bossSerif;
     public:
         static bool IsStopUpdate( );
         static void Reset( );

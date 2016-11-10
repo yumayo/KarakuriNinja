@@ -19,9 +19,27 @@ namespace User
         , isLanding( true )
         , isLive( true )
         , deadTime( 60 )
+        , mutekiFrame( 0 )
+        , maxMutekiFrame( 120 )
         , status( )
     {
         update( camera );
+        initObject = object;
+        SpawnEffect( camera );
+        GData::FindAudio( "SE/umareru.wav" ).Play( );
+    }
+    EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, Status status, bool bullet )
+        : object( pos, Vec3f( 1.7, 1.7, 0.01 ), Vec3f::zero( ) )
+        , texture( &GData::FindTexture( "null" ) )
+        , knockBackTexture( &GData::FindTexture( "null" ) )
+        , hitColor( Color::white( ) )
+        , isLanding( true )
+        , isLive( true )
+        , deadTime( 60 )
+        , mutekiFrame( 0 )
+        , maxMutekiFrame( 120 )
+        , status( status )
+    {
         initObject = object;
         SpawnEffect( camera );
         GData::FindAudio( "SE/umareru.wav" ).Play( );
@@ -34,6 +52,8 @@ namespace User
         , isLanding( true )
         , isLive( true )
         , deadTime( 60 )
+        , mutekiFrame( 0 )
+        , maxMutekiFrame( 120 )
         , status( status )
     {
         update( camera );
@@ -56,6 +76,7 @@ namespace User
             }
         }
         DamageEffect( );
+        MutekiEffect( );
         CollideGround( );// 死んでいても実行します。
         CollideField( );// 死んでいても実行します。
         Dying( );// 死んでいても実行します。
@@ -116,7 +137,7 @@ namespace User
         gl::popModelView( );
 
         gl::enable( GL_CULL_FACE );
-        }
+    }
     void EnemyBase::drawUI( cinder::CameraPersp const& camera )
     {
 
@@ -124,22 +145,28 @@ namespace User
     int EnemyBase::Hit( cinder::CameraPersp const& camera, float length, int scoreRate, float value )
     {
         int drainMP = 0;
-        if ( length <= 0.2F )
+
+        if ( IsMuteki( ) )
+        {
+            //status.HP = std::max( status.HP - 1.0F * value, 0.0F );
+            drainMP = 1;
+        }
+        else if ( length <= 0.2F )
         {
             status.HP = std::max( status.HP - 3.0F * value, 0.0F );
-            hitColor = Color( 1, 0.1, 0.1 );
+            hitColor = ColorA( 1, 0.1, 0.1, hitColor.a );
             drainMP = 7;
         }
         else if ( length <= 0.5F )
         {
             status.HP = std::max( status.HP - 2.5F * value, 0.0F );
-            hitColor = Color( 1, 0.2, 0.2 );
+            hitColor = ColorA( 1, 0.2, 0.2, hitColor.a );
             drainMP = 5;
         }
         else if ( length <= 1.0F )
         {
             status.HP = std::max( status.HP - 1.5F * value, 0.0F );
-            hitColor = Color( 1, 0.3, 0.3 );
+            hitColor = ColorA( 1, 0.3, 0.3, hitColor.a );
             drainMP = 2;
         }
 
@@ -150,25 +177,39 @@ namespace User
             vec.x = randFloat( vec.x - 100, vec.x + 100 );
             vec.y = randFloat( vec.y - 100, vec.y + 100 );
 
+            if ( !IsMuteki( ) ) mutekiFrame = maxMutekiFrame;
+
             EffectCreate( EffectScore( vec, drainMP * scoreRate ) );
         }
 
-        if ( !isLive ) hitColor = Color( 1, 0, 0 );
+        if ( !isLive ) hitColor = ColorA( 1, 0, 0, hitColor.a );
 
         return drainMP;
     }
-    int EnemyBase::Damage( int damage )
+    int EnemyBase::Damage( cinder::CameraPersp const& camera, int damage, int scoreRate )
     {
         if ( damage < 0 ) return 0;
-        status.HP = std::max( status.HP - damage, 0.0F );
-        hitColor = Color( 1, 0.1, 0.1 );
 
-        return 2;
+        status.HP = std::max( status.HP - damage, 0.0F );
+        hitColor = ColorA( 1, 0.1, 0.1, hitColor.a );
+
+        Vec2f vec = camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+
+        vec.x = randFloat( vec.x - 100, vec.x + 100 );
+        vec.y = randFloat( vec.y - 100, vec.y + 100 );
+
+        if ( !IsMuteki( ) ) mutekiFrame = maxMutekiFrame;
+
+        int drainMP = 2;
+
+        EffectCreate( EffectScore( vec, drainMP * scoreRate ) );
+
+        return drainMP;
     }
     void EnemyBase::Kill( )
     {
         status.HP = 0.0F;
-        hitColor = Color( 1, 0.1, 0.1 );
+        hitColor = ColorA( 1, 0.1, 0.1, hitColor.a );
     }
     bool EnemyBase::IsActive( )
     {
@@ -218,9 +259,11 @@ namespace User
     }
     bool EnemyBase::IsKnockBack( )
     {
-        // 真っ赤でない時かつ白色でない時。
-        // つまり、中途半端な色の時はノックバックであると仮定します。
-        return ( hitColor != Color( 1, 0, 0 ) ) && ( hitColor != Color::white( ) );
+        return ( ( maxMutekiFrame * 0.5 ) < mutekiFrame ) && isLive;
+    }
+    bool EnemyBase::IsMuteki( )
+    {
+        return ( mutekiFrame != 0 ) && isLive;
     }
     void EnemyBase::CollideField( )
     {
@@ -261,6 +304,19 @@ namespace User
         if ( !isLive ) return;
         isLive = 0.0F < status.HP;
     }
+    void EnemyBase::MutekiEffect( )
+    {
+        mutekiFrame = std::max( mutekiFrame - 1, 0 );
+
+        if ( IsMuteki( ) && isLive )
+        {
+            hitColor.a = 0.5 * std::cos( static_cast<float>( mutekiFrame ) / 2.0F ) + 0.5;
+        }
+        else
+        {
+            hitColor.a = 1.0F;
+        }
+    }
     void EnemyBase::Dying( )
     {
         if ( !IsLive( ) )
@@ -272,13 +328,17 @@ namespace User
     {
         if ( isLive )
         {
-            hitColor += Color( 0.03, 0.03, 0.03 );
-            if ( 1 < hitColor.r )
-                if ( 1 < hitColor.g )
-                    if ( 1 < hitColor.b ) hitColor = Color::white( );
+            hitColor.r = std::min( hitColor.r + 0.06F, 1.0F );
+            hitColor.g = std::min( hitColor.g + 0.06F, 1.0F );
+            hitColor.b = std::min( hitColor.b + 0.06F, 1.0F );
         }
         else
-            hitColor = Color( 1, 0, 0 );
+        {
+            hitColor.r = 1;
+            hitColor.g = 0;
+            hitColor.b = 0;
+            hitColor.a = 1;
+        }
 
     }
     void EnemyBase::CameraSee( cinder::CameraPersp const & camera )

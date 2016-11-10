@@ -13,6 +13,7 @@ namespace User
         Timer timer;
         bool isAttack;
         cinder::Vec3f prevMovePosition;
+        cinder::Vec3f targetVector;
         std::function<void( cinder::CameraPersp const& )> behavior;
     private:
         cinder::gl::Texture* ‘Ò‹@;

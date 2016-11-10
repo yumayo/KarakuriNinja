@@ -23,7 +23,7 @@
 //Hirasawa's include
 # include "../Utilitys/Audio.h"
 # include "../Special/Special.h"
-
+#include"../Utilitys/Haguruma.h"
 namespace User
 {
     class Fusuma;
@@ -56,10 +56,15 @@ namespace User
         void UpdateAllInstans( );
         void UpdateSpecial( );
         void UpdateGameEnd( );
+        void UpdateBGM( );
+        void UpdateHaguruma( );
+    private:
+        void CameraShake( );
     private:
         //=======================================
         // ユーマヨが管理するもののインスタンス化。
-        CameraData camera;
+        CameraDataRef fieldCamera;
+        CameraDataRef enemyCamera;
         EnemyManagerRef enemyManager;
         EnemyBulletManagerRef enemyBulletManager;
         FieldManagerRef fieldManager;
@@ -90,13 +95,17 @@ namespace User
         // 大ちゃんが管理するもののインスタンス化。
 
         Special special;
+        CountFrame mainBGMfadeOut;
         Audio* mainbgm;
+        Audio* bossbgm;
         int watercount;
         std::shared_ptr<Fusuma> fusuma;
         int time;
         Audio* mpmax;
         bool ismpmax;
         Audio* horagai;
+        
+        std::vector<Haguruma> hagurumas;
         //=======================================
     };
 }

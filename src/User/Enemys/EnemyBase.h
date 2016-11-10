@@ -44,11 +44,11 @@ namespace User
         cinder::gl::Texture* knockBackTexture;
         AttackTime attackTime;
         int frame = 0;
-        // 非公開情報
-    private:
-        cinder::Color hitColor;
+        cinder::ColorA hitColor;
         int deadTime;
         Status status;
+        int mutekiFrame;
+        int maxMutekiFrame;
 
     private: EnemyList enemyList;
     public: EnemyList EnemyRecovery( );
@@ -67,6 +67,7 @@ namespace User
 
     public:
         EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp& camera );
+        EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp& camera, Status status, bool bullet );
         EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp& camera, Status status, float scale = 1.0F );
         virtual void update( cinder::CameraPersp const& camera );
         virtual void draw( );
@@ -80,7 +81,7 @@ namespace User
         cinder::Vec3f Position( ) { return object.Position( ); }
         cinder::Vec3f Size( ) { return object.Size( ); }
         int AttackPoint( ) { return status.attackPoint; }
-        cinder::Color HitColor( ) { return hitColor; }
+        cinder::ColorA HitColor( ) { return hitColor; }
         float NormalizedHitPoint( ) { return status.HP / status.maxHP; }
         Status GetStatus( ) { return status; }
     public:
@@ -91,7 +92,7 @@ namespace User
         // 引数 : あたった時の中心からの距離(正規化済み) : 0.0 ~ 1.0(半径)
         int Hit( cinder::CameraPersp const& camera, float length, int scoreRate, float value = 1.0F );
         // 強制的にダメージを与える関数
-        int Damage( int damage );
+        int Damage( cinder::CameraPersp const& camera, int damage, int scoreRate );
         // 敵を強制的に殺す関数
         void Kill( );
         // エネミーを消していいかの確認
@@ -106,6 +107,8 @@ namespace User
         bool IsInField( );
         // ノックバックしているかどうか。
         bool IsKnockBack( );
+
+        bool IsMuteki( );
     protected: // 以下 アップデートに記入推奨
         void CollideField( );
         // 地面の中にいたら地上に引き戻します。
@@ -115,6 +118,8 @@ namespace User
     protected:
         // 生きているかを確認します。
         void LiveCheck( );
+
+        void MutekiEffect( );
         // ダメージを受けた時に体の色を徐々に元通りにします。
         void DamageEffect( );
         // カメラの方向を向きます。

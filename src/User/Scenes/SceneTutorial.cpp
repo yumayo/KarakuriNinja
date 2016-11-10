@@ -16,8 +16,10 @@ namespace User
     SceneTutorial::SceneTutorial( )
     {
         // ユーマヨが管理するものを作成。
+        fieldCamera = CameraData::Create( "Camera/FieldWorld.json" );
+        enemyCamera = CameraData::Create( "Camera/EnemyWorld.json" );
         fieldManager = std::make_shared<FieldManager>( "JSON/TutorialField.json" );
-        enemyManager = std::make_shared<EnemyManager>( camera( ), fieldManager->FieldDataPath( ) );
+        enemyManager = std::make_shared<EnemyManager>( enemyCamera->GetCamera( ), fieldManager->FieldDataPath( ) );
         enemyBulletManager = std::make_shared<EnemyBulletManager>( );
         effectManager = std::make_shared<EffectManager>( );
 
@@ -29,7 +31,10 @@ namespace User
         mainbgm->Looping( true );
         mainbgm->Gain( 0.4 );
         mainbgm->Play( );
-        fusuma = std::make_shared<Fusuma>( );
+        hagurumas.push_back( Haguruma( Vec2f( env.getWindowWidth( )*0.1f, env.getWindowHeight( )*0.15f ),
+                                       Vec2f( 350, 350 ), 1.5f, 0.3f, 5.f, HagurumaType::LEFTHAGURUMA ) );
+        hagurumas.push_back( Haguruma( Vec2f( env.getWindowWidth( )*0.9f, env.getWindowHeight( )*0.15f ),
+                                       Vec2f( 350, 350 ), 1.5f, 0.3f, 5.f, HagurumaType::RIGHTHAGURUMA ) );
     }
     SceneTutorial::~SceneTutorial( )
     {
@@ -37,7 +42,7 @@ namespace User
     }
     void SceneTutorial::resize( )
     {
-        camera( ).setAspectRatio( env.getWindowAspectRatio( ) );
+        enemyCamera->GetCamera( ).setAspectRatio( env.getWindowAspectRatio( ) );
     }
 
     void SceneTutorial::UpdateDamage( )
@@ -46,8 +51,8 @@ namespace User
         if ( player.Command( ) == CommandType::NONE )
         {
             int damage = 0;
-            damage += enemyManager->EnemyToPlayerDamage( camera( ) );
-            damage += enemyBulletManager->EnemyToPlayerDamage( camera( ) );
+            damage += enemyManager->EnemyToPlayerDamage( enemyCamera->GetCamera( ) );
+            damage += enemyBulletManager->EnemyToPlayerDamage( enemyCamera->GetCamera( ) );
             player.TranseNowHp( -damage );
         }
 
@@ -55,16 +60,16 @@ namespace User
         if ( player.Command( ) == CommandType::GUARD )
         {
             int damage = 0;
-            damage += enemyManager->EnemyToPlayerDamage( player.GuardLine( ), camera( ) );
-            damage += enemyBulletManager->EnemyToPlayerDamage( player.GuardLine( ), camera( ) );
+            damage += enemyManager->EnemyToPlayerDamage( player.GuardLine( ), enemyCamera->GetCamera( ) );
+            damage += enemyBulletManager->EnemyToPlayerDamage( player.GuardLine( ), enemyCamera->GetCamera( ) );
             player.TranseNowHp( -damage );
         }
 
         for ( auto& obj : moveInput.Lines( ) )
         {
             int AP = 0;
-            AP += enemyManager->PlayerToEnemyDamage( obj, camera( ) );
-            AP += enemyBulletManager->PlayerToEnemyDamage( obj, camera( ) );
+            AP += enemyManager->PlayerToEnemyDamage( obj, enemyCamera->GetCamera( ) );
+            AP += enemyBulletManager->PlayerToEnemyDamage( obj, enemyCamera->GetCamera( ) );
             player.TranseNowMp( AP );
         }
     }
@@ -75,7 +80,7 @@ namespace User
         int attackSuccessNum = 0;
         for ( auto& obj : moveInput.Lines( ) )
         {
-            if ( 0 != enemyManager->PlayerToEnemyAttackCheck( obj, camera( ) ) )
+            if ( 0 != enemyManager->PlayerToEnemyAttackCheck( obj, enemyCamera->GetCamera( ) ) )
             {
                 attackSuccessNum += 1;
             }
@@ -117,28 +122,47 @@ namespace User
                 tutorialManager.BougyoEnd( );
                 break;
             }
-            if ( tutorialManager.BougyoIsNextStage( ) )
+            if ( tutorialManager.BougyoIsNextStage( ) && !fieldManager->IsMoveing( ) )
             {
                 enemyBulletManager = std::make_shared<EnemyBulletManager>( );
                 fieldManager->End( );
-                enemyManager->PlayerSpecialAttackToEnemyDamage( 100, camera( ), SpecialType::NOTSELECTED );
+                enemyManager->PlayerSpecialAttackToEnemyDamage( 100, enemyCamera->GetCamera( ), SpecialType::NOTSELECTED );
             }
             break;
         default:
             break;
         }
 
+        if ( fieldManager->IsMoveing( ) )
+        {
+            for ( int i = 0; i < hagurumas.size( ); i++ ) {
+                hagurumas[i].setUpdate( UPDATETYPE::STARTUPDATE );
+            }
+        }
+        else
+        {
+            for ( int i = 0; i < hagurumas.size( ); i++ ) {
+                hagurumas[i].setUpdate( UPDATETYPE::ENDUPDATE );
+            }
+        }
+
         // ステージの移動が終了したら次のステージへ。
         if ( !fieldManager->IsLastField( ) && fieldManager->IsChange( ) )
         {
             fieldManager->ChangeField( );
-            enemyManager = std::make_shared<EnemyManager>( camera( ), fieldManager->FieldDataPath( ) );
+            enemyManager = std::make_shared<EnemyManager>( enemyCamera->GetCamera( ), fieldManager->FieldDataPath( ) );
             enemyBulletManager = std::make_shared<EnemyBulletManager>( );
         }
     }
     void SceneTutorial::UpdateCamera( )
     {
-        camera.Update( );
+        enemyCamera->Update( );
+    }
+    void SceneTutorial::UpdateHaguruma( )
+    {
+        for ( int i = 0; i < hagurumas.size( ); i++ ) {
+            hagurumas[i].update( );
+        }
     }
     void SceneTutorial::UpdateEnemySpawn( )
     {
@@ -147,7 +171,7 @@ namespace User
             auto path = tutorialManager.KougekiGetEnemyCreatePath( );
             if ( path != "" )
             {
-                enemyManager = std::make_shared<EnemyManager>( camera( ), path );
+                enemyManager = std::make_shared<EnemyManager>( enemyCamera->GetCamera( ), path );
             }
         }
     }
@@ -156,7 +180,7 @@ namespace User
         // ガードに成功したら
         if ( player.Command( ) == CommandType::GUARD )
         {
-            if ( 0 < enemyBulletManager->EnemyToPlayerGuardCheck( player.GuardLine( ), camera( ) ) )
+            if ( 0 < enemyBulletManager->EnemyToPlayerGuardCheck( player.GuardLine( ), enemyCamera->GetCamera( ) ) )
             {
                 tutorialManager.BougyoPlayerGuardSucceed( );
             }
@@ -169,9 +193,9 @@ namespace User
         player.Update( );
 
         // これを呼ぶことでガードができる。
-        if( fieldManager->GetFieldNumber( ) == 1 ) player.UpdateDeffenceOfTouch( );
+        if ( fieldManager->GetFieldNumber( ) == 1 ) player.UpdateDeffenceOfTouch( );
 
-        enemyManager->update( camera( ) );
+        enemyManager->update( enemyCamera->GetCamera( ) );
         enemyBulletManager->BulletRegister( enemyManager->BulletRecovery( ) );
         enemyBulletManager->update( );
 
@@ -196,6 +220,8 @@ namespace User
         UpdateAllInstans( );
 
         UpdateNextStage( );
+
+        UpdateHaguruma( );
 
         moveInput.End( );
     }
@@ -235,13 +261,19 @@ namespace User
         gl::enableDepthRead( );
 
         gl::setViewport( env.getWindowBounds( ) );
-        gl::setMatrices( camera( ) );
     }
     void SceneTutorial::drawMain( )
     {
-        fieldManager->Draw( camera( ) );
-        enemyManager->draw( camera( ) );
-        enemyBulletManager->draw( camera( ) );
+        gl::setMatrices( fieldCamera->GetCamera( ) );
+
+        fieldManager->Draw( fieldCamera->GetCamera( ) );
+
+        GlobalDraw::Draw( );
+
+        gl::setMatrices( enemyCamera->GetCamera( ) );
+
+        enemyManager->draw( enemyCamera->GetCamera( ) );
+        enemyBulletManager->draw( enemyCamera->GetCamera( ) );
 
         GlobalDraw::Draw( );
     }
@@ -270,11 +302,11 @@ namespace User
 
         moveInput.Draw( );
 
-        enemyManager->drawUI( camera( ) );
+        enemyManager->drawUI( enemyCamera->GetCamera( ) );
 
-        enemyManager->DrawAttackCircle( camera( ) );
+        enemyManager->DrawAttackCircle( enemyCamera->GetCamera( ) );
 
-        enemyBulletManager->DrawBulletCircle( camera( ) );
+        enemyBulletManager->DrawBulletCircle( enemyCamera->GetCamera( ) );
 
         effectManager->Draw( );
 
@@ -283,7 +315,9 @@ namespace User
 
         tutorialManager.Draw( );
 
-        fusuma->drawFusuma( );
+        for ( int i = 0; i < hagurumas.size( ); i++ ) {
+            hagurumas[i].draw( );
+        }
     }
     void SceneTutorial::endDrawUI( )
     {

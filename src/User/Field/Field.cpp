@@ -15,7 +15,7 @@ namespace User
 
     Field::Field( std::string const & path )
         : count( 0 )
-        , maxCount( 60 * 3 )
+        , maxCount( 140 )
         , isEnd( false )
     {
         JsonTree params( app::loadAsset( path ) );

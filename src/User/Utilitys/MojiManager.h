@@ -6,6 +6,7 @@
 
 namespace User
 {
+
     class MojiManager
     {
         Fonts font;

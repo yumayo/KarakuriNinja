@@ -38,29 +38,31 @@ namespace User
 
     int EnemyBulletManager::PlayerToEnemyDamage( Line & line_, const cinder::CameraPersp & camera )
     {
-        int drainMp = 0;
-        Each( [ &drainMp, &line_, &camera ] ( EnemyBulletBaseRef& bulletRef )
-        {
-            Vec2f vec = camera.worldToScreen( bulletRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            Vec2f size = camera.worldToScreen( bulletRef->Position( ) + bulletRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-            float radius = Vec3f( size - vec ).length( ) / 2.0F;
-            drainMp += bulletRef->Hit( CheckDefLineOfCircle( line_, vec, radius ) );
-        } );
-        if ( drainMp != 0 )
-            adddamage->Play( );
-        score += drainMp * 100;
-        return drainMp;
+        //int drainMp = 0;
+        //Each( [ &drainMp, &line_, &camera ] ( EnemyBulletBaseRef& bulletRef )
+        //{
+        //    Vec2f vec = camera.worldToScreen( bulletRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+        //    Vec2f size = camera.worldToScreen( bulletRef->Position( ) + bulletRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+        //    float radius = Vec3f( size - vec ).length( ) / 2.0F;
+        //    drainMp += bulletRef->Hit( CheckDefLineOfCircle( line_, vec, radius ) );
+        //} );
+        //if ( drainMp != 0 )
+        //    adddamage->Play( );
+        //score += drainMp * 100;
+        //return drainMp;
+        return 0;
     }
 
     int EnemyBulletManager::PlayerSpecialAttackToEnemyDamage( )
     {
-        int drainMp = 0;
-        Each( [ &drainMp ] ( EnemyBulletBaseRef& bulletRef )
-        {
-            drainMp += bulletRef->Kill( );
-        } );
-        score += drainMp * 100;
-        return drainMp;
+        //int drainMp = 0;
+        //Each( [ &drainMp ] ( EnemyBulletBaseRef& bulletRef )
+        //{
+        //    drainMp += bulletRef->Kill( );
+        //} );
+        //score += drainMp * 100;
+        //return drainMp;
+        return 0;
     }
 
     int EnemyBulletManager::EnemyToPlayerDamage( const cinder::CameraPersp& camera )
@@ -96,6 +98,7 @@ namespace User
                 }
                 else {
                     if ( bulletRef->NormalizedMoveTime( ) == 1 ) {
+                        score += 500;
                         guard_se->Play( );
                         Vec2f enemypos = camera.worldToScreen( bulletRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
                         float a = ( line_.startPos.y - line_.endPos.y ) / ( line_.startPos.x - line_.endPos.x );

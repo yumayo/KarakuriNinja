@@ -218,9 +218,14 @@ namespace User
     {
         moveTouch.clear( );
     }
+    void MoveInput::Clear( )
+    {
+        moveTouch.clear( );
+        slashEffect.clear( );
+    }
     bool MoveInput::IsHandMove( uint32_t id, cinder::Vec2f pos )
     {
-        return 300 < moveTouch[id].prevPos.distance( pos );
+        return 200 < moveTouch[id].prevPos.distance( pos );
     }
     void MoveInput::UpdateAttackMotionOfTouch( int combo )
     {

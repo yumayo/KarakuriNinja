@@ -4,6 +4,7 @@
 #include "cinder/app/App.h"
 #include"../Utilitys/Hirasawa.h"
 #include"../Utilitys/Nomoto.h"
+#include"../Utilitys/Audio.h"
 #include"GlobalData.hpp"
 using namespace cinder;
 class Gage {
@@ -18,6 +19,9 @@ public:
 
 			texs[i] = &GData::FindTexture("Textures/"+texsname[i]);
 		}
+		maxflag = false;
+		max_t = 0.0f;
+		se = &GData::FindAudio("SE/chargemax.wav");
 	}
 	void setisCount(bool is1,bool is2) {
 	      issuccces_[0] = is1;
@@ -26,7 +30,7 @@ public:
 	void draw();
 	void update();
 	float getCount() {
-		return count_;
+		return std::max(0.1f,count_);
 	}
 private:
 	enum texs {
@@ -36,7 +40,10 @@ private:
 	Vec2f pos_;
 	Vec2f maxsize_;
 	Vec2f size_;
+	User::Audio* se;
 	float count_;
+	bool maxflag;
+	float max_t;
 	bool issuccces_[2];
 	gl::Texture* texs[2];
 	void gagedraw(cinder::gl::Texture const & texture,cinder::Vec2f maxsize,cinder::Vec2f position, cinder::Area area, float size);

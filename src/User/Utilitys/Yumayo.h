@@ -111,6 +111,8 @@ namespace User
         std::vector<Line> Lines( );
         // 形成途中のラインを全て無効にします。
         void InputInvalidation( );
+
+        void Clear( );
     private:
         bool IsHandMove( uint32_t id, cinder::Vec2f pos );
     private:

@@ -18,10 +18,10 @@ namespace User
         for ( int count = 0; index < files.size( ) && count < 1; ++index, ++count )
         {
             auto extension = getFilenameExt( files[index] );
-            if ( extension == "png" ||
-                 extension == "jpeg" ||
-                 extension == "jpg" ||
-                 extension == "bmp"
+            if ( extension == "png"
+                 || extension == "jpeg"
+                 || extension == "jpg"
+                 || extension == "bmp"
                  )
             {
                 datas.add( files[index], loadImage( app::loadAsset( "TEXTURE/" + files[index] ) ) );
@@ -38,8 +38,8 @@ namespace User
         for ( int count = 0; index < files.size( ) && count < 1; ++index, ++count )
         {
             auto extension = getFilenameExt( files[index] );
-            if ( extension == "wav" ||
-                 extension == "mp3"
+            if ( extension == "wav"
+                 // || extension == "mp3" // mp3形式はバグる可能性があるので使用できません。
                  )
             {
                 datas.add( files[index], Audio( "AUDIO/" + files[index] ) );

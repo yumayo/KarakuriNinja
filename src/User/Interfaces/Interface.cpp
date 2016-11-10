@@ -18,7 +18,7 @@ namespace User
         , HPEdgeBasedamage( &GData::FindTexture( "UI/HPEdgeBase2.png" ) )
         , specialeffect( &GData::FindTexture( "Textures/Effect/effectgage.png" ) )
         , makimono( &GData::FindTexture( "Textures/makimono.png" ) )
-        , font( u8"HG行書体", 85 )
+        , font( u8"HG行書体", 120 )
         , touchfont( u8"HG行書体", 30 )
         , scorePoint( 0 )
         , count( 0 )
@@ -38,15 +38,7 @@ namespace User
         drawSpecialEffect( specialsubtime );
         drawchargeEffect( ismpmax );
 
-        gl::color( Color::white( ) );
-
-        auto translateScorePosition = Vec2f( -11, -26 );
-        textureDraw( *score, rightDown + Vec2f( -score->getWidth( ), 0 ) + translateScorePosition );
-        font.Draw( std::to_string( scorePoint ), rightDown + Vec2f( -score->getWidth( ) / 2.0F + 32, -score->getHeight( ) / 2.0F - 32 ) + translateScorePosition, Color::white( ), Fonts::Mode::RIGHTUP );
-
-        ////////////////////////////////////
-        combo.Draw( rightDown + Vec2f( -score->getWidth( ), 0 ) + translateScorePosition + Vec2f( 0, -score->getHeight( ) ) + Vec2f( 196, -136 ) );
-        ////////////////////////////////////
+        drawScore( );
 
         textureDraw( *HPEdge, leftDown );
 
@@ -84,11 +76,15 @@ namespace User
 
         drawInfo( specialsubtime );
         drawchargeInfo( ismpmax );
+
+
+        ranking.draw( );
     }
 
-    void Interface::update( )
+    void Interface::update( int nowHP )
     {
         combo.Update( );
+        UpdateRanking( nowHP );
     }
 
     void Interface::PlusCombo( int attackSuccessNum )
@@ -99,6 +95,36 @@ namespace User
     void Interface::ResetCombo( )
     {
         combo.ResetCombo( );
+    }
+
+    void Interface::drawScore( )
+    {
+        // 全体移動
+        gl::pushModelView( );
+        gl::translate( env.getWindowSize( ) - Vec2f( 30, 30 ) );
+
+        // スコアベース表示
+        gl::pushModelView( );
+        gl::translate( -score->getSize( ) );
+        gl::color( Color::white( ) );
+        gl::draw( *score, Rectf( Vec2f::zero( ), score->getSize( ) ) );
+        score->unbind( );
+        gl::popModelView( );
+
+        // スコアの文字を表示
+        gl::translate( Vec2f( -154, -score->getHeight( ) + 30 ) );
+        gl::color( Color::white( ) );
+        font.Draw( std::to_string( scorePoint ), Vec2f::zero( ), Color::white( ), Fonts::Mode::RIGHTUP );
+
+        combo.Draw( Vec2f( -100, -180 ) );
+
+        // 全体移動終了
+        gl::popModelView( );
+    }
+
+    void Interface::UpdateRanking( int nowHP )
+    {
+        ranking.update( Score( ), MaxComboNumber( ), nowHP, true );
     }
 
     void Interface::textureDraw( cinder::gl::Texture const & texture, cinder::Vec2f position )

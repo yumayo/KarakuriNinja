@@ -27,15 +27,14 @@ namespace User
     using namespace cinder;
 
     EnemyBoss::EnemyBoss( cinder::Vec3f pos, const cinder::CameraPersp& camera )
-        : EnemyBase( pos, camera, Status( 40.0F, 12 ) )
+        : EnemyBase( pos, camera, Status( 30.0F, 12 ) )
         , timer( )
         , isAttack( false )
         , isDeadStop( true )
-        , isHalfHPSerif( true )
-        , isDeadSerif( true )
-        , font( u8"HG行書体", 74 )
+        , font( u8"HG行書体", 90 )
         , serif( u8"" )
     {
+        TRData::bossSpawn.TutorialStart( );
         {
             int index = 1;
             messageBoxLeft = &GData::FindTexture( "UI/e-serihu" + std::to_string( index++ ) + ".png" );
@@ -65,8 +64,8 @@ namespace User
             auraTex = nullptr;
         }
 
-        timer.Advance( 180 ); // セリフを吐くフレーム
-        SetFunction( &EnemyBoss::出現した時のセリフ );
+        timer.Advance( 240 );
+        SetFunction( &EnemyBoss::ボス出現のエフェクトが終了するまで待機 );
         SetSerifFunction( u8"", &EnemyBoss::ヌルセルフ );
 
         for ( int i = 0; i < 3; i++ )
@@ -80,6 +79,13 @@ namespace User
     }
     void EnemyBoss::update( cinder::CameraPersp const& camera )
     {
+        if ( IsDeadSerif( ) )
+        {
+            object.Speed( Vec3f::zero( ) );
+            prevPosition = object.Position( );
+            timer.Advance( 120 );
+            SetFunction( &EnemyBoss::死ぬ時のモーション );
+        }
         if ( IsLive( ) )
         {
             // 重力処理
@@ -112,6 +118,7 @@ namespace User
                 attackTime.Update( );
             }
         }
+        MutekiEffect( );
         DamageEffect( );
         CollideGround( );// 死んでいても実行します。
         //CollideField( );// 死んでいても実行します。
@@ -122,18 +129,24 @@ namespace User
     }
     void EnemyBoss::draw( )
     {
-        DrawAura( );
+        if ( isLive )
+        {
+            DrawAura( );
+        }
 
         EnemyBase::draw( );
 
-        if ( IsKnockBack( ) )
+        if ( isLive )
         {
-            objects.clear( );
-        }
-        int i = 1;
-        for ( auto itr = objects.begin( ); itr != objects.end( ); ++itr, ++i )
-        {
-            DrawAfterimage( *itr, i );
+            if ( IsKnockBack( ) )
+            {
+                objects.clear( );
+            }
+            int i = 1;
+            for ( auto itr = objects.begin( ); itr != objects.end( ); ++itr, ++i )
+            {
+                DrawAfterimage( *itr, i );
+            }
         }
     }
     void EnemyBoss::drawUI( const cinder::CameraPersp& camera )
@@ -206,22 +219,17 @@ namespace User
     }
     void EnemyBoss::タイマーが鳴るまで待機( cinder::CameraPersp const& camera )
     {
-        if ( IsHalfHPSerif( ) )
+        if ( IsFrieldKilledSerif( ) )
         {
             object.Speed( Vec3f::zero( ) );
 
-            timer.Advance( 120 ); // セリフを吐くフレーム
-            SetFunction( &EnemyBoss::HPが半分以下になった時のセリフ );
-            return;
-        }
-        if ( IsDeadSerif( ) )
-        {
-            texture = 倒れかけるモーション;
+            TRData::bossSerif.TutorialStart( );
 
-            object.Speed( Vec3f::zero( ) );
+            isFrieldKilledSerif = true;
+            SetSerifFunction( u8"よくも私の仲間を！！", &EnemyBoss::セリフ );
 
             timer.Advance( 120 ); // セリフを吐くフレーム
-            SetFunction( &EnemyBoss::死ぬ時のセリフ );
+            SetFunction( &EnemyBoss::部下を倒された時のセリフ );
             return;
         }
 
@@ -354,8 +362,8 @@ namespace User
     }
     void EnemyBoss::ジャンプで戻る( cinder::CameraPersp const& camera )
     {
-        auto backDirection = -object.Direction( ) * 8.0F / 60.0F;
-        backDirection.rotate( Vec3f::yAxis( ), randFloat( -M_PI / 4.0F, M_PI / 4.0F ) );
+        auto backDirection = -object.Direction( ) * 6.0F / 60.0F;
+        backDirection.rotate( Vec3f::yAxis( ), randFloat( -M_PI / 12.0F, M_PI / 12.0F ) );
         auto jumpPower = Vec3f( 0, 0.15, 0 );
         // 硬直後、すぐにジャンプして次の関数へ。
         Jump( jumpPower + backDirection );
@@ -375,6 +383,29 @@ namespace User
             SetFunction( &EnemyBoss::タイマーが鳴るまで待機 );
             return;
         }
+    }
+    void EnemyBoss::死ぬ時のモーション( cinder::CameraPersp const & camera )
+    {
+        isAttack = false;
+        isDeadSerif = true;
+
+        //auto pos = object.Position( );
+
+        //pos.x = EasingLinear( timer.NomalizedFrame( ), prevPosition.x, 0 );
+        //pos.z = EasingLinear( timer.NomalizedFrame( ), prevPosition.z, 3 );
+
+        //object.Position( pos );
+
+        //if ( timer.IsAction( ) )
+        //{
+            texture = 倒れかけるモーション;
+
+            SetSerifFunction( u8"っく、我は滅びぬ", &EnemyBoss::セリフ );
+
+            timer.Advance( 120 ); // セリフを吐くフレーム
+            SetFunction( &EnemyBoss::死ぬ時のセリフ );
+            return;/*
+        }*/
     }
     void EnemyBoss::死ぬ( cinder::CameraPersp const & camera )
     {
@@ -435,22 +466,21 @@ namespace User
             return;
         }
     }
-    void EnemyBoss::出現した時のセリフ( cinder::CameraPersp const & camera )
+    void EnemyBoss::ボス出現のエフェクトが終了するまで待機( cinder::CameraPersp const & camera )
     {
-        SetSerifFunction( u8"貴様か、我の計画を邪魔するものは！！", &EnemyBoss::セリフ );
-
-        if ( timer.IsAction( ) )
+        if ( TRData::bossSpawn.IsComplete( ) )
         {
+            TRData::bossSerif.TutorialStart( );
             timer.Advance( 180 );
-            SetFunction( &EnemyBoss::出現した時のセリフ2 );
+
+            SetSerifFunction( u8"いでよ、我が下僕よ！", &EnemyBoss::セリフ );
+            SetFunction( &EnemyBoss::出現した時にエネミーをスポーンさせる );
             return;
         }
     }
-    void EnemyBoss::出現した時のセリフ2( cinder::CameraPersp const & camera )
+    void EnemyBoss::出現した時にエネミーをスポーンさせる( cinder::CameraPersp const & camera )
     {
-        SetSerifFunction( u8"いでよ、我が下僕よ！", &EnemyBoss::セリフ );
-
-        if ( frame % 9 == 0 )
+        if ( frame % 5 == 0 )
         {
             if ( jsonItr != jsonEnemys.end( ) )
             {
@@ -498,19 +528,18 @@ namespace User
 
         if ( timer.IsAction( ) )
         {
+            TRData::bossSerif.TutorialEnd( );
             TRData::special.TutorialStart( );
             SetSerifFunction( u8"", &EnemyBoss::ヌルセルフ );
             SetFunction( &EnemyBoss::タイマーが鳴るまで待機 );
             return;
         }
     }
-    void EnemyBoss::HPが半分以下になった時のセリフ( cinder::CameraPersp const & camera )
+    void EnemyBoss::部下を倒された時のセリフ( cinder::CameraPersp const & camera )
     {
-        isHalfHPSerif = false;
-        SetSerifFunction( u8"なかなかやるな貴様", &EnemyBoss::セリフ );
-
         if ( timer.IsAction( ) )
         {
+            TRData::bossSerif.TutorialEnd( );
             SetSerifFunction( u8"", &EnemyBoss::ヌルセルフ );
             SetFunction( &EnemyBoss::タイマーが鳴るまで待機 );
             return;
@@ -518,9 +547,6 @@ namespace User
     }
     void EnemyBoss::死ぬ時のセリフ( cinder::CameraPersp const & camera )
     {
-        isDeadSerif = false;
-        SetSerifFunction( u8"っく、我は滅びぬ", &EnemyBoss::セリフ );
-
         if ( timer.IsAction( ) )
         {
             texture = 倒れるモーション;
@@ -577,13 +603,13 @@ namespace User
 
         gl::popModelView( );
     }
-    bool EnemyBoss::IsHalfHPSerif( )
+    bool EnemyBoss::IsFrieldKilledSerif( )
     {
-        return isHalfHPSerif && NormalizedHitPoint( ) <= 0.5F;
+        return !isFrieldKilledSerif && status.HP != status.maxHP;
     }
     bool EnemyBoss::IsDeadSerif( )
     {
-        return isLive == false;
+        return !isDeadSerif && isLive == false;
     }
     void EnemyBoss::SetFunction( void( EnemyBoss::* function )( cinder::CameraPersp const &camera ) )
     {

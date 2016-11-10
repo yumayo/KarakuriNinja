@@ -1,0 +1,7 @@
+{
+   "Camera" : {
+      "eyePosition" : [ 0, 1, -8 ],
+      "fov" : 53,
+      "targetPosition" : [ 0, 2.8000001907348633, 10 ]
+   }
+}

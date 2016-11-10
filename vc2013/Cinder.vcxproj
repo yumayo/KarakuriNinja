@@ -83,6 +83,8 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -177,12 +179,15 @@
     <ClCompile Include="..\src\User\Special\Tree.cpp" />
     <ClCompile Include="..\src\User\Special\Water.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Audio.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\BossProduction.cpp" />
     <ClCompile Include="..\src\User\Utilitys\CameraData.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Colli2D.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Coloring.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\CountFrame.cpp" />
     <ClCompile Include="..\src\User\Utilitys\ETC.cpp" />
     <ClCompile Include="..\src\User\Utilitys\FileIO.cpp" />
     <ClCompile Include="..\src\User\Utilitys\fileUtil.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\GameStartGauge.cpp" />
     <ClCompile Include="..\src\User\Utilitys\GlobalData.cpp" />
     <ClCompile Include="..\src\User\Utilitys\GlobalDraw.cpp" />
     <ClCompile Include="..\src\User\Utilitys\GlobalEditor.cpp" />
@@ -193,6 +198,7 @@
     <ClCompile Include="..\src\User\Utilitys\MojiManager.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Nomoto.cpp" />
     <ClCompile Include="..\src\User\Utilitys\ObjRender.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\Ranking.cpp" />
     <ClCompile Include="..\src\User\Utilitys\SearchSystem.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Skydome.cpp" />
     <ClCompile Include="..\src\User\Utilitys\TitleCircle.cpp" />
@@ -289,12 +295,15 @@
     <ClInclude Include="..\src\User\Special\Tree.h" />
     <ClInclude Include="..\src\User\Special\Water.h" />
     <ClInclude Include="..\src\User\Utilitys\Audio.h" />
+    <ClInclude Include="..\src\User\Utilitys\BossProduction.h" />
     <ClInclude Include="..\src\User\Utilitys\CameraData.h" />
     <ClInclude Include="..\src\User\Utilitys\Colli2D.h" />
     <ClInclude Include="..\src\User\Utilitys\Coloring.h" />
+    <ClInclude Include="..\src\User\Utilitys\CountFrame.h" />
     <ClInclude Include="..\src\User\Utilitys\ETC.h" />
     <ClInclude Include="..\src\User\Utilitys\FileIO.h" />
     <ClInclude Include="..\src\User\Utilitys\fileUtil.hpp" />
+    <ClInclude Include="..\src\User\Utilitys\GameStartGauge.h" />
     <ClInclude Include="..\src\User\Utilitys\GlobalData.h" />
     <ClInclude Include="..\src\User\Utilitys\GlobalDraw.h" />
     <ClInclude Include="..\src\User\Utilitys\GlobalEditor.h" />
@@ -305,6 +314,7 @@
     <ClInclude Include="..\src\User\Utilitys\MojiManager.h" />
     <ClInclude Include="..\src\User\Utilitys\Nomoto.h" />
     <ClInclude Include="..\src\User\Utilitys\ObjRender.h" />
+    <ClInclude Include="..\src\User\Utilitys\Ranking.h" />
     <ClInclude Include="..\src\User\Utilitys\SearchSystem.h" />
     <ClInclude Include="..\src\User\Utilitys\Skydome.h" />
     <ClInclude Include="..\src\User\Utilitys\TitleCircle.h" />

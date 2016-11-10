@@ -13,6 +13,8 @@ namespace User
     TutorialPlayerAttack TutorialData::playerAttack;
     TutorialEnemyKill TutorialData::enemyKill;
     TutorialSpecial TutorialData::special;
+    TutorialBossSpawn TutorialData::bossSpawn;
+    TutorialBossSerif TutorialData::bossSerif;
 
     bool TutorialData::IsStopUpdate( )
     {
@@ -22,7 +24,9 @@ namespace User
             spawn.IsStopUpdate( ) ||
             playerAttack.IsStopUpdate( ) ||
             enemyKill.IsStopUpdate( ) ||
-            special.IsStopUpdate( );
+            special.IsStopUpdate( ) ||
+            bossSpawn.IsStopUpdate( ) ||
+            bossSerif.IsStopUpdate( );
     }
     void TutorialData::Reset( )
     {
@@ -33,6 +37,8 @@ namespace User
         playerAttack.TutorialReset( );
         enemyKill.TutorialReset( );
         special.TutorialReset( );
+        bossSpawn.TutorialReset( );
+        bossSerif.TutorialReset( );
     }
     std::string TutorialData::Serif( )
     {
@@ -105,5 +111,15 @@ namespace User
     {
         TutorialBase::TutorialStart( );
         TutorialData::SerifRead( "JSON/Tutorial/EnemyKill.json" );
+    }
+    void TutorialBossSpawn::TutorialStart( )
+    {
+        TutorialBase::TutorialStart( );
+        TutorialData::talkString.clear( );
+    }
+    void TutorialBossSerif::TutorialStart( )
+    {
+        TutorialBase::TutorialStart( );
+        TutorialData::talkString.clear( );
     }
 }

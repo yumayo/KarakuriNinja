@@ -7,6 +7,8 @@
 
 #include "Combo.h"
 
+#include "../Utilitys/Ranking.h"
+
 namespace User
 {
     class Interface
@@ -14,7 +16,7 @@ namespace User
     public:
         Interface( );
         void draw( float APNormalized, float HPNormalized, bool ismpmax = false, int specialsubtime = 3 );
-        void update( );
+        void update( int nowHP );
         void PlusCombo( int attackSuccessNum );
         void ResetCombo( );
         void AddScore( int score ) { scorePoint += score; }
@@ -38,7 +40,11 @@ namespace User
         int scorePoint;
 
         Combo combo;
+
+        Ranking ranking;
     private:
+        void drawScore( );
+        void UpdateRanking( int nowHP );
         void textureDraw( cinder::gl::Texture const& texture, cinder::Vec2f position = cinder::Vec2f::zero( ) );
         void textureDraw( cinder::gl::Texture const& texture, cinder::Vec2f position, cinder::Area area, float value );
         void maxbaseDraw( cinder::gl::Texture const& texture, cinder::Vec2f position, cinder::Area area, float value );

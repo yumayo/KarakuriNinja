@@ -19,14 +19,13 @@ namespace User
         bool isDeadStop;
         std::function<void( cinder::CameraPersp const& )> behavior;
     private:
-        bool isHalfHPSerif;
-        bool isDeadSerif;
         Fonts font;
         cinder::gl::Texture* messageBoxLeft;
         cinder::gl::Texture* messageBoxCenter;
         cinder::gl::Texture* messageBoxRight;
         std::string serif;
         std::function<void( )> serifBehavior;
+    private:
         std::list<EnemyObject> objects;
         cinder::Vec3f prevPosition = cinder::Vec3f::zero( );
     private:
@@ -68,6 +67,7 @@ namespace User
         void 攻撃後硬直( cinder::CameraPersp const& camera );
         void ジャンプで戻る( cinder::CameraPersp const& camera );
         void 着地( cinder::CameraPersp const& camera );
+        void 死ぬ時のモーション( cinder::CameraPersp const& camera );
         void 死ぬ( cinder::CameraPersp const& camera );
     private:
         void 弾を投げるまでのモーション( cinder::CameraPersp const& camera );
@@ -75,10 +75,12 @@ namespace User
         void 弾を投げた後の硬直( cinder::CameraPersp const& camera );
         void 弾をもう一度投げるかの確認( cinder::CameraPersp const& camera );
     private:
-        void 出現した時のセリフ( cinder::CameraPersp const& camera );
-        void 出現した時のセリフ2( cinder::CameraPersp const& camera );
-        bool IsHalfHPSerif( );
-        void HPが半分以下になった時のセリフ( cinder::CameraPersp const& camera );
+        void ボス出現のエフェクトが終了するまで待機( cinder::CameraPersp const& camera );
+        void 出現した時にエネミーをスポーンさせる( cinder::CameraPersp const& camera );
+        bool isFrieldKilledSerif = false;
+        bool IsFrieldKilledSerif( );
+        void 部下を倒された時のセリフ( cinder::CameraPersp const& camera );
+        bool isDeadSerif = false;
         bool IsDeadSerif( );
         void 死ぬ時のセリフ( cinder::CameraPersp const& camera );
     private:

@@ -10,7 +10,7 @@ namespace User
     using namespace cinder;
 
     Talk::Talk( )
-        : font( u8"HG行書体", 72 )
+        : font( u8"HG行書体", 180 )
     {
         int index = 1;
         messageBoxLeft = &GData::FindTexture( "UI/serihu" + std::to_string( index++ ) + ".png" );
@@ -66,15 +66,19 @@ namespace User
         auto rectLeft = Rectf( Vec2f::zero( ), messageBoxLeft->getSize( ) );
         auto rectCenter = Rectf( Vec2f::zero( ), Vec2f( textSize.x, messageBoxHeight ) );
         auto rectRight = Rectf( Vec2f::zero( ), messageBoxRight->getSize( ) );
+        auto allSize = rectLeft.getSize( ).x + rectCenter.getSize( ).x + rectRight.getSize( ).x;
 
-        int ue = 9;
-        int inMessageHeight = 99;
+        int ue = 0;
+        int inMessageHeight = 300;
         int fontStartHeightPosition = ue + ( inMessageHeight - textSize.y ) / 2;
+
+        position.x -= allSize / 2.0F;
+        position.y -= messageBoxHeight / 2;
 
         // メッセージボックスの表示
         gl::pushModelView( );
 
-        gl::translate( position + Vec2f( 0, -messageBoxHeight ) );
+        gl::translate( position );
         messageBoxLeft->enableAndBind( );
         gl::color( ColorA::white( ) );
         gl::drawSolidRect( rectLeft );

@@ -18,7 +18,7 @@ namespace User
         , isAttack( false )
         , prevMovePosition( Vec3f::zero( ) )
     {
-        timer.Advance( 180 );
+        timer.Advance( randInt( 200, 300 ) );
 
         int index = 1;
         待機 = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );
@@ -80,6 +80,11 @@ namespace User
             if ( randInt( 0, 3 ) != 0 )
             {
                 prevMovePosition = object.Position( );
+
+                auto cameraRightVec = camera.getViewDirection( );
+                cameraRightVec.rotate( camera.getWorldUp( ), -M_PI / 2.0 );
+                targetVector = cameraRightVec * randFloat( -1, 1 );
+
                 timer.Advance( 120 );
                 SetFunction( &EnemySlash::カメラへ近づく );
                 return;
@@ -104,8 +109,10 @@ namespace User
     {
         auto cameraPos = camera.getEyePoint( ) + camera.getViewDirection( ) * camera.getNearClip( ) + camera.getViewDirection( );
 
-        auto x = EasingLinear( timer.NomalizedFrame( ), prevMovePosition.x, cameraPos.x );
-        auto z = EasingLinear( timer.NomalizedFrame( ), prevMovePosition.z, cameraPos.z );
+        auto targetPos = cameraPos + targetVector;
+
+        auto x = EasingLinear( timer.NomalizedFrame( ), prevMovePosition.x, targetPos.x );
+        auto z = EasingLinear( timer.NomalizedFrame( ), prevMovePosition.z, targetPos.z );
 
         object.Position( Vec3f( x, object.Position( ).y, z ) );
 
@@ -149,7 +156,7 @@ namespace User
     }
     void EnemySlash::ジャンプで戻る( cinder::CameraPersp const& camera )
     {
-        auto backDirection = -object.Direction( ) * 8.0F / 60.0F;
+        auto backDirection = -object.Direction( ) * randFloat( 6.0F, 12.0F ) / 60.0F;
         backDirection.rotate( Vec3f::yAxis( ), randFloat( -M_PI / 8.0F, M_PI / 8.0F ) );
         auto jumpPower = Vec3f( 0, 0.15, 0 );
         // 硬直後、すぐにジャンプして次の関数へ。

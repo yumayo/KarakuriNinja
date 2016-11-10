@@ -466,7 +466,8 @@ namespace User
     }
     int SceneResult::calcurateScore(int score, int maxcombo, int nowhp, int time)
     {
-		int endscore = score + (50*maxcombo) + (100 * nowhp) - (time * 20);
+		int endscore = score + (5000*maxcombo);
+		endscore = endscore*(1+(float(nowhp)/100.f));
 		return endscore;
     }
     void SceneResult::roadScores( )

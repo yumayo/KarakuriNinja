@@ -10,9 +10,15 @@ namespace User
 {
     using namespace cinder;
 
-    CameraDataEditor::CameraDataEditor( )
+    CameraDataEditorRef CameraDataEditor::Create( std::string const & jsonPath )
     {
-        jsonData = JsonTree( app::loadAsset( "JSON/CameraData.json" ) );
+        return std::make_shared<CameraDataEditor>( jsonPath );
+    }
+
+    CameraDataEditor::CameraDataEditor( std::string const & jsonPath )
+    {
+        this->jsonPath = jsonPath;
+        jsonData = JsonTree( app::loadAsset( "JSON/" + jsonPath ) );
         auto& data = jsonData["Camera"];
 
         eyePosition = getVec3f( data["eyePosition"] );
@@ -43,7 +49,7 @@ namespace User
 
         data["fov"] = ci::JsonTree( "fov", fov );
 
-        jsonData.write( env.getAssetPath( "JSON/CameraData.json" ) );
+        jsonData.write( env.getAssetPath( "JSON/" + jsonPath ) );
     }
 
     void CameraDataEditor::Update( )
@@ -63,9 +69,15 @@ namespace User
         editor->draw( );
     }
 
-    CameraData::CameraData( )
+    CameraDataRef CameraData::Create( std::string const & jsonPath )
     {
-        jsonData = JsonTree( app::loadAsset( "JSON/CameraData.json" ) );
+        return std::make_shared<CameraData>( jsonPath );
+    }
+
+    CameraData::CameraData( std::string const & jsonPath )
+    {
+        this->jsonPath = jsonPath;
+        jsonData = JsonTree( app::loadAsset( "JSON/" + jsonPath ) );
         auto& data = jsonData["Camera"];
 
         eyePosition = getVec3f( data["eyePosition"] );
