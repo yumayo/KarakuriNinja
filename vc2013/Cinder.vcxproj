@@ -1,0 +1,244 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{83950C95-08D2-4270-B3AD-BCE884344D5B}</ProjectGuid>
+    <RootNamespace>Cinder</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\include;"..\..\..\\include";"..\..\..\\boost"</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;NOMINMAX;_WIN32_WINNT=0x0502;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>"..\..\..\\include";..\include</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>cinder-$(PlatformToolset)_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>"..\..\..\\lib\msw\$(PlatformTarget)";"..\\lib\msw\$(PlatformTarget)"</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCPMT</IgnoreSpecificDefaultLibraries>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\include;"..\..\..\\include";"..\..\..\\boost"</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;NOMINMAX;_WIN32_WINNT=0x0502;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>"..\..\..\\include";..\include</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>cinder-$(PlatformToolset).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>"..\..\..\\lib\msw\$(PlatformTarget)"</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding />
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\Cinder.cpp" />
+    <ClCompile Include="..\src\Lib\Input.cpp" />
+    <ClCompile Include="..\src\Lib\InputGamepad.cpp" />
+    <ClCompile Include="..\src\Lib\InputGamepadLib.cpp" />
+    <ClCompile Include="..\src\Lib\InputGamepadTask.cpp" />
+    <ClCompile Include="..\src\Lib\InputKey.cpp" />
+    <ClCompile Include="..\src\Lib\InputMouse.cpp" />
+    <ClCompile Include="..\src\Lib\InputTask.cpp" />
+    <ClCompile Include="..\src\Lib\InputTouch.cpp" />
+    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\User\Assets\Asstes.cpp" />
+    <ClCompile Include="..\src\User\Attack\AttackFactory.cpp" />
+    <ClCompile Include="..\src\User\Camera\Camera.cpp" />
+    <ClCompile Include="..\src\User\Deffence\Deffence.cpp" />
+    <ClCompile Include="..\src\User\Enemys\BulletEnemy.cpp" />
+    <ClCompile Include="..\src\User\Enemys\EnemyBase.cpp" />
+    <ClCompile Include="..\src\User\Enemys\EnemyBulletBase.cpp" />
+    <ClCompile Include="..\src\User\Enemys\EnemyBulletManager.cpp" />
+    <ClCompile Include="..\src\User\Enemys\EnemyBulletTexture.cpp" />
+    <ClCompile Include="..\src\User\Enemys\EnemyController.cpp" />
+    <ClCompile Include="..\src\User\Enemys\EnemyObject.cpp" />
+    <ClCompile Include="..\src\User\Enemys\SlashEnemy.cpp" />
+    <ClCompile Include="..\src\User\Field\Field.cpp" />
+    <ClCompile Include="..\src\User\Field\Karakuri.cpp" />
+    <ClCompile Include="..\src\User\Field\KarakuriBase.cpp" />
+    <ClCompile Include="..\src\User\Interfaces\Interface.cpp" />
+    <ClCompile Include="..\src\User\Networks\NetworkUDPP2PRecv.cpp" />
+    <ClCompile Include="..\src\User\Networks\NetworkUDPP2PSend.cpp" />
+    <ClCompile Include="..\src\User\Player\Player.cpp" />
+    <ClCompile Include="..\src\User\Property\Property.cpp" />
+    <ClCompile Include="..\src\User\SceneSystems\SceneBase.cpp" />
+    <ClCompile Include="..\src\User\SceneSystems\SceneCreater.cpp" />
+    <ClCompile Include="..\src\User\SceneSystems\SceneTask.cpp" />
+    <ClCompile Include="..\src\User\Scenes\SceneGame.cpp" />
+    <ClCompile Include="..\src\User\Scenes\SceneTitle.cpp" />
+    <ClCompile Include="..\src\User\SlashEffect\SlashEffect.cpp" />
+    <ClCompile Include="..\src\User\Special\Circle.cpp" />
+    <ClCompile Include="..\src\User\Special\Special.cpp" />
+    <ClCompile Include="..\src\User\Special\SpecialEffect.cpp" />
+    <ClCompile Include="..\src\User\Special\SpecialMinigame.cpp" />
+    <ClCompile Include="..\src\User\Special\SpecialSelect.cpp" />
+    <ClCompile Include="..\src\User\UnityLike\Component.cpp" />
+    <ClCompile Include="..\src\User\UnityLike\CPMeshFilter.cpp" />
+    <ClCompile Include="..\src\User\UnityLike\CPMeshRenderer.cpp" />
+    <ClCompile Include="..\src\User\UnityLike\EmptyObject.cpp" />
+    <ClCompile Include="..\src\User\UnityLike\GameObject.cpp" />
+    <ClCompile Include="..\src\User\UnityLike\Hierarchy.cpp" />
+    <ClCompile Include="..\src\User\UnityLike\TextureManager.cpp" />
+    <ClCompile Include="..\src\User\UnityLike\Transform.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\Colli2D.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\Coloring.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\ETC.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\FileIO.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\Nomoto.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\Yumayo.cpp" />
+    <ClCompile Include="..\src\User\ZKOO\InputZKOO.cpp" />
+    <ClCompile Include="..\src\User\ZKOO\ZKOO.cpp" />
+    <ClCompile Include="..\src\User\ZKOO\ZKOOHand.cpp" />
+    <ClCompile Include="..\src\User\ZKOO\ZKOOMaker.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\Framework.hpp" />
+    <ClInclude Include="..\include\Resources.h" />
+    <ClInclude Include="..\include\Scene.hpp" />
+    <ClInclude Include="..\include\ZKOO.hpp" />
+    <ClInclude Include="..\src\Cinder.h" />
+    <ClInclude Include="..\src\Lib\Input.h" />
+    <ClInclude Include="..\src\Lib\InputGamepad.h" />
+    <ClInclude Include="..\src\Lib\InputGamepadLib.h" />
+    <ClInclude Include="..\src\Lib\InputGamepadTask.h" />
+    <ClInclude Include="..\src\Lib\InputKey.h" />
+    <ClInclude Include="..\src\Lib\InputMouse.h" />
+    <ClInclude Include="..\src\Lib\InputTask.h" />
+    <ClInclude Include="..\src\Lib\InputTouch.h" />
+    <ClInclude Include="..\src\User\Assets\Assets.h" />
+    <ClInclude Include="..\src\User\Attack\AttackFactory.h" />
+    <ClInclude Include="..\src\User\Camera\Camera.h" />
+    <ClInclude Include="..\src\User\Deffence\Deffence.h" />
+    <ClInclude Include="..\src\User\Enemys\BulletEnemy.h" />
+    <ClInclude Include="..\src\User\Enemys\EnemyBase.h" />
+    <ClInclude Include="..\src\User\Enemys\EnemyBulletBase.h" />
+    <ClInclude Include="..\src\User\Enemys\EnemyBulletManager.h" />
+    <ClInclude Include="..\src\User\Enemys\EnemyBulletTexture.h" />
+    <ClInclude Include="..\src\User\Enemys\EnemyController.h" />
+    <ClInclude Include="..\src\User\Enemys\EnemyObject.h" />
+    <ClInclude Include="..\src\User\Enemys\SlashEnemy.h" />
+    <ClInclude Include="..\src\User\Field\Field.h" />
+    <ClInclude Include="..\src\User\Field\Karakuri.h" />
+    <ClInclude Include="..\src\User\Field\KarakuriBase.h" />
+    <ClInclude Include="..\src\User\Interfaces\Interface.h" />
+    <ClInclude Include="..\src\User\Networks\Network.h" />
+    <ClInclude Include="..\src\User\Networks\NetworkDefines.h" />
+    <ClInclude Include="..\src\User\Networks\UnionChar.h" />
+    <ClInclude Include="..\src\User\Player\Player.h" />
+    <ClInclude Include="..\src\User\Property\Property.h" />
+    <ClInclude Include="..\src\User\SceneSystems\SceneBase.h" />
+    <ClInclude Include="..\src\User\SceneSystems\SceneCreater.h" />
+    <ClInclude Include="..\src\User\SceneSystems\SceneTask.h" />
+    <ClInclude Include="..\src\User\Scenes\SceneGame.h" />
+    <ClInclude Include="..\src\User\Scenes\SceneStart.h" />
+    <ClInclude Include="..\src\User\Scenes\SceneTitle.h" />
+    <ClInclude Include="..\src\User\SlashEffect\SlashEffect.h" />
+    <ClInclude Include="..\src\User\Special\Circle.h" />
+    <ClInclude Include="..\src\User\Special\NotSpecial.h" />
+    <ClInclude Include="..\src\User\Special\Special.h" />
+    <ClInclude Include="..\src\User\Special\SpecialEffect.h" />
+    <ClInclude Include="..\src\User\Special\SpecialMinigame.h" />
+    <ClInclude Include="..\src\User\Special\SpecialSceneBase.h" />
+    <ClInclude Include="..\src\User\Special\SpecialSelect.h" />
+    <ClInclude Include="..\src\User\UnityLike\Actor.hpp" />
+    <ClInclude Include="..\src\User\UnityLike\Component.hpp" />
+    <ClInclude Include="..\src\User\UnityLike\CPMeshFilter.hpp" />
+    <ClInclude Include="..\src\User\UnityLike\CPMeshRenderer.hpp" />
+    <ClInclude Include="..\src\User\UnityLike\EmptyObject.hpp" />
+    <ClInclude Include="..\src\User\UnityLike\GameObject.hpp" />
+    <ClInclude Include="..\src\User\UnityLike\Hierarchy.hpp" />
+    <ClInclude Include="..\src\User\UnityLike\Object.hpp" />
+    <ClInclude Include="..\src\User\UnityLike\TextureManager.hpp" />
+    <ClInclude Include="..\src\User\UnityLike\Transform.hpp" />
+    <ClInclude Include="..\src\User\UnityLike\Types.hpp" />
+    <ClInclude Include="..\src\User\Utilitys\Colli2D.h" />
+    <ClInclude Include="..\src\User\Utilitys\Coloring.h" />
+    <ClInclude Include="..\src\User\Utilitys\ETC.h" />
+    <ClInclude Include="..\src\User\Utilitys\FileIO.h" />
+    <ClInclude Include="..\src\User\Utilitys\Hirasawa.h" />
+    <ClInclude Include="..\src\User\Utilitys\Nomoto.h" />
+    <ClInclude Include="..\src\User\Utilitys\Yumayo.h" />
+    <ClInclude Include="..\src\User\ZKOO\InputZKOO.h" />
+    <ClInclude Include="..\src\User\ZKOO\ZKOO.h" />
+    <ClInclude Include="..\src\User\ZKOO\ZKOOHand.h" />
+    <ClInclude Include="..\src\User\ZKOO\ZKOOMaker.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

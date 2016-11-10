@@ -1,0 +1,478 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Lib">
+      <UniqueIdentifier>{bbc66e0d-5b8b-4703-9bc6-0931384850c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User">
+      <UniqueIdentifier>{861eb809-3fc6-4689-8f0f-b4f8efeefc21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Scenes">
+      <UniqueIdentifier>{5aed4001-f3d7-4367-9cc4-921e6a845300}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Utilitys">
+      <UniqueIdentifier>{fa5b647c-4a8f-4763-b427-f8edd942d439}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Enemys">
+      <UniqueIdentifier>{1505464f-b2ca-4a86-8fdb-af96d5ae497e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Lib">
+      <UniqueIdentifier>{5430676f-3811-4950-af5f-ae19d193a36f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Lib\Networks">
+      <UniqueIdentifier>{966be03b-3c0a-4aac-814c-290ded6c78b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Lib\SceneSystems">
+      <UniqueIdentifier>{34970659-6335-4a48-aaf7-140a88ca1ad3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\ZKOO">
+      <UniqueIdentifier>{105966b1-a942-4603-a8d2-d2869406eaa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Lib\UnityLike">
+      <UniqueIdentifier>{f179130e-237f-4784-891c-7465299bba5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Interfaces">
+      <UniqueIdentifier>{e59c0bb8-9c5f-4eb4-b4db-1677880ba46f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Player">
+      <UniqueIdentifier>{e3984967-1f62-44a4-98f2-4f7279981a65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Property">
+      <UniqueIdentifier>{775e7643-3d98-4160-bad3-e56a34dfd67a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Player\SlashEffect">
+      <UniqueIdentifier>{b470c7a0-27be-454f-ba55-153ca01d2f4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Player\AttackFactory">
+      <UniqueIdentifier>{dbd4a617-f889-4d93-8a94-5c2010772569}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Player\Deffence">
+      <UniqueIdentifier>{1bf737d9-e984-4cbc-9cad-3cb4cbd108ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Player\Camera">
+      <UniqueIdentifier>{04863d38-3968-4cde-b1bb-bd22ca1adb13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Player\Special">
+      <UniqueIdentifier>{9824ed02-bc72-45a2-b7c9-e24d31301f40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Asset">
+      <UniqueIdentifier>{e3b66faa-1dd2-41e6-bab0-d3f03428f231}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="User\Field">
+      <UniqueIdentifier>{2b274d2a-b072-4ab9-99bd-3b9db61c7e10}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\Resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClCompile Include="..\src\Lib\InputGamepad.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Lib\InputGamepadLib.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Lib\InputGamepadTask.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Lib\InputKey.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Lib\InputMouse.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Lib\InputTask.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Cinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\src\Lib\Input.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Lib\InputTouch.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Scenes\SceneTitle.h">
+      <Filter>User\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\SceneSystems\SceneBase.h">
+      <Filter>User\Lib\SceneSystems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\SceneSystems\SceneCreater.h">
+      <Filter>User\Lib\SceneSystems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\SceneSystems\SceneTask.h">
+      <Filter>User\Lib\SceneSystems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Framework.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Scene.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Networks\NetworkDefines.h">
+      <Filter>User\Lib\Networks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Networks\UnionChar.h">
+      <Filter>User\Lib\Networks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Scenes\SceneStart.h">
+      <Filter>User\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Networks\Network.h">
+      <Filter>User\Lib\Networks</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\ZKOO\ZKOOHand.h">
+      <Filter>User\ZKOO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\Colli2D.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\Coloring.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\ETC.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\FileIO.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\UnityLike\Actor.hpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\UnityLike\Component.hpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\UnityLike\CPMeshFilter.hpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\UnityLike\CPMeshRenderer.hpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\UnityLike\EmptyObject.hpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\UnityLike\GameObject.hpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\UnityLike\Hierarchy.hpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\UnityLike\Object.hpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\UnityLike\Transform.hpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\UnityLike\Types.hpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\UnityLike\TextureManager.hpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Interfaces\Interface.h">
+      <Filter>User\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Player\Player.h">
+      <Filter>User\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Property\Property.h">
+      <Filter>User\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ZKOO.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Attack\AttackFactory.h">
+      <Filter>User\Player\AttackFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Deffence\Deffence.h">
+      <Filter>User\Player\Deffence</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\Nomoto.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\SlashEffect\SlashEffect.h">
+      <Filter>User\Player\SlashEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Camera\Camera.h">
+      <Filter>User\Player\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\Circle.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\NotSpecial.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\Special.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\SpecialEffect.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\SpecialMinigame.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\SpecialSceneBase.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Special\SpecialSelect.h">
+      <Filter>User\Player\Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\Hirasawa.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Scenes\SceneGame.h">
+      <Filter>User\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Assets\Assets.h">
+      <Filter>User\Asset</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Enemys\EnemyBase.h">
+      <Filter>User\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Enemys\EnemyBulletBase.h">
+      <Filter>User\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Enemys\EnemyBulletManager.h">
+      <Filter>User\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Enemys\EnemyController.h">
+      <Filter>User\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Enemys\EnemyObject.h">
+      <Filter>User\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Enemys\SlashEnemy.h">
+      <Filter>User\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Enemys\BulletEnemy.h">
+      <Filter>User\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\ZKOO\InputZKOO.h">
+      <Filter>User\ZKOO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\ZKOO\ZKOOMaker.h">
+      <Filter>User\ZKOO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Enemys\EnemyBulletTexture.h">
+      <Filter>User\Enemys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Field\Field.h">
+      <Filter>User\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Field\Karakuri.h">
+      <Filter>User\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\ZKOO\ZKOO.h">
+      <Filter>User\ZKOO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\Yumayo.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\User\Field\KarakuriBase.h">
+      <Filter>User\Field</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\Resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Lib\InputGamepad.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Lib\InputGamepadLib.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Lib\InputGamepadTask.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Lib\InputKey.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Lib\InputMouse.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Lib\InputTask.h">
+      <Filter>Lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Cinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\Lib\Input.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Lib\InputTouch.cpp">
+      <Filter>Lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Networks\NetworkUDPP2PRecv.cpp">
+      <Filter>User\Lib\Networks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Networks\NetworkUDPP2PSend.cpp">
+      <Filter>User\Lib\Networks</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Scenes\SceneTitle.cpp">
+      <Filter>User\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\SceneSystems\SceneBase.cpp">
+      <Filter>User\Lib\SceneSystems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\SceneSystems\SceneCreater.cpp">
+      <Filter>User\Lib\SceneSystems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\SceneSystems\SceneTask.cpp">
+      <Filter>User\Lib\SceneSystems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\ZKOO\ZKOOHand.cpp">
+      <Filter>User\ZKOO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\Colli2D.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\Coloring.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\ETC.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\FileIO.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\UnityLike\Component.cpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\UnityLike\CPMeshFilter.cpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\UnityLike\CPMeshRenderer.cpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\UnityLike\EmptyObject.cpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\UnityLike\GameObject.cpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\UnityLike\Hierarchy.cpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\UnityLike\Transform.cpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\UnityLike\TextureManager.cpp">
+      <Filter>User\Lib\UnityLike</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Interfaces\Interface.cpp">
+      <Filter>User\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Player\Player.cpp">
+      <Filter>User\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Property\Property.cpp">
+      <Filter>User\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Attack\AttackFactory.cpp">
+      <Filter>User\Player\AttackFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Deffence\Deffence.cpp">
+      <Filter>User\Player\Deffence</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\Nomoto.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\SlashEffect\SlashEffect.cpp">
+      <Filter>User\Player\SlashEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Camera\Camera.cpp">
+      <Filter>User\Player\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Special\Circle.cpp">
+      <Filter>User\Player\Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Special\Special.cpp">
+      <Filter>User\Player\Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Special\SpecialEffect.cpp">
+      <Filter>User\Player\Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Special\SpecialMinigame.cpp">
+      <Filter>User\Player\Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Special\SpecialSelect.cpp">
+      <Filter>User\Player\Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Scenes\SceneGame.cpp">
+      <Filter>User\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Assets\Asstes.cpp">
+      <Filter>User\Asset</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Enemys\EnemyBase.cpp">
+      <Filter>User\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Enemys\EnemyBulletBase.cpp">
+      <Filter>User\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Enemys\EnemyBulletManager.cpp">
+      <Filter>User\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Enemys\EnemyController.cpp">
+      <Filter>User\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Enemys\EnemyObject.cpp">
+      <Filter>User\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Enemys\SlashEnemy.cpp">
+      <Filter>User\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Enemys\BulletEnemy.cpp">
+      <Filter>User\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\ZKOO\InputZKOO.cpp">
+      <Filter>User\ZKOO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\ZKOO\ZKOOMaker.cpp">
+      <Filter>User\ZKOO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Enemys\EnemyBulletTexture.cpp">
+      <Filter>User\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Field\Field.cpp">
+      <Filter>User\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Field\Karakuri.cpp">
+      <Filter>User\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\ZKOO\ZKOO.cpp">
+      <Filter>User\ZKOO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\Yumayo.cpp">
+      <Filter>User\Utilitys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Field\KarakuriBase.cpp">
+      <Filter>User\Field</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

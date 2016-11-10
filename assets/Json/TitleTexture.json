@@ -1,0 +1,6 @@
+{
+  "view": "Textures/Title/view.png",
+  "player": "Textures/Title/player.jpg",
+  "explanationText": "Textures/Title/explanationText.jpg",
+  "start" :  "Textures/Title/start.jpg"
+}
