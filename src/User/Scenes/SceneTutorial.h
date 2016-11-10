@@ -80,13 +80,16 @@ namespace User
         //=======================================
 
 
-        //=======================================
-        // 大ちゃんが管理するもののインスタンス化。
+		//=======================================
+		// 大ちゃんが管理するもののインスタンス化。
 
-        Special special;
-        std::vector<Audio*> mainbgm;
-        int watercount;
-        std::shared_ptr<Fusuma> fusuma;
-        //=======================================
+		Special special;
+		std::vector<Audio*> mainbgm;
+		int watercount;
+		std::shared_ptr<Fusuma> fusuma;
+		int time;
+		Audio* mpmax;
+		bool ismpmax;
+		//=======================================
     };
 }

@@ -14,7 +14,7 @@ namespace User
         , begin( begin )
         , end(end)
         , attackPoint( 3 )
-        , maxMoveTime( 60 * 2 )
+        , maxMoveTime( 60 * 3 )
         , moveTime( 0 )
         , isActive( true )
     {

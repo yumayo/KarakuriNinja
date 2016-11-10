@@ -27,6 +27,7 @@ namespace User
         Audio* gurad_se;
         Audio* playerdamaged_se;
         Audio* adddamage;
+		Audio* dead;
     private:
         EnemyList enemyList;
     private:

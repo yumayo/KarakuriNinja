@@ -4,7 +4,7 @@ enum SpecialType {
 };
 class SpecialSceneBase {
  public:
-	 void virtual update() {
+	 void virtual update(bool isstop) {
 	 };
 	 void virtual draw() {};
 	bool virtual shift() {

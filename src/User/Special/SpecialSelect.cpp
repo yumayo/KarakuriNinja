@@ -9,7 +9,7 @@ void SpecialSelect::draw()
 	gl::popModelView();
 }
 
-void SpecialSelect::update()
+void SpecialSelect::update(bool isstop)
 {
 	updateIcon();
 	chooseSpecial();

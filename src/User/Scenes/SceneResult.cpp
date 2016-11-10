@@ -62,6 +62,9 @@ namespace User
     }
     SceneResult::SceneResult( int _score, int maxcombo, int nowhp, int time )
         : score( _score )
+		,maxcombo_(maxcombo)
+		,nowhp_(nowhp)
+		,time_(time)
         , font( u8"HG行書体", 120 )
         , tables( u8"HG行書体", TABLEFONTSIZE )
         , audio( &GData::FindAudio( "SE/result.wav" ) )
@@ -95,7 +98,13 @@ namespace User
         for ( int i = 0; i < SPE::E_MAX; i++ ) {
             s_end[i] = false;
         }
-        endscore = calcurateScore( );
+		for (int i = 0; i < 3; i++) {
+			endt_[i] = false;
+		}
+		bgm = &GData::FindAudio("SE/resultbgm.wav");
+		bgm->Gain(0.5f);
+		bgm->Play();
+        endscore = calcurateScore(_score,maxcombo,nowhp,time);
         player_scores.push_back( endscore );
         roadScores( );
         sortScores( );
@@ -126,7 +135,7 @@ namespace User
         UpdateLogoAlpha( );
 
         // スラッシュとの当たり判定を取るには、円の中心ポジションと半径を入れます。
-        if ( slashInput.IsHitCircle( env.getWindowCenter( ) + Vec2f( 0, 200 ), 125 ) ) isEnd = true;
+        if ( endt_[2] >= 1.0f ) isEnd = true;
 
         slashInput.End( );
     }
@@ -139,7 +148,10 @@ namespace User
 
     void SceneResult::select( )
     {
-        if ( isEnd ) create( new SceneTitle( ) );
+		if (isEnd) {
+			bgm->Stop();
+			create(new SceneTitle());
+		}
     }
 
     void SceneResult::UpdateLogoAlpha( )
@@ -182,7 +194,7 @@ namespace User
         }
         drawflash( );
         fusuma.drawFusuma( );
-
+		drawEnd();
         //slashInput.Draw( );
     }
     void SceneResult::endDrawUI( )
@@ -329,7 +341,7 @@ namespace User
     void SceneResult::drawBeginScore( )
     {
         float rate = 1.17f;
-        float time = 0.4f;
+        float time = 0.6f;
         if ( t_[TS::TABLE] < 1.0f )return;
         soundplay( taiko1, s_end[SPE::E_SCORE] );
         Easing::tCount( t_[TS::SCORE], time );
@@ -340,27 +352,27 @@ namespace User
         soundplay( taiko1, s_end[SPE::E_COMBO] );
         Easing::tCount( t_[TS::COMBO], time );
         Vec2f combopos = Vec2f( scorepos.x, scorepos.y + TABLEFONTSIZE*rate * 1 );
-        tables.Draw( std::to_string( score ), combopos, ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
+        tables.Draw( std::to_string( maxcombo_ ), combopos, ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
 
         if ( t_[TS::COMBO] < 1.0f )return;
         soundplay( taiko1, s_end[SPE::E_HP] );
         Easing::tCount( t_[TS::HP], time );
         Vec2f  hppos = Vec2f( scorepos.x, scorepos.y + TABLEFONTSIZE*rate * 2 );
-        tables.Draw( std::to_string( score ), hppos, ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
+        tables.Draw( std::to_string( nowhp_), hppos, ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
 
 
         if ( t_[TS::HP] < 1.0f )return;
         soundplay( taiko1, s_end[SPE::E_TIME] );
         Easing::tCount( t_[TS::TIME], time );
         Vec2f timepos = Vec2f( scorepos.x, scorepos.y + TABLEFONTSIZE*rate * 3 );
-        tables.Draw( std::to_string( score ), timepos, ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
+        tables.Draw( std::to_string(time_), timepos, ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
 
 
         if ( t_[TS::TIME] < 1.0f )return;
         soundplay( taiko1, s_end[SPE::E_LASTSCORE] );
         Easing::tCount( t_[TS::LASTSCORE], time*2.5f );
         Vec2f endscorepos = Vec2f( scorepos.x, scorepos.y + TABLEFONTSIZE*rate * 4 );
-        tables.Draw( std::to_string( score ), endscorepos, ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
+        tables.Draw( std::to_string( endscore ), endscorepos, ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
 
 
         if ( t_[TS::LASTSCORE] < 1.0f )return;
@@ -441,9 +453,10 @@ namespace User
             }
         }
     }
-    int SceneResult::calcurateScore( )
+    int SceneResult::calcurateScore(int score, int maxcombo, int nowhp, int time)
     {
-        return score;
+		int endscore = score + (50*maxcombo) + (100 * nowhp) - (time * 20);
+		return endscore;
     }
     void SceneResult::roadScores( )
     {
@@ -541,15 +554,53 @@ namespace User
                 pos.y = env.getWindowHeight( ) / 2;
                 gl::pushModelView( );
                 gl::translate( pos );
-                gl::color( ColorA( 1, 1, 1, 1 ) );
+				gl::color(ColorA(1, 1, 1, 1));
                 makimonotex2->enableAndBind( );
                 gl::drawSolidRect( Rectf( -size / 2, size / 2 ) );
                 makimonotex2->disable( );
                 gl::popModelView( );
-                tables.Draw( std::to_string( icons[ranking - 1].rank ) + u8"位", pos + Vec2f( -icons[ranking - 1].size.x / 2 + 80, -tables.BoundingBox( std::to_string( icons[ranking - 1].rank ) ).getHeight( ) / 2.2F ), ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::LEFTUP );
-                tables.Draw( std::to_string( icons[ranking - 1].score ), pos + Vec2f( icons[ranking - 1].size.x / 2 - 70, -tables.BoundingBox( std::to_string( icons[ranking - 1].rank ) ).getHeight( ) / 2.2F ), ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
+                tables.Draw( std::to_string( icons[ranking - 1].rank ) + u8"位", pos + Vec2f( -icons[ranking - 1].size.x / 2 + 80, -tables.BoundingBox( std::to_string( icons[ranking - 1].rank ) ).getHeight( ) / 2.2F ),
+					ColorA(0.5f+0.5f*sin(delay_t*20.f+(M_PI*(3.f/2.f))), 0, 0, 1), User::Fonts::Mode::LEFTUP );
+                tables.Draw( std::to_string( icons[ranking - 1].score ), pos + Vec2f( icons[ranking - 1].size.x / 2 - 70, -tables.BoundingBox( std::to_string( icons[ranking - 1].rank ) ).getHeight( ) / 2.2F ),
+					ColorA(0.5f + 0.5f*sin(delay_t*20.f + (M_PI*(3.f / 2.f))), 0, 0, 1), User::Fonts::Mode::RIGHTUP );
             }
         }
     }
+
+	void SceneResult::drawEnd()
+	{
+		if (rankin) {
+			if (myrank_camera_t >= 1) {
+				Easing::tCount(endt_[0],1.f);
+			}
+		}
+		else {
+			if (camera_t >= 1) {
+				Easing::tCount(endt_[0], 1.f);
+			}
+		}
+		if (endt_[0] >= 1.0f) {
+			Vec2f size = Vec2f(700,160);
+			Easing::tCount(endt_[1], 5.f);
+			gl::pushModelView();
+			gl::translate(env.getWindowSize()/2);
+			gl::color(ColorA(1,1,1,1));
+			window->enableAndBind();
+			gl::drawSolidRect(Rectf(-size / 2, size / 2));
+			window->disable();
+			gl::popModelView();
+			std::string str = u8"おつかれさまでした";
+			tables.Draw(str, env.getWindowSize() / 2 +Vec2f(0,-tables.BoundingBox(str).getHeight() / 2.2F),Color::black(),User::Fonts::Mode::CENTERUP);
+		}
+		if (endt_[1] >= 1.0f) {
+			Easing::tCount(endt_[2], 3.f);
+			gl::pushModelView();
+			gl::translate(env.getWindowSize() / 2);
+			gl::color(ColorA(0, 0, 0, endt_[2]));
+			gl::drawSolidRect(Rectf(-env.getWindowSize()/2 , env.getWindowSize() / 2));
+			gl::popModelView();
+			bgm->Gain(0.5f-0.5f*endt_[2]);
+		}
+	}
 
 }

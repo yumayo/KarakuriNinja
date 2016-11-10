@@ -26,7 +26,7 @@ void SpecialMinigame::draw()
 	}
 }
 
-void SpecialMinigame::update()
+void SpecialMinigame::update(bool isstop)
 {
 	updateTouch();
 	if(!startend())

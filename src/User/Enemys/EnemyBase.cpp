@@ -24,6 +24,8 @@ namespace User
         update( camera );
         initObject = object;
         SpawnEffect( camera );
+		umareru = &GData::FindAudio("SE/umareru.wav");
+		umareru->Play();
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, float sizeScale )
         : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
@@ -38,6 +40,8 @@ namespace User
         update( camera );
         initObject = object;
         SpawnEffect( camera );
+		umareru = &GData::FindAudio("SE/umareru.wav");
+		umareru->Play();
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, std::string const & path )
         : object( pos, Vec3f( 1.7, 1.7, 0.01 ), Vec3f::zero( ) )
@@ -53,6 +57,8 @@ namespace User
         update( camera );
         initObject = object;
         SpawnEffect( camera );
+		umareru = &GData::FindAudio("SE/umareru.wav");
+		umareru->Play();
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, float sizeScale, const cinder::CameraPersp & camera, std::string const & path )
         : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
@@ -68,6 +74,8 @@ namespace User
         update( camera );
         initObject = object;
         SpawnEffect( camera );
+		umareru = &GData::FindAudio("SE/umareru.wav");
+		umareru->Play();
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, float sizeScale, float HP, int attackPoint, const cinder::CameraPersp & camera, std::string const & path )
         : object( pos, Vec3f( 1.7 * sizeScale, 1.7 * sizeScale, 0.01 ), Vec3f::zero( ) )
@@ -83,6 +91,8 @@ namespace User
         update( camera );
         initObject = object;
         SpawnEffect( camera );
+		umareru = &GData::FindAudio("SE/umareru.wav");
+		umareru->Play();
     }
     void EnemyBase::update( cinder::CameraPersp const& camera )
     {

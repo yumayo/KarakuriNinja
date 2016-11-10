@@ -1,5 +1,5 @@
 #include"Special.h"
-void Special::update(bool canspecial) {
+void Special::update(bool canspecial,bool isstop) {
 	/////////////////////
 	if (isspesial == false&&canspecial) {
 		auto touch = inputs.touch();
@@ -38,7 +38,7 @@ void Special::update(bool canspecial) {
 	}
 
 	/////////////
-	special_->update();
+	special_->update(isstop);
 	effectend_ = false;
 	if (special_->shift())
 		shift();

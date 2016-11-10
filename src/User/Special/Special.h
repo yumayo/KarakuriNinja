@@ -20,7 +20,7 @@ public:
 		effectend_ = false;
 		specialpower_ = 0.f;
 	}
-	void update(bool canspecial);
+	void update(bool canspecial,bool isstop);
 	void draw();
 	
 

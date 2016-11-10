@@ -12,7 +12,7 @@ public:
 	void draw() override {
 		//‰½‚à‚µ‚Ü‚¹‚ñ
 	}
-	void update() override {
+	void update(bool isstop) override {
 	
 	}
 	bool shift() override {

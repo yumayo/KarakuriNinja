@@ -20,6 +20,7 @@ namespace User
     public:
         Fusuma( );
         bool IsMoveFinished( ) { return 1.0F <= husuma_t; }
+		bool getT() { return husuma_t; }
         void Fusuma::openFusuma( );
         void Fusuma::closeFusuma( );
         void Fusuma::drawFusuma( );
@@ -72,6 +73,9 @@ namespace User
         int endscore;
         int ranking;
         int datanum;
+		int maxcombo_;
+		int nowhp_;
+		int time_;
         std::vector<int> player_scores;
         std::vector<Icon> icons;
         cinder::gl::Texture* texture;
@@ -95,13 +99,13 @@ namespace User
         float myrankpos_;
         Audio* taiko1;
         Audio* taiko2;
-
+		Audio* bgm;
         float flash_t;
         float flash_alfa;
         float t_[TS::MAX];
         bool s_end[SPE::E_MAX];
         bool rankin;
-
+		float endt_[3];
         Fusuma fusuma;
 
         void drawBackground( );
@@ -118,7 +122,7 @@ namespace User
         void textureDraw( cinder::gl::Texture const & texture, cinder::Vec2f position, cinder::Vec2f realsize, cinder::Area area, float size );
         void soundplay( Audio* audio, bool& flag );
         void pushIcon( );
-        int calcurateScore( );
+        int calcurateScore(int score, int maxcombo, int nowhp, int time);
         void roadScores( );
         void sortScores( );
         int calcurateRanking( );
@@ -126,5 +130,6 @@ namespace User
         void drawIcon( );
         void updatecamera( );
         void drawMyIcon( );
+		void drawEnd();
     };
 }

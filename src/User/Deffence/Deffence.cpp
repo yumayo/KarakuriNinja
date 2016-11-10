@@ -19,7 +19,7 @@ void Deffence::Draw()
 	{
 		ci::gl::color(cinder::ColorA(1,1,1,0.9f));
 		tex->enableAndBind();
-		ci::gl::drawSolidRect(ci::Rectf(ci::Vec2f(-900, -75), ci::Vec2f(900, 75)));
+		ci::gl::drawSolidRect(ci::Rectf(ci::Vec2f(-900, -112.5f), ci::Vec2f(900, 112.5f)));
 		tex->disable();
 		/*ci::gl::color(0,1,0);
 		ci::gl::drawSolidRect(ci::Rectf(ci::Vec2f(-effect.size.x / 2, -45), ci::Vec2f(effect.size.x / 2, 45)));*/

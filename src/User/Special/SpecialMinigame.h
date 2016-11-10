@@ -37,7 +37,7 @@ public:
 		endflash = false;
 	}
 	void draw() override;
-	void update() override;
+	void update(bool isstop) override;
 	bool shift() override {
 		return go_next_;
 	}

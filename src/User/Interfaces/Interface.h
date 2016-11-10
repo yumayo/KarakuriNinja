@@ -16,48 +16,50 @@
 
 namespace User
 {
-    class Combo
-    {
-        cinder::gl::Texture* backGround;
-        EffectBase effect;
-        Fonts font;
-        int comboNumber;
-        int maxComboNumber;
-        int comboFrame;
-    public:
-        Combo( );
-        void Update( bool isSuccess );
-        void Draw( cinder::Vec2f position );
-    };
+	class Combo
+	{
+		cinder::gl::Texture* backGround;
+		EffectBase effect;
+		Fonts font;
+		int comboNumber;
+		int maxComboNumber;
+		int comboFrame;
+	public:
+		Combo();
+		int MaxComboNumber() { return maxComboNumber; }
+		void Update(bool isSuccess);
+		void Draw(cinder::Vec2f position);
+	};
 
-    class Interface
-    {
-    public:
-        Interface( );
-		void draw(float APNormalized, float HPNormalized,bool ismpmax=false, int specialsubtime = 3);
-        void update( bool isAttackSuccess );
-        void AddScore( int score ) { scorePoint += score; }
-        int Score( ) { return scorePoint; }
-    private:
-        cinder::gl::Texture* APEdge;
-        cinder::gl::Texture* HPEdge;
-        cinder::gl::Texture *score;
+	class Interface
+	{
+	public:
+		Interface();
+		void draw(float APNormalized, float HPNormalized, bool ismpmax = false, int specialsubtime = 3);
+		void update(bool isAttackSuccess);
+		void AddScore(int score) { scorePoint += score; }
+		int Score() { return scorePoint; }
+		int MaxComboNumber() { return combo.MaxComboNumber(); }
+	private:
+		cinder::gl::Texture* APEdge;
+		cinder::gl::Texture* HPEdge;
+		cinder::gl::Texture *score;
 
-        cinder::gl::Texture* APEdgeBase;
+		cinder::gl::Texture* APEdgeBase;
 		cinder::gl::Texture* APEdgeBasemax;
-        cinder::gl::Texture* HPEdgeBase;
+		cinder::gl::Texture* HPEdgeBase;
 		cinder::gl::Texture* HPEdgeBasedamage;
 
 		cinder::gl::Texture* specialeffect;
 		cinder::gl::Texture* makimono;
-        Fonts font;
+		Fonts font;
 		Fonts touchfont;
-        int scorePoint;
+		int scorePoint;
 
-        Combo combo;
-    private:
-        void textureDraw( cinder::gl::Texture const& texture, cinder::Vec2f position = cinder::Vec2f::zero( ) );
-        void textureDraw( cinder::gl::Texture const& texture, cinder::Vec2f position, cinder::Area area, float value );
+		Combo combo;
+	private:
+		void textureDraw(cinder::gl::Texture const& texture, cinder::Vec2f position = cinder::Vec2f::zero());
+		void textureDraw(cinder::gl::Texture const& texture, cinder::Vec2f position, cinder::Area area, float value);
 		void maxbaseDraw(cinder::gl::Texture const& texture, cinder::Vec2f position, cinder::Area area, float value);
 		void drawSpecialEffect(int specialsubtime);
 		void drawchargeEffect(bool ismpmax);
@@ -70,7 +72,7 @@ namespace User
 		float savenormal;
 		float nomarl_t;
 		float delay_t;
-    };
+	};
 
-    using InterfaceRef = std::shared_ptr<Interface>;
+	using InterfaceRef = std::shared_ptr<Interface>;
 }

@@ -20,8 +20,9 @@ public:
 	void draw() override {
 		//‰½‚à‚µ‚Ü‚¹‚ñ
 	}
-	void update() override {
+	void update(bool isstop) override {
 		if (specialtype != SpecialType::NOTSELECTED) {
+			if(!isstop)
 			count_++;
 			if (count_ > specialtime_) {
 				specialtype = SpecialType::NOTSELECTED;

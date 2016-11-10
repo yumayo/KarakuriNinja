@@ -11,7 +11,7 @@ void Slash::Draw() {
 	ci::gl::translate(pos.x, pos.y);
 	ci::gl::rotate(-angle * (180.0f / M_PI) + 90);
 	if (isActive) {
-		ci::gl::drawSolidRect(ci::Rectf(ci::Vec2f(-size.x / 2, -size.y / 2), ci::Vec2f(size.x / 2, size.y / 2))); 
+		//ci::gl::drawSolidRect(ci::Rectf(ci::Vec2f(-size.x / 2, -size.y / 2), ci::Vec2f(size.x / 2, size.y / 2))); 
 	}
 	ci::gl::rotate(angle * (180.0f / M_PI) + 90);
 	ci::gl::popModelView();
@@ -20,8 +20,8 @@ void Slash::Draw() {
 	ci::gl::translate(pos.x, pos.y);
 	if (isActive) {
 		float slashspeed = 4.0f;
-		int cutsize = int((std::min(float(slashspeed*activeTime) / float(maxactiveTime), 1.f)) * 1024);
-		textureDraw(*tex, cinder::Vec2f(0, 0), cinder::Area(0, 0, cutsize, 128), 1);
+		int cutsize = int((std::min(float(slashspeed*activeTime) / float(maxactiveTime), 1.f)) * tex->getSize().x);
+		textureDraw(*tex, cinder::Vec2f(0, 0), cinder::Area(0, 0, cutsize, tex->getSize().y), 1);
 	}
 	ci::gl::rotate(angle * (180.0f / M_PI) + 90);
 	ci::gl::popModelView();
@@ -45,11 +45,11 @@ void Slash::textureDraw(cinder::gl::Texture const & texture, cinder::Vec2f posit
 	ci::gl::rotate(-angle * (180.0f / M_PI) + 90);
 	ci::gl::scale(ci::Vec2f(2.5f,0.7f));
 	ci::gl::translate( -texture.getSize().x / 2, -texture.getSize().y / 2);
-	float alfa = 1.f;
+	float alfa = 0.9f;
 	float deletetime = (maxactiveTime / 1.5);
 	if (activeTime > deletetime) {
 		delete_t += 1.0f / float((maxactiveTime - deletetime));
-		alfa = EasingLinear(delete_t, 1.f, 0.f);
+		alfa = EasingLinear(delete_t, 0.7f, 0.f);
 
 	}
 

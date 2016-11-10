@@ -53,6 +53,7 @@ namespace User
         bool isLanding;
         cinder::gl::Texture* texture;
         AttackTime attackTime;
+		Audio* umareru;
     private:
         float maxHP;
         float HP;

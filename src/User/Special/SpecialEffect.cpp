@@ -21,7 +21,7 @@ void SpecialEffect::draw()
 	gl::popModelView();
 }
 
-void SpecialEffect::update()
+void SpecialEffect::update(bool isstop)
 {
 	if (names.size() == 7) {
 		if (fire.size() == 1 || water.size() == 1 || tree.size()==1) {

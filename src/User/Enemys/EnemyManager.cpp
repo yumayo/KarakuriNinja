@@ -48,6 +48,7 @@ namespace User
         gurad_se = &GData::FindAudio( "SE/guard.wav" );
         playerdamaged_se = &GData::FindAudio( "SE/damage.wav" );
         adddamage = &GData::FindAudio( "SE/adddamage.wav" );
+		dead = &GData::FindAudio("SE/dead.wav");
     }
 
     void EnemyManager::update( cinder::CameraPersp const& camera )
@@ -317,7 +318,7 @@ namespace User
                                           Vec2f( 240, 240 ),
                                           EffectBase::Mode::CENTERCENTER, true
                 ) );
-
+				dead->Play();
                 score += 1000;
                 return true;
             }
