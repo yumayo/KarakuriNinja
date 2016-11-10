@@ -6,15 +6,18 @@
 #include "GlobalData.hpp"
 #include "../Utilitys/Hirasawa.h"
 
+#include "../Utilitys/fileUtil.hpp"
+
+#include "../Utilitys/Yumayo.h"
+
 namespace User
 {
     using namespace cinder;
 
     FieldManager::FieldManager( std::string const& path )
         : nowNumber( 0 )
+        , shift( 0 )
     {
-        ground = &GData::FindTexture( "ground.jpg" );
-        skydome = std::make_shared<Skydome>( "skydome_1.bmp", 90.0F );
         sky = &GData::FindTexture( "Stage/BackGround.png" );
 
         JsonTree params( app::loadAsset( path ) );
@@ -25,6 +28,8 @@ namespace User
             fieldName.insert( std::make_pair( index++, obj.getValue( ) ) );
         }
 
+        shift = getInt( params["Shift"] );
+
         CreateField( nowNumber );
     }
     void FieldManager::Update( )
@@ -33,18 +38,10 @@ namespace User
     }
     void FieldManager::Draw( cinder::CameraPersp const& camera )
     {
-        //skydome->Draw( camera );
-
-        //gl::pushModelView( );
-        //gl::translate( Vec3f( -ground->getWidth( ) / 2, 0, -ground->getHeight( ) / 2 ) );
-        //gl::rotate( Vec3f( 90, 0, 0 ) );
-        //gl::draw( *ground );
-        //gl::popModelView( );
-
-        float zAngle = -( nowNumber * 120 );
+        float zAngle = -( ( nowNumber + shift ) * 120 );
         if ( !field->IsEnd( ) )
         {
-            int prevAngle = -( ( nowNumber - 1 ) * 120 );
+            int prevAngle = -( ( nowNumber + shift - 1 ) * 120 );
             zAngle = EasingElasticInOut( field->NormalizedCount( ), prevAngle, zAngle );
         }
 

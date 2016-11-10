@@ -12,7 +12,7 @@ void Circle::update()
 	}
 	if ((routes.size() == ROUTENUM)&&(movestart_== false)) {
 		delay_++;
-		if (delay_ > 1*80) {
+		if (delay_ > 1*140) {
 			movestart_ = true;
 		}
 	}
@@ -29,12 +29,18 @@ void Circle::draw()
 		gl::color(ColorA(0, 1, 0,routes.size()/float(ROUTENUM)));
 	}
 	else {
-		gl::color(ColorA(0, 1, 1, routes.size() / float(ROUTENUM)));
+		gl::color(ColorA(1, 1, 1, routes.size() / float(ROUTENUM)));
 	}
 	//if(isrealsafe_&&(!issafe_))
 	//	gl::color(ColorA(0, 1, 0));
-
-	gl::drawSolidCircle(pos_,size_);
+	gl::pushModelView();
+	gl::translate(pos_);
+	gl::rotate(move_t_*500.f);
+	tex->enableAndBind();
+	gl::drawSolidRect(Rectf(-Vec2f(size_,size_), Vec2f(size_, size_)));
+	tex->disable();
+	gl::popModelView();
+	//gl::drawSolidCircle(pos_,size_);
 	gl::color(ColorA(1, 1, 1, 1));
 
 }

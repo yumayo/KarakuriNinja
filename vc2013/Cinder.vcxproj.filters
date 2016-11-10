@@ -393,6 +393,9 @@
     <ClInclude Include="..\src\User\Enemys\EnemyBulletTutorial.h">
       <Filter>User\Enemys</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\User\Utilitys\Haguruma.h">
+      <Filter>User\Utilitys</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -680,6 +683,9 @@
     </ClCompile>
     <ClCompile Include="..\src\User\Enemys\EnemyBulletTutorial.cpp">
       <Filter>User\Enemys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\User\Utilitys\Haguruma.cpp">
+      <Filter>User\Utilitys</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

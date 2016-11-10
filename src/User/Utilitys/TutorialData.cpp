@@ -26,6 +26,7 @@ namespace User
     }
     void TutorialData::Reset( )
     {
+        talkString.clear( );
         attackCircle.TutorialReset( );
         guard.TutorialReset( );
         spawn.TutorialReset( );

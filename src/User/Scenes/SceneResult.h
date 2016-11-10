@@ -10,6 +10,7 @@ namespace User
 {
     class Fusuma
     {
+        int delaycount;
         float husuma_t;
         cinder::Vec2f lefthusumapos;
         cinder::Vec2f righthusumapos;

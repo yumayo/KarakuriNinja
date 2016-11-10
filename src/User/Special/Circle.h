@@ -4,6 +4,7 @@
 #include "cinder/app/App.h"
 #include"../Utilitys/Hirasawa.h"
 #include"../Special/RouteCircle.h"
+#include"GlobalData.hpp"
 using namespace cinder;
 enum CircleType {
 	LEFT,RIGHT
@@ -27,6 +28,7 @@ public:
 		delay_ = 0;
 		movestart_ = false;
 		setRoute();
+		tex = &GData::FindTexture("ac-sp.png");
 	}
 	void update();
 	void draw();
@@ -48,6 +50,7 @@ private:
 	Vec2f pos_;
     float size_;
 	CircleType type_;
+	cinder::gl::Texture* tex;
 	Easing::EasingType easingtype_x_;
 	Easing::EasingType easingtype_y_;
 	bool issafe_;

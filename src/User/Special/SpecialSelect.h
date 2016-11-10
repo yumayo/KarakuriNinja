@@ -26,12 +26,13 @@ public:
 		ischoosed_ = false;
 		end_t_ = 0.0f;
 		last_t_ = 0.0f;
+		yazirushirotate_ = 0.0f;
 		isshifteasing_ = false;
 		for (int i = 0;i < ICONNUM;i++) {
 			Icon icon;
 			icon.startpos = Vec2f(app::getWindowWidth() / 2 + float((i - 1)*450.f), app::getWindowHeight() / 2 + 700);
 			icon.pos = icon.startpos;
-			icon.endpos = icon.startpos + Vec2f(0, -800);
+			icon.endpos = Vec2f(app::getWindowWidth() / 2 + float((i - 1)*450.f), app::getWindowHeight() / 2);
 			icon.shiftpos = icon.startpos;
 			icon.size = Vec2f(250.f, 250.f);
 			icon.angle_t = 0.0f;
@@ -40,11 +41,19 @@ public:
 			icons.push_back(icon);
 		}
 		for (int i = 0;i < 3;i++) {
+			subangle[i] = 0.0f;
+			subpos[i]= Vec2f(app::getWindowWidth() / 2 + float((i - 1)*450.f), app::getWindowHeight()+ 500);
+		}
+		for (int i = 0;i < 3;i++) {
 			icontex[i] = &GData::FindTexture("Textures/select"+std::to_string(i)+".png");
 		}
 		backanimation = &GData::FindTexture("Textures/Effect/backanimation.png");
 		kuriko= &GData::FindTexture("Textures/Effect/specialkuriko.png");
+		yazirushi = &GData::FindTexture("Textures/specialyazirushi.png");
 		open_se.push_back(&GData::FindAudio("SE/hiraku.wav"));
+		subinfo[0]= &GData::FindTexture("Textures/subfire.png");
+		subinfo[1] = &GData::FindTexture("Textures/subwater.png");
+		subinfo[2] = &GData::FindTexture("Textures/subtree.png");
 		beginposy = env.getWindowHeight() / 2.f;
 		cutinsizey = env.getWindowHeight() / 2.f;
 		pushShuriken();
@@ -93,8 +102,13 @@ private:
 	float start_t;
 	float end_t_;
 	float last_t_;
+	float yazirushirotate_;
     int frame;
+	Vec2f subpos[3];
+	float subangle[3];
 	gl::Texture* icontex[3];
+	gl::Texture* yazirushi;
+	gl::Texture* subinfo[3];
 	bool isCanChoose() {
 		return (icons[icons.size() - 1].angle_t >= 1.0f)&&(ischoosed_==false);
 	}
@@ -104,8 +118,11 @@ private:
 	void drawKuriko();
 	void pushShuriken();
 	void updateShuriken();
+	void drawYazirushi();
 	bool shurikenEnd() {
 		return shurikens[shurikens.size() - 1].end();
 	}
+	void drawSubInfo();
+	void updateSubInfo();
 	void DrawCutTexture(cinder::gl::Texture* texture, cinder::Vec2f position, cinder::Vec2f size, cinder::Vec2f offset, cinder::Vec2f cutSize);
 };

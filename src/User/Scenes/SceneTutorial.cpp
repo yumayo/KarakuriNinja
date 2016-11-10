@@ -33,7 +33,7 @@ namespace User
     }
     SceneTutorial::~SceneTutorial( )
     {
-        mainbgm->Stop( );
+        //mainbgm->Stop( );
     }
     void SceneTutorial::resize( )
     {
@@ -105,15 +105,22 @@ namespace User
         switch ( fieldManager->GetFieldNumber( ) )
         {
         case 0:
-            if ( tutorialManager.KougekiIsNextStage( ) && !fieldManager->IsLastField( ) && enemyManager->IsEmpty( ) )
+            if ( tutorialManager.KougekiIsNextStage( ) && enemyManager->IsEmpty( ) )
             {
+                tutorialManager.KougekiEnd( );
                 fieldManager->End( );
             }
             break;
         case 1:
-            if ( tutorialManager.BougyoIsNextStage( ) && !fieldManager->IsLastField( ) && enemyManager->IsEmpty( ) )
+            if ( tutorialManager.BougyoIsNextStage( ) && enemyManager->IsEmpty( ) )
+            {
+                tutorialManager.BougyoEnd( );
+                break;
+            }
+            if ( tutorialManager.BougyoIsNextStage( ) )
             {
                 fieldManager->End( );
+                enemyManager->PlayerSpecialAttackToEnemyDamage( 100, camera( ), SpecialType::NOTSELECTED );
             }
             break;
         default:
@@ -146,9 +153,12 @@ namespace User
     void SceneTutorial::UpdateGuardSucceed( )
     {
         // ガードに成功したら
-        if ( player.Command( ) == CommandType::GUARD && enemyManager->EnemyToPlayerGuardCheck( player.GuardLine( ), camera( ) ) )
+        if ( player.Command( ) == CommandType::GUARD )
         {
-            tutorialManager.BougyoPlayerGuardSucceed( );
+            if ( 0 < enemyBulletManager->EnemyToPlayerGuardCheck( player.GuardLine( ), camera( ) ) )
+            {
+                tutorialManager.BougyoPlayerGuardSucceed( );
+            }
         }
     }
     void SceneTutorial::UpdateAllInstans( )
@@ -158,7 +168,7 @@ namespace User
         player.Update( );
 
         // これを呼ぶことでガードができる。
-        player.UpdateDeffenceOfTouch( );
+        if( fieldManager->GetFieldNumber( ) == 1 ) player.UpdateDeffenceOfTouch( );
 
         enemyManager->update( camera( ) );
         enemyBulletManager->BulletRegister( enemyManager->BulletRecovery( ) );
@@ -167,37 +177,11 @@ namespace User
         UpdateDamage( );
         UpdateCombo( );
         UpdateEnemySpawn( );
+        UpdateGuardSucceed( );
 
         effectManager->EffectRegister( enemyManager->EffectRecovery( ) );
         effectManager->EffectRegister( enemyBulletManager->EffectRecovery( ) );
         effectManager->Update( );
-    }
-    void SceneTutorial::UpdateTutorialClear( )
-    {
-        if ( TRData::spawn.IsStopUpdate( ) )
-        {
-            TRData::spawn.TutorialEnd( );
-        }
-
-        if ( TRData::attackCircle.IsStopUpdate( ) )
-        {
-            TRData::attackCircle.TutorialEnd( );
-        }
-
-        if ( TRData::guard.IsStopUpdate( ) )
-        {
-            TRData::guard.TutorialEnd( );
-        }
-
-        if ( TRData::playerAttack.IsStopUpdate( ) )
-        {
-            TRData::playerAttack.TutorialEnd( );
-        }
-
-        if ( TRData::enemyKill.IsStopUpdate( ) )
-        {
-            TRData::enemyKill.TutorialEnd( );
-        }
     }
     void SceneTutorial::update( )
     {
@@ -206,9 +190,7 @@ namespace User
         moveInput.Begin( combo );
 
         // プレイヤーがguard状態の時はmoveInputを無効にします。
-        if ( player.Command( ) == GUARD ) moveInput.InputInvalidation( );
-
-        UpdateTutorialClear( );
+        if ( player.Command( ) == GUARD || fieldManager->GetFieldNumber( ) == 1 ) moveInput.InputInvalidation( );
 
         UpdateAllInstans( );
 
@@ -234,21 +216,10 @@ namespace User
             return;
         }
 
-        if ( /*TIPS*/false )
+        if ( fieldManager->IsLastField( ) && fieldManager->IsChange( ) )
         {
-            //float gain = ( static_cast<float>( sceneChangeFrame ) / maxSceneChangeFrame ) * 0.4F;
-            //mainbgm[0]->Gain( gain );
-        }
-
-        if ( enemyManager->IsEmpty( ) && fieldManager->IsLastField( ) )
-        {
-            fusuma->closeFusuma( );
-
-            if ( fusuma->IsMoveFinished( ) )
-            {
-                create( new SceneGame( ) );
-                return;
-            }
+            create( new SceneGame( ) );
+            return;
         }
     }
     void SceneTutorial::beginDrawMain( )

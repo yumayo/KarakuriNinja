@@ -184,6 +184,7 @@
     <ClCompile Include="..\src\User\Utilitys\GlobalData.cpp" />
     <ClCompile Include="..\src\User\Utilitys\GlobalDraw.cpp" />
     <ClCompile Include="..\src\User\Utilitys\GlobalEditor.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\Haguruma.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Hirasawa.cpp" />
     <ClCompile Include="..\src\User\Utilitys\HundAnimation.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Moji.cpp" />
@@ -293,6 +294,7 @@
     <ClInclude Include="..\src\User\Utilitys\GlobalData.h" />
     <ClInclude Include="..\src\User\Utilitys\GlobalDraw.h" />
     <ClInclude Include="..\src\User\Utilitys\GlobalEditor.h" />
+    <ClInclude Include="..\src\User\Utilitys\Haguruma.h" />
     <ClInclude Include="..\src\User\Utilitys\Hirasawa.h" />
     <ClInclude Include="..\src\User\Utilitys\HundAnimation.h" />
     <ClInclude Include="..\src\User\Utilitys\Moji.h" />

@@ -29,6 +29,7 @@ namespace User
         bgm->Play( );
 		enablenext = false;
 		iconangle = 0.0f;
+		kunaiangle = 0.0f;
     }
 
     SceneTitle::~SceneTitle( )
@@ -114,15 +115,16 @@ namespace User
 		crossdraw();
 		drawSlash();
 		drawBackground();
-		drawLogo();
 		drawMainKuriko();
+		drawLogo();
+		drawKunai();
 		drawStartIcon();
 		drawFlash();
         drawfade( );
     }
     void SceneTitle::endDrawUI( )
     {
-
+		
     }
 
 	void SceneTitle::skip()
@@ -142,6 +144,43 @@ namespace User
 			}
 			//////
 		}
+	}
+	void SceneTitle::drawKunai()
+	{
+		Vec2f startpos = Vec2f(1.5f*env.getWindowWidth(), env.getWindowHeight() / 2.f);
+		Vec2f endpos = env.getWindowSize() / 2;
+		Vec2f size = env.getWindowSize();
+		if (!countend(t_[FLASH])) {
+			int num = 3;
+			if (countend(t_[TitleEasing::LOGOSLIDE])) {
+				num = 1;
+			}
+			for (int i = num - 1;i >= 0;i--) {
+				Vec2f pos;
+				pos.x = Easing::getEasing[Easing::Linear](t_[TitleEasing::LOGOSLIDE] - 2 * i*(1.0f / (60.0f*1.0f)), startpos.x, endpos.x);
+				pos.y = Easing::getEasing[Easing::Linear](t_[TitleEasing::LOGOSLIDE] - i*(1.0f / (60.0f*1.0f)), startpos.y, endpos.y);
+				gl::pushModelView();
+				gl::translate(pos);
+				textures[T_MAINKUNAI]->enableAndBind();
+				float color = 1 - float(i) / float(num);
+				gl::color(ColorA(color, color, 1, color));
+				gl::drawSolidRect(Rectf(-size / 2.f, size / 2.f));
+				textures[T_MAINKUNAI]->disable();
+				gl::popModelView();
+			}
+		}
+		else {
+			gl::pushModelView();
+			gl::translate(endpos+Vec2f(0,40*sin(kunaiangle)));
+			textures[T_MAINKUNAI]->enableAndBind();
+			gl::color(ColorA(1, 1, 1, 1));
+			gl::drawSolidRect(Rectf(-size / 2.f, size / 2.f));
+			textures[T_MAINKUNAI]->disable();
+			gl::popModelView();
+			kunaiangle += 0.05;
+		}
+		
+
 	}
     bool SceneTitle::isStartTouch( )
     {
@@ -380,12 +419,12 @@ namespace User
 	void SceneTitle::drawLogo()
 	{
 		if (!countend(t_[UP]))return;
-		Vec2f startpos = Vec2f(-env.getWindowWidth()/2.0f, env.getWindowHeight() / 2.3f);
-		Vec2f endpos = Vec2f(15.f*env.getWindowWidth() / 36.5f, env.getWindowHeight() / 2.3f);
+		Vec2f startpos = Vec2f(-env.getWindowWidth()/2.0f, env.getWindowHeight() / 1.45f);
+		Vec2f endpos = Vec2f(env.getWindowWidth() / 3.6f, env.getWindowHeight() / 1.45f);
 		Vec2f size;
-		size.x = env.getWindowWidth()/ 2.15f;
+		size.x = env.getWindowWidth()/ 2.7f;
 		size.y = size.x*((float(textures[T_LOGO]->getHeight()) / float(textures[T_LOGO]->getWidth())));
-		int num = 5;
+		int num = 3;
 		if (countend(t_[TitleEasing::LOGOSLIDE])) {
 			num = 1;
 		}
@@ -409,16 +448,14 @@ namespace User
 	void SceneTitle::drawMainKuriko()
 	{
 		if (!countend(t_[UP]))return;
-		Vec2f startpos = Vec2f(1.5f*env.getWindowWidth(), env.getWindowHeight() / 1.97f);
-		Vec2f endpos = Vec2f(14.85f*env.getWindowWidth() / 20.f, env.getWindowHeight() / 1.97f);
-		Vec2f size;
-		size.x = env.getWindowWidth() / 3.0f;
-		size.y = size.x*((float(textures[T_MAINKURIKO]->getHeight()) / float(textures[T_MAINKURIKO]->getWidth())));
-		int num = 5;
+		Vec2f startpos = Vec2f(1.5f*env.getWindowWidth(), env.getWindowHeight() / 2.f);
+		Vec2f endpos = env.getWindowSize() / 2;
+		Vec2f size = env.getWindowSize();
+		int num = 3;
 		if (countend(t_[TitleEasing::LOGOSLIDE])) {
 			num = 1;
 		}
-		for (int i = 0;i < num;i++) {
+		for (int i = num-1;i >=0;i--) {
 			Vec2f pos;
 			pos.x = Easing::getEasing[Easing::Linear](t_[TitleEasing::LOGOSLIDE] - 2 * i*(1.0f / (60.0f*1.0f)), startpos.x, endpos.x);
 			pos.y = Easing::getEasing[Easing::Linear](t_[TitleEasing::LOGOSLIDE] - i*(1.0f / (60.0f*1.0f)), startpos.y, endpos.y);
@@ -462,6 +499,7 @@ namespace User
 		str[T_LOGO] = "logo";
 		str[T_MAINKURIKO] = "mainkuriko";
 		str[T_START] = "start";
+		str[T_MAINKUNAI] = "mainkunai";
 		for (int i = 0;i < TexType::TEXMAX;i++) {
 			textures[i] = &GData::FindTexture("Textures/Title/" + str[i] + ".png");
 		}

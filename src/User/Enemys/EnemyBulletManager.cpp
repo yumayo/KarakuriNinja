@@ -103,11 +103,11 @@ namespace User
                         float pos_x = ( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 );
                         float pos_y = a*( a*( enemypos.y - b ) + enemypos.x ) / ( ( a*a ) + 1 ) + b;
                         EffectCreate( EffectBase( "Textures/Effect/guard3.png",
-                                                   Vec2f( pos_x, pos_y ),
-                                                   0.0F,
-                                                   Vec2f( 480, 480 ),
-                                                   Vec2f( 480, 480 ),
-                                                   EffectBase::Mode::CENTERCENTER
+                                                  Vec2f( pos_x, pos_y ),
+                                                  0.0F,
+                                                  Vec2f( 480, 480 ),
+                                                  Vec2f( 480, 480 ),
+                                                  EffectBase::Mode::CENTERCENTER
                         ) );
                     }
                 }
@@ -116,6 +116,32 @@ namespace User
             }
         } );
         return damage;
+    }
+
+    int EnemyBulletManager::EnemyToPlayerGuardCheck( Line & line, cinder::CameraPersp const & camera )
+    {
+        int guardNum = 0;
+        Each( [ &guardNum, &line, &camera, this ] ( EnemyBulletBaseRef& bulletRef )
+        {
+            if ( bulletRef->Attack( camera ) )
+            {
+                Vec2f vec = camera.worldToScreen( bulletRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+                Vec2f size = camera.worldToScreen( bulletRef->Position( ) + bulletRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+                float radius = Vec3f( size - vec ).length( ) / 2.0F;
+                if ( CheckDefLineOfCircle( line, vec, radius + 50 ) > 1.0f ) {
+                    // hit
+                }
+                else {
+                    if ( bulletRef->NormalizedMoveTime( ) == 1 ) {
+                        // ƒK[ƒh
+                        guardNum += 1;
+                    }
+                }
+
+                bulletRef->Erase( );
+            }
+        } );
+        return guardNum;
     }
 
     void EnemyBulletManager::DrawCollisionCircle( cinder::CameraPersp const & camera )

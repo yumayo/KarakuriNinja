@@ -40,6 +40,8 @@ namespace User
         int EnemyToPlayerDamage( const cinder::CameraPersp& camera );
         // エネミーからプレイヤーへの攻撃（プレイヤーがガードをしている時の判定に使います）
         int EnemyToPlayerDamage( Line& line_, const cinder::CameraPersp& camera );
+        // プレイヤーがエネミーからの攻撃を防いだかの判定をします。
+        int EnemyToPlayerGuardCheck( Line& line, cinder::CameraPersp const& camera );
         // スコアを回収します。回収したら、中身はクリアします。
         int ScoreRecovery( ) { auto temp = score; score = 0; return temp; }
         // 弾が当たる場所を描画します。

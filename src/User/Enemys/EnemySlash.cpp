@@ -18,6 +18,8 @@ namespace User
         , isAttack( false )
         , prevMovePosition( Vec3f::zero( ) )
     {
+        timer.Advance( 120 );
+
         int index = 1;
         ‘Ò‹@ = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );
         UŒ‚ƒ‚[ƒVƒ‡ƒ“‰æ‘œ = &GData::FindTexture( "Enemy/Slash/Slash (" + std::to_string( index++ ) + ").png" );

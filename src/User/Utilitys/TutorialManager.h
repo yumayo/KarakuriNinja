@@ -14,11 +14,19 @@ namespace User
     {
         std::list<std::string> enemyDataPath;
         cinder::gl::Texture* çUåÇÇÃã…à”;
+        cinder::gl::Texture* ê‡ñæ;
+        std::vector<cinder::gl::Texture*> suuji;
+        Fonts font;
+        Audio* ÉNÉäÉA;
+        bool ok;
     public:
         Kougeki( );
         void Draw( );
+        void DrawRemainin( );
+        void DrawClear( );
         std::string GetEnemyCreatePath( );
         bool IsNextStage( );
+        void End( );
     };
 
     class Bougyo
@@ -26,7 +34,11 @@ namespace User
         int const maxGuardSucceedNum = 3;
         int guardSucceedNum;
         cinder::gl::Texture* ñhå‰ÇÃã…à”;
+        cinder::gl::Texture* ê‡ñæ;
+        std::vector<cinder::gl::Texture*> suuji;
         Fonts font;
+        Audio* ÉNÉäÉA;
+        bool ok;
     public:
         Bougyo( );
         void PlayerGuardSucceed( );
@@ -34,6 +46,8 @@ namespace User
         int GetRemainingSucceedNum( ) { return guardSucceedNum; }
         void Draw( );
         void DrawRemainin( );
+        void DrawClear( );
+        void End( );
     };
 
     class TutorialManager
@@ -44,6 +58,7 @@ namespace User
         Description description;
         Func func;
         HundAnimation handAnimation;
+        Audio* ñ‚ëËíÒãN;
     public:
         TutorialManager( );
         void çUåÇ( );
@@ -54,8 +69,10 @@ namespace User
     public: // çUåÇ
         std::string KougekiGetEnemyCreatePath( ) { return kougeki.GetEnemyCreatePath( ); }
         bool KougekiIsNextStage( ) { return kougeki.IsNextStage( ); }
+        void KougekiEnd( ) { kougeki.End( ); }
     public: // ñhå‰
         void BougyoPlayerGuardSucceed( ) { return bougyo.PlayerGuardSucceed( ); }
         bool BougyoIsNextStage( ) { return bougyo.IsNextStage( ); }
+        void BougyoEnd( ) { bougyo.End( ); }
     };
 }

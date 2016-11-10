@@ -5,6 +5,8 @@
 void SpecialSelect::draw()
 {
 	gl::pushModelView();
+	drawYazirushi();
+	drawSubInfo();
 	drawIcon();
 	drawbeginSpecial();
 	for (int i = 0;i<shurikens.size();i++) {
@@ -17,6 +19,7 @@ void SpecialSelect::draw()
 void SpecialSelect::update(bool isstop)
 {
 	updateIcon();
+	updateSubInfo();
 	chooseSpecial();
 	updateShuriken();
 	beginposy = env.getWindowHeight() / 2.f;
@@ -74,7 +77,7 @@ void SpecialSelect::updateIcon()
 		if (end_t_ >= 1.0f) {
 			last_t_ += 1.0f / (60.0f*1.0f);
 			last_t_ = std::min(last_t_, 1.0f);
-			Vec2f startpos = Vec2f(app::getWindowWidth() / 2 , app::getWindowHeight() / 2-100);
+			Vec2f startpos = Vec2f(app::getWindowWidth() / 2 , app::getWindowHeight() / 2);
 			icons[int(specialtype_)].pos.y = EasingBackIn(last_t_, startpos.y, startpos.y - 600);
 			if (last_t_ >= 1.0f) {
 				go_next_ = true;
@@ -178,6 +181,57 @@ void SpecialSelect::updateShuriken()
 {
 	for (int i = 0;i < shurikens.size();i++) {
 		shurikens[i].update(Vec2f(75, 0));
+	}
+}
+void SpecialSelect::drawYazirushi()
+{
+	if (!isCanChoose())return;
+	for (int i = 0;i < 3;i++) {
+		Vec2f size;
+		size.x = env.getWindowWidth() / 10.f;
+		size.y = 2*size.x*(float(yazirushi->getHeight()) / float(yazirushi->getWidth()));
+		Vec2f pos = Vec2f(app::getWindowWidth() / 2 + float((i - 1)*450.f), size.x*1.2f+30*(0.5+0.5*cos(yazirushirotate_)));
+		gl::pushModelView();
+		gl::translate(pos);
+		gl::rotate(90);
+		gl::color(ColorA(1,1,1,1));
+		yazirushi->enableAndBind();
+		gl::drawSolidRect(Rectf(-size / 2, size/2));
+		yazirushi->disable();
+		gl::popModelView();
+	}
+	yazirushirotate_ += 0.1f;
+}
+void SpecialSelect::drawSubInfo()
+{
+	for (int i = 0;i < 3;i++) {
+		gl::pushModelView();
+		gl::translate(subpos[i]);
+		gl::color(ColorA(1,1,1,1));
+		Vec2f size=Vec2f(500,300);
+		size.x = 1.3*icons[i].size.x;
+		size.y = size.x*(float(subinfo[i]->getHeight())/ float(subinfo[i]->getWidth()));
+		subinfo[i]->enableAndBind();
+		gl::drawSolidRect(Rectf(-size/2,size/2));
+		subinfo[i]->disable();
+		gl::popModelView();
+	}
+}
+void SpecialSelect::updateSubInfo()
+{
+	if (!shurikenEnd())return;
+
+	for (int i = 0;i <3;i++) {
+		subpos[i].x = app::getWindowWidth() / 2 + float((i - 1)*450.f);
+		subpos[i].y = EasingBackOut(start_t, env.getWindowHeight()+500, env.getWindowHeight()*0.8f);
+		subangle[i] = EasingQuintIn(icons[i].angle_t, 5.0f, 0);
+
+	}
+	if (isshifteasing_) {
+		for (int i = 0;i < 3;i++) {
+			subpos[i].x = app::getWindowWidth() / 2 + float((i - 1)*450.f);
+			subpos[i].y = EasingCubicIn(end_t_, env.getWindowHeight()*0.8f, env.getWindowHeight() + 500);
+		}
 	}
 }
 void SpecialSelect::DrawCutTexture(cinder::gl::Texture * texture, cinder::Vec2f position, cinder::Vec2f size, cinder::Vec2f offset, cinder::Vec2f cutSize)

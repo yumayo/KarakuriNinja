@@ -13,6 +13,8 @@ namespace User
     EnemyBulletTutorial::EnemyBulletTutorial( cinder::Vec3f pos, const cinder::CameraPersp& camera )
         : EnemyBase( pos, camera, Status( 6.0F, 4 ) )
     {
+        timer.Advance( 60 );
+
         int index = 1;
         待機 = &GData::FindTexture( "Enemy/Bullet/Bullet (" + std::to_string( index++ ) + ").png" );
         攻撃モーション画像 = &GData::FindTexture( "Enemy/Bullet/Bullet (" + std::to_string( index++ ) + ").png" );
@@ -102,7 +104,7 @@ namespace User
         if ( timer.IsAction( ) )
         {
             // タイマーをセットしてまた待機状態にします。
-            timer.Advance( 180 );
+            timer.Advance( 90 );
             texture = 待機;
             SetFunction( &EnemyBulletTutorial::タイマーが鳴るまで待機 );
             return;

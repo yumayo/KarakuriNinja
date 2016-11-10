@@ -32,7 +32,7 @@ namespace User
         enum TexType {
             T_KURIKO, T_BOSS, T_KURIKOBACK, T_BOSSBACK, T_SHURIKEN,
             T_KUNAI, T_SLASH, T_BACKGROUND, T_LOGO, T_MAINKURIKO,
-            T_START, TEXMAX
+            T_START,T_MAINKUNAI,TEXMAX
         };
         enum SE_END {
             SE_CROSS, SE_MAX
@@ -54,6 +54,7 @@ namespace User
         bool isStartTouch( );
         bool isblackout;
         float iconangle;
+		float kunaiangle;
         void drawfade( );
         void drawInKurio( );
         void drawInBoss( );
@@ -76,5 +77,6 @@ namespace User
         void drawMainKuriko( );
         void drawStartIcon( );
         void skip( );
+		void drawKunai();
     };
 }

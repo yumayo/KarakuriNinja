@@ -51,8 +51,6 @@ namespace User
         void UpdateEnemySpawn( );
         void UpdateGuardSucceed( );
     private:
-        void UpdateTutorialClear( );
-    private:
         //=======================================
         // ユーマヨが管理するもののインスタンス化。
         EnemyManagerRef enemyManager;

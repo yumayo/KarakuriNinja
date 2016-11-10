@@ -14,6 +14,8 @@ namespace User
 
     SceneGame::SceneGame( )
     {
+        TRData::Reset( );
+        
         // ユーマヨが管理するものを作成。
         fieldManager = std::make_shared<FieldManager>( "JSON/GameMainField.json" );
         enemyManager = std::make_shared<EnemyManager>( camera( ), fieldManager->FieldDataPath( ) );
@@ -23,24 +25,21 @@ namespace User
         timer.Off( );
         damageColor = ColorA( 1, 0, 0, 0 );
         talk = std::make_shared<Talk>( );
-        description = std::make_shared<Description>( );
-        kougeki = &GData::FindTexture( "Textures/kougeki.png" );
-        bougyo = &GData::FindTexture( "Textures/bougyo.png" );
+
+        mojiManager.Setup( "JSON/GameStart.json" );
 
         // 野本が管理するものを作成。
         player = Player( 100, 100 );
 
         // 大ちゃんが管理するものを作成。
         mainbgm.push_back( &GData::FindAudio( "BGM/mainbgm0.wav" ) );
-        mainbgm[0]->Looping( true );
-        mainbgm[0]->Gain( 0.4 );
-        mainbgm[0]->Play( );
         watercount = 0;
         fusuma = std::make_shared<Fusuma>( );
-        time = 0;/////////////////////////////////////////////////////////ここ！！
+        time = 0;
         ismpmax = false;
         mpmax = &GData::FindAudio( "SE/mpmax.wav" );
         horagai = &GData::FindAudio( "SE/gamestart.wav" );
+        horagai->Play( );
     }
     SceneGame::~SceneGame( )
     {
@@ -49,6 +48,16 @@ namespace User
     void SceneGame::resize( )
     {
         camera( ).setAspectRatio( env.getWindowAspectRatio( ) );
+    }
+
+    void SceneGame::UpdateGameStart( )
+    {
+        if ( !horagai ) return;
+        if ( !horagai->IsPlaying( ) )
+        {
+            mojiManager.End( );
+            horagai = nullptr;
+        }
     }
 
     void SceneGame::UpdateDamage( )
@@ -140,10 +149,12 @@ namespace User
     void SceneGame::UpdateNextStage( )
     {
         // エネミーが全滅したら、次のステージを準備。
-        if ( enemyManager->IsEmpty( ) && !fieldManager->IsLastField( ) && TRData::enemyKill.IsComplete( ) )
+        if ( enemyManager->IsEmpty( ) && !fieldManager->IsLastField( ) )
         {
             fieldManager->End( );
         }
+
+        fieldManager->IsChange( );
 
         // ステージの移動が終了したら次のステージへ。
         if ( !fieldManager->IsLastField( ) && fieldManager->IsChange( ) )
@@ -181,19 +192,9 @@ namespace User
             effectManager->EffectRegister( enemyBulletManager->EffectRecovery( ) );
             effectManager->Update( );
         }
-        /////////////////////////////////ここ！！
         if ( ( TRData::enemyKill.IsComplete( ) ) && ( !special.getIsSpecial( ) ) && ( !fieldManager->IsMoveing( ) ) ) {
             time++;
         }
-  /*      if ( ( player.NowMp( ) == player.MaxMp( ) ) && ( !ismpmax ) ) {
-            mpmax->Gain( 0.5f );
-            mpmax->Play( );
-            ismpmax = true;
-        }
-        if ( ( !( player.NowMp( ) == player.MaxMp( ) ) ) && ( ismpmax ) ) {
-            ismpmax = false;
-        }*/
-        /////////////////////////////////
 
         mojiManager.Update( );
     }
@@ -202,6 +203,19 @@ namespace User
         if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_s ) )
         {
             special.goSpecialMode( );
+        }
+
+        if ( TRData::special.IsStopUpdate( ) )
+        {
+            talk->Update( );
+            if ( TRData::IsSerifTalked( ) )
+            {
+                TRData::special.TutorialEnd( );
+                mpmax->Gain( 1.f );
+                mpmax->Play( );
+                special.goSpecialMode( );
+
+            }
         }
 
         // スペシャルは最初にアップデートします。
@@ -226,218 +240,8 @@ namespace User
             player.TranseNowMp( enemyBulletManager->PlayerSpecialAttackToEnemyDamage( ) );
         }
     }
-    void SceneGame::UpdateDebugTutorialClear( )
+    void SceneGame::UpdateGameEnd( )
     {
-        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_1 ) )
-        {
-            TRData::spawn.TutorialEnd( );
-        }
-        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_2 ) )
-        {
-            TRData::attackCircle.TutorialEnd( );
-        }
-        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_3 ) )
-        {
-            TRData::guard.TutorialEnd( );
-        }
-        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_4 ) )
-        {
-            TRData::playerAttack.TutorialEnd( );
-        }
-        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_5 ) )
-        {
-            TRData::special.TutorialEnd( );
-        }
-    }
-    void SceneGame::UpdateTutorialClear( )
-    {
-        if ( TRData::spawn.IsStopUpdate( ) )
-        {
-            talk->Update( );
-            if ( TRData::IsSerifTalked( ) ) TRData::spawn.TutorialEnd( );
-        }
-        if ( TRData::attackCircle.IsStopUpdate( ) )
-        {
-            talk->Update( );
-            if ( TRData::IsSerifTalked( ) ) TRData::attackCircle.TutorialEnd( );
-        }
-
-        if ( TRData::guard.IsStopUpdate( ) )
-        {
-            static bool isTalked = false;
-            if ( !isTalked )
-            {
-                talk->Update( );
-                if ( TRData::IsSerifTalked( ) ) isTalked = true;
-                return;
-            }
-
-            Vec2f left( env.getWindowWidth( ) / 2 - 256, env.getWindowHeight( ) / 2 );
-            Vec2f right( env.getWindowWidth( ) / 2 + 256, env.getWindowHeight( ) / 2 );
-            handAnimation.updateGuard( left, right, Vec2f( 512, 512 ) );
-
-            description->SetMode( Description::Mode::BOUGYO );
-
-            // ディフェンスに使う関数。
-            player.UpdateDeffenceOfTouch( );
-
-            if ( TRData::guard.IsSuccessFull( ) )
-            {
-                description->SetMode( Description::Mode::NORMAL );
-                TRData::guard.TutorialEnd( );
-                isTalked = false;
-            }
-            else if ( player.Command( ) == CommandType::GUARD && enemyManager->EnemyToPlayerGuardCheck( player.GuardLine( ), camera( ) ) )
-            {
-                TRData::talkString.clear( );
-                TRData::talkString.push_front( u8"そうそうその調子。" );
-
-                TRData::guard.Update( true );
-            }
-            else if ( player.Command( ) == CommandType::GUARD )
-            {
-                TRData::talkString.clear( );
-                TRData::talkString.push_front( u8"そのまま剣を赤い円の中に入れてみて！" );
-
-                TRData::guard.Update( false );
-            }
-            else
-            {
-                TRData::talkString.clear( );
-                TRData::talkString.push_front( u8"両手を握り続けてみて！ ガードになるわよ。" );
-
-                TRData::guard.Update( false );
-            }
-        }
-
-        if ( TRData::playerAttack.IsStopUpdate( ) )
-        {
-            static bool isTalked = false;
-            if ( !isTalked )
-            {
-                talk->Update( );
-                if ( TRData::IsSerifTalked( ) ) isTalked = true;
-                return;
-            }
-
-            Vec2f end( env.getWindowWidth( ) / 2 - 256, env.getWindowHeight( ) / 2 );
-            Vec2f begin( env.getWindowWidth( ) / 2 + 256, env.getWindowHeight( ) / 2 );
-            handAnimation.updateAttack( begin, end, Vec2f( 512, 512 ) );
-
-            description->SetMode( Description::Mode::KOUGEKI );
-
-            // 攻撃時に必要な関数。
-            player.UpdateDeffenceOfTouch( );
-            UpdateDamage( );
-            enemyManager->update( camera( ) );
-            UpdateScore( );
-            UpdateCombo( );
-
-            bool isHit = false;
-            for ( auto& obj : moveInput.Lines( ) )
-            {
-                if ( 0 != enemyManager->PlayerToEnemyAttackCheck( obj, camera( ) ) )
-                {
-                    isHit = true;
-                    break;
-                }
-            }
-
-            if ( enemyManager->IsEmpty( ) )
-            {
-                description->SetMode( Description::Mode::NORMAL );
-                TRData::playerAttack.TutorialEnd( );
-                isTalked = false;
-            }
-            else if ( isHit )
-            {
-                TRData::talkString.clear( );
-                TRData::talkString.push_front( u8"そうそうそんな感じよ！" );
-            }
-            else if ( player.Command( ) == CommandType::GUARD )
-            {
-                TRData::talkString.clear( );
-                TRData::talkString.push_front( u8"それはガードよ。片方の手を握って動かすの！" );
-            }
-            else if ( talk->IsAnyPushTouch( ) )
-            {
-                TRData::talkString.clear( );
-                TRData::talkString.push_front( u8"そのまま手を動かすのよ！" );
-            }
-            else if ( talk->IsAnyPullTouch( ) )
-            {
-                TRData::talkString.clear( );
-                TRData::talkString.push_front( u8"手を握り続けて動かしてみて。" );
-            }
-        }
-
-        if ( TRData::enemyKill.IsStopUpdate( ) )
-        {
-            player.UpdateDeffenceOfTouch( );
-
-            talk->Update( );
-            if ( TRData::IsSerifTalked( ) )
-            {
-                mojiManager.Setup( "JSON/GameStart.json" );
-                TRData::enemyKill.TutorialEnd( );
-            }
-        }
-
-        if ( TRData::special.IsStopUpdate( ) )
-        {
-            talk->Update( );
-            if ( TRData::IsSerifTalked( ) )
-            {
-                TRData::special.TutorialEnd( );
-                mpmax->Gain( 1.f );
-                mpmax->Play( );
-                special.goSpecialMode( );
-
-            }
-        }
-    }
-    void SceneGame::update( )
-    {
-        camera.Update( );
-
-        if ( !special.getIsSpecial( ) )
-        {
-            moveInput.Begin( UI->ComboNumber( ) );
-            if ( player.Command( ) == GUARD ) moveInput.InputInvalidation( );
-        }
-
-        UpdateDebugTutorialClear( );
-
-        UpdateTutorialClear( );
-
-        UpdateSpecial( );
-
-        UpdateDamageExpression( );
-
-        UpdateAllInstans( );
-
-        UpdateNextStage( );
-
-        if ( !special.getIsSpecial( ) ) moveInput.End( );
-    }
-    void SceneGame::draw( )
-    {
-        beginDrawMain( );
-        drawMain( );
-        endDrawMain( );
-
-        beginDrawUI( );
-        drawUI( );
-        endDrawUI( );
-    }
-    void SceneGame::select( )
-    {
-        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_r ) )
-        {
-            create( new SceneResult( UI->Score( ), UI->MaxComboNumber( ), player.NowHp( ) + player.NowMp( ), time / 60 ) );///////ここ！！
-            return;
-        }
-
         // ラスボスを倒し終わったら、何らかのアクション後、次のシーンへ。
         if ( enemyManager->IsEmpty( ) && fieldManager->IsLastField( ) && sceneChangeFrame != 0 )
         {
@@ -460,6 +264,48 @@ namespace User
             damageColor.a = std::min( damageColor.a + 0.005, 0.6 );
 
             mojiManager.ReCall( "JSON/GameOver.json" );
+        }
+    }
+    void SceneGame::update( )
+    {
+        camera.Update( );
+
+        if ( !special.getIsSpecial( ) )
+        {
+            moveInput.Begin( UI->ComboNumber( ) );
+            if ( player.Command( ) == GUARD ) moveInput.InputInvalidation( );
+        }
+
+        UpdateGameStart( );
+
+        UpdateSpecial( );
+
+        UpdateDamageExpression( );
+
+        UpdateAllInstans( );
+
+        UpdateNextStage( );
+
+        UpdateGameEnd( );
+
+        if ( !special.getIsSpecial( ) ) moveInput.End( );
+    }
+    void SceneGame::draw( )
+    {
+        beginDrawMain( );
+        drawMain( );
+        endDrawMain( );
+
+        beginDrawUI( );
+        drawUI( );
+        endDrawUI( );
+    }
+    void SceneGame::select( )
+    {
+        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_r ) )
+        {
+            create( new SceneResult( UI->Score( ), UI->MaxComboNumber( ), player.NowHp( ) + player.NowMp( ), time / 60 ) );///////ここ！！
+            return;
         }
 
         if ( sceneChangeFrame == 0 )
@@ -550,26 +396,6 @@ namespace User
                       int( special.getSpecialType( ) ) );
 
             talk->Draw( Vec2f( 0, env.getWindowHeight( ) ) + Vec2f( 0, -220 ) );
-
-            description->Draw( Vec2f( 230, env.getWindowHeight( ) ) + Vec2f( 0, -245 ) );
-
-            if ( TRData::guard.IsStopUpdate( ) )
-            {
-                gl::pushModelView( );
-                gl::translate( env.getWindowWidth( ) / 2 - bougyo->getWidth( ) / 2, 50 );
-                gl::draw( *bougyo );
-                gl::popModelView( );
-                handAnimation.drawGuard( Vec2f( 600, 50 ) );
-                TRData::guard.Draw( );
-            }
-            else if ( TRData::playerAttack.IsStopUpdate( ) )
-            {
-                gl::pushModelView( );
-                gl::translate( env.getWindowWidth( ) / 2 - kougeki->getWidth( ) / 2, 50 );
-                gl::draw( *kougeki );
-                gl::popModelView( );
-                handAnimation.drawAttack( Vec2f( 600, 50 ) );
-            }
 
             mojiManager.Draw( env.getWindowCenter( ), 135 );
         }

@@ -46,6 +46,7 @@ namespace User
         void drawUI( );
         void endDrawUI( );
     private:
+        void UpdateGameStart( );
         void UpdateDamage( );
         void UpdateColor( );
         void UpdateScore( );
@@ -54,9 +55,7 @@ namespace User
         void UpdateNextStage( );
         void UpdateAllInstans( );
         void UpdateSpecial( );
-    private:
-        void UpdateDebugTutorialClear( );
-        void UpdateTutorialClear( );
+        void UpdateGameEnd( );
     private:
         //=======================================
         // ユーマヨが管理するもののインスタンス化。
@@ -71,11 +70,7 @@ namespace User
         int sceneChangeFrame = maxSceneChangeFrame;
         cinder::ColorA damageColor;
         TalkRef talk;
-        DescriptionRef description;
-        cinder::gl::Texture* kougeki;
-        cinder::gl::Texture* bougyo;
         MoveInput moveInput;
-        HundAnimation handAnimation;
         MojiManager mojiManager;
         //=======================================
 
@@ -98,9 +93,6 @@ namespace User
         Audio* mpmax;
         bool ismpmax;
         Audio* horagai;
-        bool isTutorialStart = false;
-        bool isTutorialEnd = false;
-        bool isGameStart = false;
         //=======================================
     };
 }

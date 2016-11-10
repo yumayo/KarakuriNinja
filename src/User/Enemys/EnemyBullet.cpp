@@ -13,6 +13,8 @@ namespace User
     EnemyBullet::EnemyBullet( cinder::Vec3f pos, const cinder::CameraPersp& camera )
         : EnemyBase( pos, camera, Status( 6.0F, 4 ) )
     {
+        timer.Advance( 120 );
+
         int index = 1;
         ‘Ò‹@ = &GData::FindTexture( "Enemy/Bullet/Bullet (" + std::to_string( index++ ) + ").png" );
         UŒ‚ƒ‚[ƒVƒ‡ƒ“‰æ‘œ = &GData::FindTexture( "Enemy/Bullet/Bullet (" + std::to_string( index++ ) + ").png" );

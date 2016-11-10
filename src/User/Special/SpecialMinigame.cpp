@@ -7,9 +7,9 @@ void SpecialMinigame::draw()
 	drawBackground();
 
 	drawBackCircles();
-
-	drawInfo();
 	drawBackninja();
+	drawInfo();
+	
 	if(startend())
 	gage_.draw();
 	for (auto &itr : circles) {
@@ -179,7 +179,7 @@ void SpecialMinigame::drawInfo()
 {
 	if (startend()) {
 		gl::pushModelView();
-		gl::translate(Vec2f(app::getWindowWidth() / 2, 100-50*info_t_));
+		gl::translate(Vec2f(app::getWindowWidth() / 2, 250-150*info_t_));
 		gl::color(ColorA(0, 0, 0, infoalfa_));
 		cursor_->enableAndBind();
 		gl::drawSolidRect(ci::Rectf(-infosize, infosize));
@@ -191,12 +191,12 @@ void SpecialMinigame::drawInfo()
 void SpecialMinigame::drawBackninja()
 {
 	if (!startend())return;
-	Vec2f size = Vec2f(500,250);
+	Vec2f size = env.getWindowSize();
 	gl::pushModelView();
-	gl::translate(Vec2f(app::getWindowWidth() / 2, app::getWindowHeight()/2+70));
+	gl::translate(env.getWindowSize()/2);
 	gl::color(ColorA(1, 1, 1, infoalfa_/1.2f));
 	backninja_->enableAndBind();
-	gl::drawSolidRect(ci::Rectf(-size,size));
+	gl::drawSolidRect(ci::Rectf(-size/2,size/2));
 	backninja_->disable();
 	gl::color(ColorA(1, 1, 1, 1));
 	gl::popModelView();
@@ -204,8 +204,12 @@ void SpecialMinigame::drawBackninja()
 void SpecialMinigame::infoUpdate()
 {
 	if (startend()) {
-		Vec2f startsize = Vec2f(750, 250);
-		Vec2f endsize = Vec2f(450, 150);
+		Vec2f startsize;
+		startsize.x = env.getWindowWidth() / 2.0f;
+		startsize.y = startsize.x*(float(cursor_->getHeight()) / float(cursor_->getWidth()));
+		Vec2f endsize;
+		endsize.x= env.getWindowWidth() / 3.0f;
+		endsize.y = endsize.x*(float(cursor_->getHeight()) / float(cursor_->getWidth()));
 		Easing::tCount(info_t_,1.0f);
 		infosize.x= EasingBackIn(info_t_, startsize.x, endsize.x);
 		infosize.y = EasingBackIn(info_t_, startsize.y, endsize.y);
