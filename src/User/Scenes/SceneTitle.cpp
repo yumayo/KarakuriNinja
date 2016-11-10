@@ -26,7 +26,7 @@ namespace User
         pushKurikoShuriken( );
         pushBossShuriken( );
         bgm->Looping( true );
-        bgm->Gain( 0.5f );
+        bgm->Gain( 0.7f );
         bgm->Play( );
         enablenext = false;
         iconangle = 0.0f;

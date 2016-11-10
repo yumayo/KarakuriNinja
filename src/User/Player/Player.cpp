@@ -13,6 +13,18 @@ void Player::TranseNowMp(int value_)
 	nowMp = Clamp(nowMp, MIN_MP, maxMp);
 }
 
+void Player::Reset( )
+{
+    slashEffect = Slash();
+    attackTask = AttackFactory();
+    line = Line();
+    isAttack = false;
+
+    deffence = Deffence();
+    isGuard = false;
+    nowCommand = NONE;
+}
+
 void Player::Zkoo()
 {
 	if (zkoo.IsHandUsing())

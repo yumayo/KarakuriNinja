@@ -379,7 +379,7 @@ namespace User
             // スピードは0にします。滑っちゃうので。
             object.Speed( Vec3f::zero( ) );
             // 次の攻撃までのフレームを代入。
-            timer.Advance( randInt( 60, 120 ) );
+            timer.Advance( randInt( 180, 280 ) );
             SetFunction( &EnemyBoss::タイマーが鳴るまで待機 );
             return;
         }
@@ -457,7 +457,7 @@ namespace User
         else
         {
             // タイマーをセットしてまた待機状態にします。
-            timer.Advance( randInt( 180, 240 ) );
+            timer.Advance( randInt( 240, 340 ) );
 
             texture = 待機;
 

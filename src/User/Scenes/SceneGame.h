@@ -106,6 +106,7 @@ namespace User
         Audio* horagai;
         
         std::vector<Haguruma> hagurumas;
+        float bgmGain = 0.6;
         //=======================================
     };
 }

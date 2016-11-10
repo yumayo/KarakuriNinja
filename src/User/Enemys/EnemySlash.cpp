@@ -62,7 +62,7 @@ namespace User
     }
     bool EnemySlash::Attack( const cinder::CameraPersp& camera )
     {
-        return isAttack && IsLive( );
+        return isAttack && IsLive( ) && !IsKnockBack( );
     }
     void EnemySlash::Gravitate( )
     {

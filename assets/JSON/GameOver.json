@@ -6,7 +6,7 @@
       "beginPosition": [ 0.0, -300.0 ],
       "endPosition": [ 0.0, 0.0 ],
       "beginSize": [ 0.0, 0.0 ],
-      "endSize": [ 130, 130 ],
+      "endSize": [ 200, 200 ],
       "texture": "mojiBack.png",
       "moji": "G"
     },
@@ -16,7 +16,7 @@
       "beginPosition": [ 0.0, -300.0 ],
       "endPosition": [ 0.0, 0.0 ],
       "beginSize": [ 0.0, 0.0 ],
-      "endSize": [ 130, 130 ],
+      "endSize": [ 200, 200 ],
       "texture": "mojiBack.png",
       "moji": "a"
     },
@@ -26,7 +26,7 @@
       "beginPosition": [ 0.0, -300.0 ],
       "endPosition": [ 0.0, 0.0 ],
       "beginSize": [ 0.0, 0.0 ],
-      "endSize": [ 130, 130 ],
+      "endSize": [ 200, 200 ],
       "texture": "mojiBack.png",
       "moji": "m"
     },
@@ -36,7 +36,7 @@
       "beginPosition": [ 0.0, -300.0 ],
       "endPosition": [ 0.0, 0.0 ],
       "beginSize": [ 0.0, 0.0 ],
-      "endSize": [ 130, 130 ],
+      "endSize": [ 200, 200 ],
       "texture": "mojiBack.png",
       "moji": "e"
     },
@@ -46,7 +46,7 @@
       "beginPosition": [ 0.0, -300.0 ],
       "endPosition": [ 0.0, 0.0 ],
       "beginSize": [ 0.0, 0.0 ],
-      "endSize": [ 130, 130 ],
+      "endSize": [ 200, 200 ],
       "texture": "mojiBack.png",
       "moji": "O"
     },
@@ -56,7 +56,7 @@
       "beginPosition": [ 0.0, -300.0 ],
       "endPosition": [ 0.0, 0.0 ],
       "beginSize": [ 0.0, 0.0 ],
-      "endSize": [ 130, 130 ],
+      "endSize": [ 200, 200 ],
       "texture": "mojiBack.png",
       "moji": "v"
     },
@@ -66,7 +66,7 @@
       "beginPosition": [ 0.0, -300.0 ],
       "endPosition": [ 0.0, 0.0 ],
       "beginSize": [ 0.0, 0.0 ],
-      "endSize": [ 130, 130 ],
+      "endSize": [ 200, 200 ],
       "texture": "mojiBack.png",
       "moji": "e"
     },
@@ -76,7 +76,7 @@
       "beginPosition": [ 0.0, -300.0 ],
       "endPosition": [ 0.0, 0.0 ],
       "beginSize": [ 0.0, 0.0 ],
-      "endSize": [ 130, 130 ],
+      "endSize": [ 200, 200 ],
       "texture": "mojiBack.png",
       "moji": "r"
     }

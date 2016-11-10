@@ -98,7 +98,8 @@ public:
 	float NormalizedMp() { return static_cast<float>(nowMp) / static_cast<float>(maxMp); }
 
 	CommandType Command() { return nowCommand; }
-
+    
+    void Reset( );
 
 private:
 	int nowHp;

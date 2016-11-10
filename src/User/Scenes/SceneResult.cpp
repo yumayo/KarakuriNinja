@@ -518,10 +518,10 @@ namespace User
             gl::popModelView( );
             if ( !( ranking == ( i + 1 ) ) || delay_t >= 1.0f ) {
                 if ( ( pos.y > -200 ) && ( pos.y < env.getWindowHeight( ) + 200 ) && icons[i].isscoredraw ) {
-                    tables.Draw( std::to_string( icons[i].rank )+u8"ˆÊ", pos + Vec2f( -icons[i].size.x / 2 + 80, -tables.BoundingBox( std::to_string( icons[i].rank ) ).getHeight( ) / 2.2F ), ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::LEFTUP );
+                    tables.Draw( std::to_string( icons[i].rank )+u8"ˆÊ", pos + Vec2f( -icons[i].size.x / 2 + 80, -tables.BoundingBox( std::to_string( icons[i].rank ) ).getHeight( ) / 2.45F ), ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::LEFTUP );
                 }
                 if ( ( pos.y > -200 ) && ( pos.y < env.getWindowHeight( ) + 200 ) && icons[i].isscoredraw ) {
-                    tables.Draw( std::to_string( icons[i].score ), pos + Vec2f( icons[i].size.x / 2 - 70, -tables.BoundingBox( std::to_string( icons[i].rank ) ).getHeight( ) / 2.2F ), ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
+                    tables.Draw( std::to_string( icons[i].score ), pos + Vec2f( icons[i].size.x / 2 - 70, -tables.BoundingBox( std::to_string( icons[i].rank ) ).getHeight( ) / 2.45F ), ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
                 }
             }
         }
@@ -571,9 +571,9 @@ namespace User
                 gl::drawSolidRect( Rectf( -size / 2, size / 2 ) );
                 makimonotex2->disable( );
                 gl::popModelView( );
-                tables.Draw( std::to_string( icons[ranking - 1].rank ) + u8"ˆÊ", pos + Vec2f( -icons[ranking - 1].size.x / 2 + 80, -tables.BoundingBox( std::to_string( icons[ranking - 1].rank ) ).getHeight( ) / 2.2F ),
+                tables.Draw( std::to_string( icons[ranking - 1].rank ) + u8"ˆÊ", pos + Vec2f( -icons[ranking - 1].size.x / 2 + 80, -tables.BoundingBox( std::to_string( icons[ranking - 1].rank ) ).getHeight( ) / 2.45F ),
 					ColorA(0.5f+0.5f*sin(delay_t*20.f+(M_PI*(3.f/2.f))), 0, 0, 1), User::Fonts::Mode::LEFTUP );
-                tables.Draw( std::to_string( icons[ranking - 1].score ), pos + Vec2f( icons[ranking - 1].size.x / 2 - 70, -tables.BoundingBox( std::to_string( icons[ranking - 1].rank ) ).getHeight( ) / 2.2F ),
+                tables.Draw( std::to_string( icons[ranking - 1].score ), pos + Vec2f( icons[ranking - 1].size.x / 2 - 70, -tables.BoundingBox( std::to_string( icons[ranking - 1].rank ) ).getHeight( ) / 2.45F ),
 					ColorA(0.5f + 0.5f*sin(delay_t*20.f + (M_PI*(3.f / 2.f))), 0, 0, 1), User::Fonts::Mode::RIGHTUP );
             }
         }

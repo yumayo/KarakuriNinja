@@ -7,7 +7,7 @@ namespace User
 	using namespace cinder;
 
 	MojiManager::MojiManager()
-		: font(u8"HGs‘‘Ì", 128)
+		: font(u8"HGs‘‘Ì", 200)
 	{
 
 

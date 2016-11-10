@@ -29,7 +29,7 @@ namespace User
         // ‘å‚¿‚á‚ñ‚ªŠÇ—‚·‚é‚à‚Ì‚ðì¬B
         mainbgm = &GData::FindAudio( "BGM/mainbgm0.wav" );
         mainbgm->Looping( true );
-        mainbgm->Gain( 0.4 );
+        mainbgm->Gain( bgmGain );
         mainbgm->Play( );
         hagurumas.push_back( Haguruma( Vec2f( env.getWindowWidth( )*0.1f, env.getWindowHeight( )*0.15f ),
                                        Vec2f( 350, 350 ), 1.5f, 0.3f, 5.f, HagurumaType::LEFTHAGURUMA ) );

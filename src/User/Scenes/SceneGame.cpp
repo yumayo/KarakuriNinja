@@ -15,6 +15,8 @@ namespace User
     SceneGame::SceneGame( )
         : mainBGMfadeOut( 100 )
     {
+
+
         TRData::Reset( );
 
         // ƒ†[ƒ}ƒˆ‚ªŠÇ—‚·‚é‚à‚Ì‚ðì¬B
@@ -40,7 +42,7 @@ namespace User
 
         bossbgm = &GData::FindAudio( "BGM/lastboss.wav" );
         bossbgm->Looping( true );
-        bossbgm->Gain( 0.4 );
+        bossbgm->Gain( bgmGain );
         watercount = 0;
         fusuma = std::make_shared<Fusuma>( );
         time = 0;
@@ -183,6 +185,11 @@ namespace User
             fieldManager->ChangeField( );
             enemyManager = std::make_shared<EnemyManager>( enemyCamera->GetCamera( ), fieldManager->FieldDataPath( ) );
             enemyBulletManager = std::make_shared<EnemyBulletManager>( );
+
+            if ( fieldManager->IsLastField( ) )
+            {
+                player.Reset( );
+            }
         }
 
         if ( fieldManager->IsMoveing( ) )
@@ -312,7 +319,7 @@ namespace User
             isGameClear = true;
 
 
-            float gain = ( static_cast<float>( sceneChangeFrame ) / maxSceneChangeFrame ) * 0.4F;
+            float gain = ( static_cast<float>( sceneChangeFrame ) / maxSceneChangeFrame ) * bgmGain;
             bossbgm->Gain( gain );
             mainbgm->Gain( gain );
             sceneChangeFrame = std::max( sceneChangeFrame - 1, 0 );
@@ -326,7 +333,7 @@ namespace User
         {
             isGameClear = false;
 
-            float gain = ( static_cast<float>( sceneChangeFrame ) / maxSceneChangeFrame ) * 0.4F;
+            float gain = ( static_cast<float>( sceneChangeFrame ) / maxSceneChangeFrame ) * bgmGain;
             bossbgm->Gain( gain );
             mainbgm->Gain( gain );
             sceneChangeFrame = std::max( sceneChangeFrame - 1, 0 );
@@ -340,7 +347,7 @@ namespace User
     {
         if ( enemyManager->IsMainBGMGainDown( ) )
         {
-            float gain = ( 1.0F - mainBGMfadeOut.NormalizedRectSizeFrame( ) ) * 0.4F;
+            float gain = ( 1.0F - mainBGMfadeOut.NormalizedRectSizeFrame( ) ) * bgmGain;
             mainbgm->Gain( gain );
             mainBGMfadeOut.Update( );
         }
@@ -527,7 +534,7 @@ namespace User
         gl::color( damageColor );
         gl::drawSolidRect( Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
 
-        mojiManager.Draw( env.getWindowCenter( ), 135 );
+        mojiManager.Draw( env.getWindowCenter( ), 220 );
 
         fusuma->drawFusuma( );
     }

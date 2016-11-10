@@ -60,7 +60,7 @@ namespace User
         FieldManagerRef fieldManager;
         EffectManagerRef effectManager;
         int combo = 0;
-
+        float bgmGain = 0.6f;
         CameraDataRef fieldCamera;
         CameraDataRef enemyCamera;
         MoveInput moveInput;
