@@ -78,6 +78,7 @@ namespace User
             float radius = Vec3f( size - vec ).length( ) / 2.0F * colliedSize;
             drainMp += enemyRef->Hit( CheckDefLineOfCircle( line_, vec, radius ) );
         } );
+        score += drainMp * 100;
         return drainMp;
     }
 
@@ -88,6 +89,7 @@ namespace User
         {
             drainMp += enemyRef->Damage( damage );
         } );
+        score += drainMp * 100;
         return drainMp;
     }
 
@@ -156,7 +158,15 @@ namespace User
 
     void EnemyManager::EnemyEraser( )
     {
-        auto eraceList = std::remove_if( enemyList.begin( ), enemyList.end( ), [ ] ( EnemyBaseRef& enemyRef ) { return !enemyRef->IsActive( ); } );
+        auto eraceList = std::remove_if( enemyList.begin( ), enemyList.end( ), [ this ] ( EnemyBaseRef& enemyRef ) 
+        { 
+            if ( !enemyRef->IsActive( ) )
+            {
+                score += 1000;
+                return true;
+            }
+            return false;
+        } );
         enemyList.erase( eraceList, enemyList.end( ) );
     }
 

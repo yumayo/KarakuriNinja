@@ -12,6 +12,8 @@ namespace User
         , score( loadImage( app::loadAsset( "UI/Score.png" ) ) )
         , APEdgeBase( loadImage( app::loadAsset( "UI/APEdgeBase.png" ) ) )
         , HPEdgeBase( loadImage( app::loadAsset( "UI/HPEdgeBase.png" ) ) )
+        , font( u8"ÉÅÉCÉäÉI", 85 )
+        , scorePoint( 0 )
     { }
 
     void Interface::draw( float APNormalized, float HPNormalized )
@@ -23,6 +25,7 @@ namespace User
 
         auto translateScorePosition = Vec2f( -11, -26 );
         textureDraw( score, rightDown + Vec2f( -score.getWidth( ), 0 ) + translateScorePosition );
+        font.Draw( std::to_string( scorePoint ), rightDown + Vec2f( -score.getWidth( ) / 2.0F + 32, -score.getHeight( ) / 2.0F - 32 ) + translateScorePosition, Color::white( ), Fonts::Mode::RIGHTDOWN );
 
         textureDraw( HPEdge, leftDown );
         textureDraw( HPEdgeBase, leftDown,
@@ -32,6 +35,7 @@ namespace User
         textureDraw( APEdge, leftDown + translateAPEdgePosition );
         textureDraw( APEdgeBase, leftDown + translateAPEdgePosition,
                      Area( 15, 0, 340, APEdgeBase.getHeight( ) ), APNormalized );
+
     }
 
     void Interface::update( )

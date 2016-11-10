@@ -18,6 +18,7 @@ namespace User
         float colliedSize = 1.5F;
         EnemyList enemyList;
         EnemyBulletList bulletList;
+        int score = 0;
     public:
         EnemyManager( const cinder::CameraPersp& camera, std::string const& path );
         void update( cinder::CameraPersp const& camera );
@@ -45,6 +46,7 @@ namespace User
         // エネミーの当たり判定域を描画します。
         void DrawCollisionCircle( cinder::CameraPersp const& camera );
         bool IsEmpty( );
+        int ScoreRecovery( ) { auto temp = score; score = 0; return temp; }
     private:
         void Each( std::function<void( EnemyBaseRef& )> function );
         // エネミーのHPが０だったら削除

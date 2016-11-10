@@ -201,6 +201,180 @@ namespace User
         }
     }
 
+    MoveInput::MoveInput( )
+        : isInput( false )
+        , tickFrame( 40 )
+        , frame( tickFrame )
+    {
+    }
+    void MoveInput::Begin( )
+    {
+        UpdateAttackMotionOfTouch( );
+        UpdateAttackMotionOfZKOO( );
+        FrameUpdate( );
+        slashEffect.Update( );
+    }
+    void MoveInput::Draw( )
+    {
+        slashEffect.Draw( );
+    }
+    void MoveInput::End( )
+    {
+        isInput = false;
+    }
+    bool MoveInput::IsHitCircle( cinder::Vec2f pos, float size )
+    {
+        return CheckDefLineOfCircle( line, pos, size ) < 1.0F && isInput;
+    }
+    void MoveInput::FrameUpdate( )
+    {
+        if ( frame == 0 ) frame = tickFrame;
+        frame = std::max( frame - 1, 0 );
+    }
+    bool MoveInput::IsHandHighSpeedMove( cinder::Vec2f pos )
+    {
+        CONSOLE << prevPos.distance( pos ) << std::endl;
+        return 50 < prevPos.distance( pos );
+    }
+    void MoveInput::UpdateAttackMotionOfTouch( )
+    {
+        auto touch = inputs.touch( );
+        auto ids = inputs.GetTouchHandleIDs( );
+        for ( auto id : ids )
+        {
+            SetAttackMotionOfTouch( id, touch );
+            MakeAttackMotionOfTouch( id, touch );
+        }
+    }
+    void MoveInput::SetAttackMotionOfTouch( uint32_t id, cinder::app::TouchEvent::Touch& touch )
+    {
+        if ( frame == tickFrame && inputs.isPressTouch( id, touch ) )
+        {
+            attackTask.Update( );
+
+            if ( slashEffect.Active( ) == true )
+            {
+                return;
+            }
+
+            //Motionに入っていない場合
+            if ( attackTask.IsMotioning( ) == false && slashEffect.Active( ) == false )
+            {
+                attackTask.ShiftIsMotioning( );
+            }
+
+            //Slashの開始時間になったら右手の位置を描画の最初の位置に入れます
+            if ( attackTask.IsStarted( ) == true )
+            {
+                attackTask.SetStartPos( touch.getPos( ) );
+                prevPos = touch.getPos( );
+                attackTask.ShiftIsStarted( );
+            }
+        }
+    }
+    void MoveInput::MakeAttackMotionOfTouch( uint32_t id, cinder::app::TouchEvent::Touch& touch )
+    {
+        if ( frame == 0 && inputs.isPressTouch( id, touch ) && IsHandHighSpeedMove( touch.getPos( ) ) )
+        {
+            //終了していいなら
+            if ( attackTask.IsEnded( ) == true )
+            {
+                attackTask.SetEndPos( touch.getPos( ) );
+                attackTask.ShiftIsEnded( );
+
+                //Lineが判定のために必要な最低基準を超えたら
+                if ( CheckLineDef( attackTask.HitLine( ) ) )
+                {
+                    line = attackTask.HitLine( );
+                    Effect effect = MakeAttackEffect( line.startPos, line.endPos );
+                    slashEffect.Set( effect.pos, effect.size, effect.angle );
+                    isInput = true;
+                }
+                //値の初期化
+                attackTask.Reset( );
+
+            }
+            attackTask.Reset( );
+        }
+        auto ids = inputs.GetTouchHandleIDs( );
+        //例外処理
+        //ex) 急に画面外にいったら など
+        if ( attackTask.IsMotioning( ) == true && static_cast<int>( ids.size( ) ) == 0 )
+        {
+            attackTask.Reset( );
+        }
+    }
+    void MoveInput::UpdateAttackMotionOfZKOO( )
+    {
+        // 新しいZKOOのマクロを使用して動かします。
+        // 内部でスクリーンタッチと同じ扱いができるようにしているので、こちらも同じような処理になっています。
+        auto ids = inputzkoo.GetHandleIDs( );
+        auto hand = inputzkoo.hand( );
+        for ( auto id : ids )
+        {
+            SetAttackMotionOfZKOO( id, hand );
+            MakeAttackMotionOfZKOO( id, hand );
+        }
+    }
+    void MoveInput::SetAttackMotionOfZKOO( uint32_t id, ZKOOHand& hand )
+    {
+        if ( frame == tickFrame && inputzkoo.isRecognition( id, hand ) )
+        {
+            attackTask.Update( );
+
+            if ( slashEffect.Active( ) == true )
+            {
+                return;
+            }
+
+            //Motionに入っていない場合
+            if ( attackTask.IsMotioning( ) == false && slashEffect.Active( ) == false )
+            {
+                attackTask.ShiftIsMotioning( );
+            }
+
+            //Slashの開始時間になったら右手の位置を描画の最初の位置に入れます
+            if ( attackTask.IsStarted( ) == true )
+            {
+                attackTask.SetStartPos( hand.Position( ) );
+                prevPos = hand.Position( );
+                attackTask.ShiftIsStarted( );
+            }
+        }
+    }
+    void MoveInput::MakeAttackMotionOfZKOO( uint32_t id, ZKOOHand& hand )
+    {
+        if ( frame == 0 && inputzkoo.isRecognition( id, hand ) && IsHandHighSpeedMove( hand.Position( ) ) )
+        {
+            //終了していいなら
+            if ( attackTask.IsEnded( ) == true )
+            {
+                attackTask.SetEndPos( hand.Position( ) );
+                attackTask.ShiftIsEnded( );
+
+                //Lineが判定のために必要な最低基準を超えたら
+                if ( CheckLineDef( attackTask.HitLine( ) ) )
+                {
+                    line = attackTask.HitLine( );
+                    Effect effect = MakeAttackEffect( line.startPos, line.endPos );
+                    slashEffect.Set( effect.pos, effect.size, effect.angle );
+                    isInput = true;
+                }
+                //値の初期化
+                attackTask.Reset( );
+
+            }
+            attackTask.Reset( );
+        }
+        auto ids = inputzkoo.GetHandleIDs( );
+        //例外処理
+        //ex) 急に画面外にいったら など
+        if ( attackTask.IsMotioning( ) == true && static_cast<int>( ids.size( ) ) == 0 )
+        {
+            attackTask.Reset( );
+        }
+    }
+
     Fonts::Fonts( std::string const& path, float size )
         : font( path, size )
     {
@@ -209,7 +383,7 @@ namespace User
     {
         font = Font( path, size );
     }
-    void Fonts::Draw( std::string const& string, cinder::Vec2f position, cinder::ColorA color )
+    void Fonts::Draw( std::string const & string, cinder::Vec2f position, cinder::ColorA color, Mode mode )
     {
         auto fontSize = font.getSize( );
 
@@ -230,30 +404,63 @@ namespace User
         // メイリオは細かい誤差を補正しています。
         if ( font.getName( ) == u8"メイリオ" )
         {
-            boundingLength += fontSize / 4.0F;
-
+            boundingLength += fontSize / 4.0F; // 横方向の誤差
             auto clearance = fontSize - maxBoundingHeight - fontSize / 8.0F;
+            auto correction = Vec2f( 0, -clearance ); // 縦方向の誤差
 
             auto size = Vec2f( boundingLength, maxBoundingHeight );
+            Vec2f trans;
+            switch ( mode )
+            {
+            case User::Fonts::Mode::LEFTDOWN:
+                trans = Vec2f( 0, 0 );
+                break;
+            case User::Fonts::Mode::CENTERCENTER:
+                trans = -size / 2.0F;
+                break;
+            case User::Fonts::Mode::RIGHTDOWN:
+                trans = Vec2f( -size.x, 0 );
+                break;
+            default:
+                break;
+            }
 
-            auto correction = Vec2f( 0, -clearance );
-
-            gl::drawString( string, position + correction - size / 2.0F, color, font );
+            gl::pushModelView( );
+            gl::translate( trans );
+            gl::drawString( string, position + correction, color, font );
 
         #ifdef _DEBUG
-            gl::drawStrokedRect( Rectf( position - size / 2.0F, position + size - size / 2.0F ) );
+            gl::drawStrokedRect( Rectf( position, position + size ) );
         #endif // _DEBUG
+            gl::popModelView( );
         }
         // 今のところメイリオ以外は誤差を補正しきれていません。
         else
         {
             auto size = Vec2f( boundingLength, maxBoundingHeight );
-
-            gl::drawString( string, position - size / 2.0F, color, font );
+            Vec2f trans;
+            switch ( mode )
+            {
+            case User::Fonts::Mode::LEFTDOWN:
+                trans = Vec2f( 0, 0 );
+                break;
+            case User::Fonts::Mode::CENTERCENTER:
+                trans = -size / 2.0F;
+                break;
+            case User::Fonts::Mode::RIGHTDOWN:
+                trans = Vec2f( -size.x, 0 );
+                break;
+            default:
+                break;
+            }
+            gl::pushModelView( );
+            gl::translate( trans );
+            gl::drawString( string, position, color, font );
 
         #ifdef _DEBUG
-            gl::drawStrokedRect( Rectf( position - size / 2.0F, position + size - size / 2.0F ) );
+            gl::drawStrokedRect( Rectf( position, position + size ) );
         #endif // _DEBUG
+            gl::popModelView( );
         }
     }
 

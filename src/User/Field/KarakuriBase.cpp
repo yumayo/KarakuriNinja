@@ -21,8 +21,10 @@ namespace User
 
     void KarakuriBase::draw( )
     {
+    #ifdef _DEBUG
         gl::color( ColorA( 1, 1, 0, 1 ) );
         gl::drawVector( object.Position( ), object.Position( ) + direction * 0.1 );
+    #endif // _DEBUG
 
         gl::pushModelView( );
         gl::translate( object.Position( ) );

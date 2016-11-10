@@ -22,8 +22,13 @@ namespace User
         UI = std::make_shared<Interface>( );
         gameClearFrame = 60 * 3;
         カメラを揺らす = false;
+        damageColor = ColorA( 1, 0, 0, 0 );
 
         player = Player( 100, 100 );
+        mainbgm.push_back( Audio( "BGM/mainbgm0.wav" ) );
+        mainbgm[0].Looping( true );
+        mainbgm[0].Gain( 0.4 );
+        mainbgm[0].Play( );
     }
     SceneGame::~SceneGame( )
     {
@@ -36,6 +41,7 @@ namespace User
 
     void SceneGame::UpdatePlayer( )
     {
+        player.Update( );
         player.AttackPhase( );
 
         int playerHP = player.NowHp( );
@@ -55,6 +61,7 @@ namespace User
         if ( playerHP != player.NowHp( ) )
         {
             カメラを揺らす = true;
+            damageColor.a += 0.2;
             timer.On( );
             timer.Advance( 60 );
         }
@@ -65,6 +72,15 @@ namespace User
             player.TranseNowMp( enemyBulletManager->PlayerToEnemyDamage( player.MakeLine( ), camera ) );
             player.ShiftIsAttack( );
         }
+    }
+    void SceneGame::UpdateColor( )
+    {
+        damageColor.a = std::max( damageColor.a - 0.01F, 0.0F );
+    }
+    void SceneGame::UpdateScore( )
+    {
+        UI->AddScore( enemyManager->ScoreRecovery( ) );
+        UI->AddScore( enemyBulletManager->ScoreRecovery( ) );
     }
     void SceneGame::update( )
     {
@@ -108,8 +124,8 @@ namespace User
         // エフェクト終了時、全てのエネミー及び弾にダメージを与えます。
         if ( special.getEffectEnd( ) )
         {
-            const float damagevalue = 5.f;
-            player.TranseNowMp( enemyManager->PlayerSpecialAttackToEnemyDamage( special.getspecialPower( )*damagevalue ) );
+            const float damagevalue = 10.0F;
+            player.TranseNowMp( enemyManager->PlayerSpecialAttackToEnemyDamage( special.getspecialPower( ) * damagevalue ) );
             player.TranseNowMp( enemyBulletManager->PlayerSpecialAttackToEnemyDamage( ) );
         }
 
@@ -121,6 +137,8 @@ namespace User
             enemyBulletManager->BulletRegister( enemyManager->BulletsRecovery( ) );
             enemyBulletManager->update( );
             UpdatePlayer( );
+            UpdateColor( );
+            UpdateScore( );
         }
 
         // エネミーが全滅したら、次のステージを準備。
@@ -135,7 +153,6 @@ namespace User
             fieldManager->ChangeField( );
             enemyManager = std::make_shared<EnemyManager>( camera, fieldManager->FieldDataPath( ) );
             enemyBulletManager = std::make_shared<EnemyBulletManager>( );
-            UI = std::make_shared<Interface>( );
         }
 
         // ラスボスを倒し終わったら、何らかのアクション後、次のシーンへ。
@@ -157,8 +174,23 @@ namespace User
     }
     void SceneGame::select( )
     {
+        if ( player.NowHp( ) <= 0.0F )
+        {
+            create( new SceneResult( UI->Score( ) ) );
+            return;
+        }
+
+        if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_e ) )
+        {
+            create( new SceneResult( UI->Score( ) ) );
+            return;
+        }
+
         if ( gameClearFrame == 0 )
-            create( new SceneResult( ) );
+        {
+            create( new SceneResult( UI->Score( ) ) );
+            return;
+        }
     }
     void SceneGame::beginDrawMain( )
     {
@@ -182,7 +214,9 @@ namespace User
     {
         gl::setMatrices( camera );
 
+    #ifdef _DEBUG
         gl::drawCoordinateFrame( );
+    #endif // _DEBUG
 
         fieldManager->Draw( );
 
@@ -227,13 +261,16 @@ namespace User
 
         special.draw( );
 
+        gl::color( damageColor );
+        gl::drawSolidRect( Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
+
         // 画面を薄い黒で塗りつぶす。
         if ( !inputzkoo.IsActive( ) )
         {
             gl::color( ColorA( 0, 0, 0, 0.5 ) );
             gl::drawSolidRect( Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
             gl::color( Color( 1, 1, 1 ) );
-            gl::drawSolidRect( Rectf(Vec2f(200, 400), env.getWindowSize()) );
+            gl::drawSolidRect( Rectf( Vec2f( 200, 400 ), env.getWindowSize( ) ) );
         }
 
         // ZKOOの表示
@@ -258,7 +295,7 @@ namespace User
                 }
             }
         }
-    }
+}
     void SceneGame::endDrawUI( )
     {
         gl::popMatrices( );

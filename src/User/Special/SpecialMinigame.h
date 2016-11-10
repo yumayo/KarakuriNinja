@@ -9,6 +9,7 @@
 #include"../Special/Circle.h"
 #include"../Special/InObject.h"
 #include"../Special/Gage.h"
+#include"ZKOO.hpp"
 using namespace cinder;
 class SpecialMinigame : public SpecialSceneBase {
 public:

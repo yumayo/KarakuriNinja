@@ -72,28 +72,28 @@ void Circle::setRoute()
 			Vec2f(app::getWindowWidth() - 500, 550), Vec2f(app::getWindowWidth() - 200, 200), Easing::EasingType::BounceOut, Easing::EasingType::Linear);//RIGHT�̏ꍇ
 		break;
 	case RouteType::ZIN:
-		setValue(Vec2f(200, 100), Vec2f(200, 700), Easing::EasingType::Linear, Easing::EasingType::Linear,//LEFT�̏ꍇ
-			Vec2f(1000, 700), Vec2f(1000, 100), Easing::EasingType::Linear, Easing::EasingType::Linear);//RIGHT�̏ꍇ
+		setValue(Vec2f(200, 200), Vec2f(200, 700), Easing::EasingType::Linear, Easing::EasingType::Linear,//LEFT�̏ꍇ
+			Vec2f(app::getWindowWidth() - 200, 700), Vec2f(app::getWindowWidth() - 200, 200), Easing::EasingType::Linear, Easing::EasingType::Linear);//RIGHT�̏ꍇ
 		break;
 	case RouteType::UI:
-		setValue(Vec2f(200, 100), Vec2f(200, 700), Easing::EasingType::Linear, Easing::EasingType::Linear,//LEFT�̏ꍇ
-			Vec2f(1000, 700), Vec2f(1000, 100), Easing::EasingType::Linear, Easing::EasingType::Linear);//RIGHT�̏ꍇ
+		setValue(Vec2f(200, 550), Vec2f(500, 200), Easing::EasingType::QuartIn, Easing::EasingType::Linear,//LEFT�̏ꍇ
+			Vec2f(app::getWindowWidth() - 200, 200), Vec2f(app::getWindowWidth() - 500, 550), Easing::EasingType::QuartIn, Easing::EasingType::Linear);//RIGHT�̏ꍇ
 		break;
 	case RouteType::SHA:
-		setValue(Vec2f(200, 100), Vec2f(200, 700), Easing::EasingType::Linear, Easing::EasingType::Linear,//LEFT�̏ꍇ
-			Vec2f(1000, 700), Vec2f(1000, 100), Easing::EasingType::Linear, Easing::EasingType::Linear);//RIGHT�̏ꍇ
+		setValue(Vec2f(500, 200), Vec2f(200, 550), Easing::EasingType::BounceOut, Easing::EasingType::Linear,//LEFT�̏ꍇ
+			Vec2f(app::getWindowWidth() - 500, 550), Vec2f(app::getWindowWidth() - 200, 200), Easing::EasingType::BounceOut, Easing::EasingType::Linear);//RIGHT�̏ꍇ
 		break;
 	case RouteType::TOU:
-		setValue(Vec2f(200, 100), Vec2f(200, 700), Easing::EasingType::Linear, Easing::EasingType::Linear,//LEFT�̏ꍇ
-			Vec2f(1000, 700), Vec2f(1000, 100), Easing::EasingType::Linear, Easing::EasingType::Linear);//RIGHT�̏ꍇ
+		setValue(Vec2f(200, 200), Vec2f(200, 700), Easing::EasingType::Linear, Easing::EasingType::Linear,//LEFT�̏ꍇ
+			Vec2f(app::getWindowWidth() - 200, 700), Vec2f(app::getWindowWidth() - 200, 200), Easing::EasingType::Linear, Easing::EasingType::Linear);//RIGHT�̏ꍇ
 		break;
 	case RouteType::HYOU:
-		setValue(Vec2f(200, 100), Vec2f(200, 700), Easing::EasingType::Linear, Easing::EasingType::Linear,//LEFT�̏ꍇ
-			Vec2f(1000, 700), Vec2f(1000, 100), Easing::EasingType::Linear, Easing::EasingType::Linear);//RIGHT�̏ꍇ
+		setValue(Vec2f(200, 550), Vec2f(500, 200), Easing::EasingType::QuartIn, Easing::EasingType::Linear,//LEFT�̏ꍇ
+			Vec2f(app::getWindowWidth() - 200, 200), Vec2f(app::getWindowWidth() - 500, 550), Easing::EasingType::QuartIn, Easing::EasingType::Linear);//RIGHT�̏ꍇ
 		break;
 	case RouteType::TEN:
-		setValue(Vec2f(200, 100), Vec2f(200, 700), Easing::EasingType::Linear, Easing::EasingType::Linear,//LEFT�̏ꍇ
-			Vec2f(1000, 700), Vec2f(1000, 100), Easing::EasingType::Linear, Easing::EasingType::Linear);//RIGHT�̏ꍇ
+		setValue(Vec2f(500, 200), Vec2f(200, 550), Easing::EasingType::BounceOut, Easing::EasingType::Linear,//LEFT�̏ꍇ
+			Vec2f(app::getWindowWidth() - 500, 550), Vec2f(app::getWindowWidth() - 200, 200), Easing::EasingType::BounceOut, Easing::EasingType::Linear);//RIGHT�̏ꍇ
 		break;
 	default:
 		break;

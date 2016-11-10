@@ -68,7 +68,7 @@ public:
 	Line GuardLine() { return deffence.GuardLine(); }
 
 	void Draw();
-
+	void Update();
 	int NowHp() { return nowHp; }
 
 	void TranseNowHp(int value_);

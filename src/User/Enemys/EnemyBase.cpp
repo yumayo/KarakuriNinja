@@ -83,15 +83,15 @@ namespace User
         CollideGround( );// 死んでいても実行します。
         Dying( );// 死んでいても実行します。
 
-    #ifdef _DEBUG
         // デバッグダメージ
         if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_0 ) ) Kill( );
-    #endif // _DEBUG
     }
     void EnemyBase::draw( )
     {
+    #ifdef _DEBUG
         gl::color( ColorA( 1, 1, 0, 1 ) );
         gl::drawVector( object.Position( ), object.Position( ) + object.Direction( ) * 0.1 );
+    #endif // _DEBUG
 
         gl::pushModelView( );
         gl::translate( object.Position( ) );
@@ -120,19 +120,19 @@ namespace User
     {
         if ( length <= 0.2F )
         {
-            HP -= 2.0F;
+            HP = std::max( HP - 3.0F, 0.0F );
             hitColor = Color( 1, 0, 0 );
             return 7;
         }
         else if ( length <= 0.5F )
         {
-            HP -= 1.5F;
+            HP = std::max( HP - 2.5F, 0.0F );
             hitColor = Color( 1, 0.3, 0.3 );
             return 5;
         }
         else if ( length <= 1.0F )
         {
-            HP -= 1.0F;
+            HP = std::max( HP - 1.5F, 0.0F );
             hitColor = Color( 1, 0.6, 0.6 );
             return 2;
         }
@@ -140,7 +140,8 @@ namespace User
     }
     int EnemyBase::Damage( int damage )
     {
-        HP -= damage;
+        if ( damage < 0 ) return 0;
+        HP = std::max( HP - damage, 0.0F );
         hitColor = Color( 1, 0, 0 );
         return 2;
     }

@@ -94,6 +94,23 @@ void SpecialSelect::chooseSpecial()//‚Æ‚è‚ ‚¦‚¸ƒ^ƒbƒ`‚ÌƒvƒbƒVƒ…‚Å‚â‚Á‚Ä‚¨‚«‚Ü‚µ‚
 			}
 		}
 	}
+
+	auto hand = inputzkoo.hand();
+	for (auto& i : inputzkoo.GetHandleIDs())
+	{
+		if (inputzkoo.isPush(i, hand))
+		{
+			for (int i = 0;i < icons.size();i++) {
+				if (circleCollision(hand.Position(), icons[i].pos, icons[i].size.x / 2.f)) {
+					ischoosed_ = true;
+					specialtype_ = (SpecialType)(i);
+					isshifteasing_ = true;
+					icons[i].shiftpos = Vec2f(app::getWindowWidth() / 2, icons[i].endpos.y);
+					return;
+				}
+			}
+		}
+	}
 }
 bool SpecialSelect::circleCollision(const Vec2f pos1, const Vec2f pos2, const float r_size, float level) {
 	float length = (pos1.x - pos2.x)*(pos1.x - pos2.x) + (pos1.y - pos2.y)*(pos1.y - pos2.y);

@@ -10,7 +10,7 @@
 # include "../Field/FieldManager.h"
 # include "../Interfaces/Interface.h"
 # include "../Utilitys/Yumayo.h"
-
+#include "../Utilitys/Audio.h"
 //Nomoto's include
 # include "../Player/Player.h"
 
@@ -29,9 +29,11 @@ namespace User
 	public:
 		virtual void draw() override;
 		virtual void update() override;
-		void UpdatePlayer();
-	public:
 		virtual void select() override;
+    public:
+        void UpdatePlayer( );
+        void UpdateColor( );
+        void UpdateScore( );
 	private:
 		void beginDrawMain();
 		void drawMain();
@@ -50,8 +52,10 @@ namespace User
         FieldManagerRef fieldManager;
 		InterfaceRef UI;
         int gameClearFrame;
+
         Timer timer;
         bool カメラを揺らす;
+        cinder::ColorA damageColor;
         //
 
         // 野本が管理するもののインスタンス化。
@@ -63,5 +67,6 @@ namespace User
 
         Special special;
         //
+		std::vector<Audio> mainbgm;
 	};
 }

@@ -236,3 +236,10 @@ void Player::Draw()
 	slashEffect.Draw();
 	deffence.Draw();
 }
+
+void Player::Update()
+{
+	if (inputs.isPushKey(Key::KEY_m) && inputs.isPressKey(Key::KEY_LCTRL)) {
+		nowMp = maxMp;
+	}
+}

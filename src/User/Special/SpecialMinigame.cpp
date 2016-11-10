@@ -127,6 +127,17 @@ void SpecialMinigame::updateTouch()
 			}
 		}
 	}
+	auto hand = inputzkoo.hand();
+	for (auto& i : inputzkoo.GetHandleIDs())
+	{
+		if (inputzkoo.isRecognition(i, hand))
+		{
+			for (int i = 0;i < circles.size();i++) {
+				if (circleCollision(hand.Position(), circles[i].getPos(), circles[i].getSize()))
+					circles[i].setIsSafe(true);//‚±‚±‚Å‚Ç‚Á‚¿‚àtrue‚É‚Å‚«‚½‚çtouch¬Œ÷
+			}
+		}
+	}
 }
 void SpecialMinigame::clearCircles()
 {
@@ -240,13 +251,13 @@ void SpecialMinigame::setTreeRoute(RouteType & routetype)
 	switch (step_)
 	{
 	case 0:
-		routetype = RouteType::SHA;
-		break;
-	case 1:
 		routetype = RouteType::TOU;
 		break;
-	case 2:
+	case 1:
 		routetype = RouteType::HYOU;
+		break;
+	case 2:
+		routetype = RouteType::TEN;
 		break;
 	default:
 		break;

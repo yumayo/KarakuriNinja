@@ -59,10 +59,7 @@ namespace User
         CollideGround( ); // 死んでいても実行します。
         if ( isDeadStop == false ) Dying( ); // 死んでいても実行します。
 
-    #ifdef _DEBUG
-                 // デバッグダメージ
         if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_0 ) ) Kill( );
-    #endif // _DEBUG
     }
     void EnemyBoss::draw( )
     {

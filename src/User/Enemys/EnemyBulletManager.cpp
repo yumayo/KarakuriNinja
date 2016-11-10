@@ -35,6 +35,7 @@ namespace User
             float radius = Vec3f( size - vec ).length( ) / 2.0F;
             drainMp += bulletRef->Hit( CheckDefLineOfCircle( line_, vec, radius ) );
         } );
+        score += drainMp * 100;
         return drainMp;
     }
 
@@ -45,6 +46,7 @@ namespace User
         {
             drainMp += bulletRef->Kill( );
         } );
+        score += drainMp * 100;
         return drainMp;
     }
 
@@ -64,8 +66,8 @@ namespace User
 
     int EnemyBulletManager::EnemyToPlayerDamage( Line & line_, const cinder::CameraPersp & camera )
     {
-        int totalDamage = 0;
-        Each( [ &totalDamage, &line_, &camera, this ] ( EnemyBulletBaseRef& bulletRef )
+        int damage = 0;
+        Each( [ &damage, &line_, &camera, this ] ( EnemyBulletBaseRef& bulletRef )
         {
             if ( bulletRef->Attack( camera ) )
             {
@@ -73,7 +75,7 @@ namespace User
                 Vec2f size = camera.worldToScreen( bulletRef->Position( ) + bulletRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
                 float radius = Vec3f( size - vec ).length( ) / 2.0F;
 				if (CheckDefLineOfCircle(line_, vec, radius + 50) > 1.0f) {
-					totalDamage += bulletRef->AttackPoint();
+                    damage += bulletRef->AttackPoint();
 				}
 				else {
 					if (bulletRef->NormalizedMoveTime() == 1) {
@@ -84,7 +86,7 @@ namespace User
                 bulletRef->Erase( );
             }
         } );
-        return totalDamage;
+        return damage;
     }
 
     void EnemyBulletManager::DrawCollisionCircle( cinder::CameraPersp const & camera )
@@ -123,7 +125,15 @@ namespace User
 
     void EnemyBulletManager::BulletEraser( )
     {
-        auto eraceList = std::remove_if( bulletList.begin( ), bulletList.end( ), [ ] ( EnemyBulletBaseRef& bulletRef ) { return !bulletRef->IsActive( ); } );
+        auto eraceList = std::remove_if( bulletList.begin( ), bulletList.end( ), [ this ] ( EnemyBulletBaseRef& bulletRef ) 
+        {
+            if ( !bulletRef->IsActive( ) )
+            {
+                score += 1000;
+                return true;
+            }
+            return false;
+        } );
         bulletList.erase( eraceList, bulletList.end( ) );
     }
 }

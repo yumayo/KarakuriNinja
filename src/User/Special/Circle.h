@@ -16,7 +16,7 @@ class Circle {
 public:
 	Circle() {}
 	Circle(const CircleType type,RouteType routetype) {
-		size_ = 100.f;
+		size_ = 125.f;
 		type_ = type;
 		routetype_ = routetype;
 		issafe_ = false;

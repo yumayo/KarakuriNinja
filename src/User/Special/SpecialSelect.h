@@ -6,6 +6,7 @@
 #include "cinder/app/App.h"
 #include"../Utilitys/Hirasawa.h"
 #include"../Special/SpecialSceneBase.h"
+#include"ZKOO.hpp"
 #include"../Utilitys/Audio.h"
 using namespace cinder;
 const int ICONNUM = 3;

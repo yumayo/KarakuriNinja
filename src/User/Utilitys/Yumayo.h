@@ -66,13 +66,64 @@ namespace User
         void MakeAttackMotionOfZKOO( uint32_t id, ZKOOHand& hand );
     };
 
+    class MoveInput
+    {
+        //============================================
+        // この４つをスラッシュを発動させるために使います。
+        //============================================
+        Slash slashEffect;
+        AttackFactory attackTask;
+        Line line;
+        bool isInput;
+        int frame;
+        int tickFrame;
+        cinder::Vec2f prevPos;
+        //============================================
+    public:
+        MoveInput( );
+    public:
+        // スラッシュのエフェクトを表示します。
+        void Draw( );
+        // Inputのbeginとendで囲まれた部分のみ、Inputの機能を扱えます。
+        void Begin( );
+        // Inputのbeginとendで囲まれた部分のみ、Inputの機能を扱えます。
+        void End( );
+        // スラッシュとの当たり判定を取るオブジェクトを引数に入れてください。
+        // CheckDefLineOfCircle のラップです。
+        // Nomoto.hを参照。
+        bool IsHitCircle( cinder::Vec2f pos, float size );
+    private:
+        void FrameUpdate( );
+        bool IsHandHighSpeedMove( cinder::Vec2f pos );
+    private:
+        // スクリーンタッチでのアップデート
+        // 以下のスラッシュをアップデートします。
+        void UpdateAttackMotionOfTouch( );
+        // どの位置をタッチしたのかを覚えさせます。
+        void SetAttackMotionOfTouch( uint32_t id, cinder::app::TouchEvent::Touch& touch );
+        // どの位置で線を引き終えたのかを判断し、スラッシュの値をセットします。
+        void MakeAttackMotionOfTouch( uint32_t id, cinder::app::TouchEvent::Touch& touch );
+    private:
+        // ZKOOでのアップデート
+        // 以下のスラッシュをアップデートします。
+        void UpdateAttackMotionOfZKOO( );
+        // どの位置をタッチしたのかを覚えさせます。
+        void SetAttackMotionOfZKOO( uint32_t id, ZKOOHand& hand );
+        // どの位置で線を引き終えたのかを判断し、スラッシュの値をセットします。
+        void MakeAttackMotionOfZKOO( uint32_t id, ZKOOHand& hand );
+    };
+
     class Fonts
     {
         cinder::Font font;
     public:
+        enum class Mode
+        {
+            LEFTDOWN, CENTERCENTER, RIGHTDOWN
+        };
         Fonts( std::string const& path = u8"メイリオ", float size = 24.0F );
         void SetFont( std::string const& path = u8"メイリオ", float size = 24.0F );
-        void Draw( std::string const& string, cinder::Vec2f position, cinder::ColorA color = cinder::ColorA::white( ) );
+        void Draw( std::string const& string, cinder::Vec2f position, cinder::ColorA color = cinder::ColorA::white( ), Mode mode = Mode::CENTERCENTER );
     };
 
     class Timer

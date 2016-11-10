@@ -18,6 +18,7 @@ namespace User
     {
         float colliedSize = 1.5F;
         EnemyBulletList bulletList;
+        int score = 0;
     public:
         EnemyBulletManager( );
         void update( );
@@ -36,6 +37,7 @@ namespace User
         void DrawCollisionCircle( cinder::CameraPersp const& camera );
         // ’e‚ª“–‚½‚éêŠ‚ğ•`‰æ‚µ‚Ü‚·B
         void DrawBulletCircle( cinder::CameraPersp const & camera );
+        int ScoreRecovery( ) { auto temp = score; score = 0; return temp; }
     private:
         void Each( std::function<void( EnemyBulletBaseRef& )> func );
         void BulletEraser( );
