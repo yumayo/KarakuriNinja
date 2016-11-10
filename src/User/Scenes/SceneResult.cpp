@@ -12,15 +12,12 @@ namespace User
         : lefthusuma( &GData::FindTexture( "Textures/husuma0.png" ) )
         , righthusuma( &GData::FindTexture( "Textures/husuma1.png" ) )
         , husuma_t( 0.0f )
-        , delaycount( 0 )
     {
     }
 
     void Fusuma::openFusuma( )
     {
-        delaycount++;
-        if ( delaycount > 90 )
-            Easing::tCount( husuma_t, 1.f );
+        Easing::tCount( husuma_t, 1.f );
         lefthusumapos.x = Easing::getEasing[Easing::QuadIn]( husuma_t, env.getWindowWidth( ) / 4.f, -env.getWindowWidth( ) / 2.f );
         lefthusumapos.y = env.getWindowHeight( ) / 2.f;
         righthusumapos.x = Easing::getEasing[Easing::QuadIn]( husuma_t, env.getWindowWidth( )*( 3.f / 4.f ), 1.5f*env.getWindowWidth( ) );
@@ -49,9 +46,7 @@ namespace User
 
     void Fusuma::closeFusuma( )
     {
-        delaycount++;
-        if ( delaycount > 90 )
-            Easing::tCount( husuma_t, 1.f );
+        Easing::tCount( husuma_t, 1.f );
         lefthusumapos.x = Easing::getEasing[Easing::QuadIn]( husuma_t, -env.getWindowWidth( ) / 2.f, env.getWindowWidth( ) / 4.f );
         lefthusumapos.y = env.getWindowHeight( ) / 2.f;
         righthusumapos.x = Easing::getEasing[Easing::QuadIn]( husuma_t, 1.5f*env.getWindowWidth( ), env.getWindowWidth( )*( 3.f / 4.f ) );
@@ -62,9 +57,9 @@ namespace User
     }
     SceneResult::SceneResult( int _score, int maxcombo, int nowhp, int time )
         : score( _score )
-		,maxcombo_(maxcombo)
-		,nowhp_(nowhp)
-		,time_(time)
+        , maxcombo_( maxcombo )
+        , nowhp_( nowhp )
+        , time_( time )
         , font( u8"HG行書体", 120 )
         , tables( u8"HG行書体", TABLEFONTSIZE )
         , audio( &GData::FindAudio( "SE/result.wav" ) )
@@ -98,13 +93,13 @@ namespace User
         for ( int i = 0; i < SPE::E_MAX; i++ ) {
             s_end[i] = false;
         }
-		for (int i = 0; i < 3; i++) {
-			endt_[i] = false;
-		}
-		bgm = &GData::FindAudio("SE/resultbgm.wav");
-		bgm->Gain(0.5f);
-		bgm->Play();
-        endscore = calcurateScore(_score,maxcombo,nowhp,time);
+        for ( int i = 0; i < 3; i++ ) {
+            endt_[i] = false;
+        }
+        bgm = &GData::FindAudio( "SE/resultbgm.wav" );
+        bgm->Gain( 0.5f );
+        bgm->Play( );
+        endscore = calcurateScore( _score, maxcombo, nowhp, time );
         player_scores.push_back( endscore );
         roadScores( );
         sortScores( );
@@ -148,9 +143,9 @@ namespace User
 
     void SceneResult::select( )
     {
-		if (isEnd) {
-			create(new SceneTitle());
-		}
+        if ( isEnd ) {
+            create( new SceneTitle( ) );
+        }
 
         if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_t ) )
         {
@@ -199,7 +194,7 @@ namespace User
         }
         drawflash( );
         fusuma.drawFusuma( );
-		drawEnd();
+        drawEnd( );
         //slashInput.Draw( );
     }
     void SceneResult::endDrawUI( )
@@ -261,8 +256,8 @@ namespace User
     {
         if ( t_[TS::HONOO] >= 1.0f )
             Easing::tCount( t_[TS::NINJA], 0.5f );
-		ninjasize.x = env.getWindowWidth() / 2.5f;
-		ninjasize.y = ninjasize.x*(ninja->getSize().y / ninja->getSize().x);
+        ninjasize.x = env.getWindowWidth( ) / 2.5f;
+        ninjasize.y = ninjasize.x*( ninja->getSize( ).y / ninja->getSize( ).x );
         ninjapos.x = Easing::getEasing[Easing::SineOut]( t_[TS::NINJA], -env.getWindowWidth( ) / 2.f, env.getWindowWidth( ) / 4.f );
         ninjapos.y = env.getWindowHeight( ) - ninjasize.y / 2 * 1.1f;
 
@@ -305,7 +300,7 @@ namespace User
             Easing::tCount( t_[TITLE], 0.4f );
         float redcolor = Easing::getEasing[Easing::CircIn]( t_[TS::TITLE], 1, 0 );
         Vec2f pos = Vec2f( env.getWindowWidth( ) / 4.f, env.getWindowHeight( ) / 20 );
-        font.Draw( u8"結果発表！", pos + Vec2f( 30,15 ), ColorA( redcolor, 0, 0, 1 ), User::Fonts::Mode::CENTERUP );
+        font.Draw( u8"結果発表！", pos + Vec2f( 30, 15 ), ColorA( redcolor, 0, 0, 1 ), User::Fonts::Mode::CENTERUP );
 
     }
     void SceneResult::drawTables( )
@@ -364,14 +359,14 @@ namespace User
         soundplay( taiko1, s_end[SPE::E_HP] );
         Easing::tCount( t_[TS::HP], time );
         Vec2f  hppos = Vec2f( scorepos.x, scorepos.y + TABLEFONTSIZE*rate * 2 );
-        tables.Draw( std::to_string( nowhp_), hppos, ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
+        tables.Draw( std::to_string( nowhp_ ), hppos, ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
 
 
         if ( t_[TS::HP] < 1.0f )return;
         soundplay( taiko1, s_end[SPE::E_TIME] );
         Easing::tCount( t_[TS::TIME], time );
         Vec2f timepos = Vec2f( scorepos.x, scorepos.y + TABLEFONTSIZE*rate * 3 );
-        tables.Draw( std::to_string(time_), timepos, ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
+        tables.Draw( std::to_string( time_ ), timepos, ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
 
 
         if ( t_[TS::TIME] < 1.0f )return;
@@ -459,10 +454,10 @@ namespace User
             }
         }
     }
-    int SceneResult::calcurateScore(int score, int maxcombo, int nowhp, int time)
+    int SceneResult::calcurateScore( int score, int maxcombo, int nowhp, int time )
     {
-		int endscore = score + (50*maxcombo) + (100 * nowhp) - (time * 20);
-		return endscore;
+        int endscore = score + ( 50 * maxcombo ) + ( 100 * nowhp ) - ( time * 20 );
+        return endscore;
     }
     void SceneResult::roadScores( )
     {
@@ -512,7 +507,7 @@ namespace User
             gl::popModelView( );
             if ( !( ranking == ( i + 1 ) ) || delay_t >= 1.0f ) {
                 if ( ( pos.y > -200 ) && ( pos.y < env.getWindowHeight( ) + 200 ) && icons[i].isscoredraw ) {
-                    tables.Draw( std::to_string( icons[i].rank )+u8"位", pos + Vec2f( -icons[i].size.x / 2 + 80, -tables.BoundingBox( std::to_string( icons[i].rank ) ).getHeight( ) / 2.2F ), ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::LEFTUP );
+                    tables.Draw( std::to_string( icons[i].rank ) + u8"位", pos + Vec2f( -icons[i].size.x / 2 + 80, -tables.BoundingBox( std::to_string( icons[i].rank ) ).getHeight( ) / 2.2F ), ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::LEFTUP );
                 }
                 if ( ( pos.y > -200 ) && ( pos.y < env.getWindowHeight( ) + 200 ) && icons[i].isscoredraw ) {
                     tables.Draw( std::to_string( icons[i].score ), pos + Vec2f( icons[i].size.x / 2 - 70, -tables.BoundingBox( std::to_string( icons[i].rank ) ).getHeight( ) / 2.2F ), ColorA( 0, 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
@@ -560,53 +555,53 @@ namespace User
                 pos.y = env.getWindowHeight( ) / 2;
                 gl::pushModelView( );
                 gl::translate( pos );
-				gl::color(ColorA(1, 1, 1, 1));
+                gl::color( ColorA( 1, 1, 1, 1 ) );
                 makimonotex2->enableAndBind( );
                 gl::drawSolidRect( Rectf( -size / 2, size / 2 ) );
                 makimonotex2->disable( );
                 gl::popModelView( );
                 tables.Draw( std::to_string( icons[ranking - 1].rank ) + u8"位", pos + Vec2f( -icons[ranking - 1].size.x / 2 + 80, -tables.BoundingBox( std::to_string( icons[ranking - 1].rank ) ).getHeight( ) / 2.2F ),
-					ColorA(0.5f+0.5f*sin(delay_t*20.f+(M_PI*(3.f/2.f))), 0, 0, 1), User::Fonts::Mode::LEFTUP );
+                             ColorA( 0.5f + 0.5f*sin( delay_t*20.f + ( M_PI*( 3.f / 2.f ) ) ), 0, 0, 1 ), User::Fonts::Mode::LEFTUP );
                 tables.Draw( std::to_string( icons[ranking - 1].score ), pos + Vec2f( icons[ranking - 1].size.x / 2 - 70, -tables.BoundingBox( std::to_string( icons[ranking - 1].rank ) ).getHeight( ) / 2.2F ),
-					ColorA(0.5f + 0.5f*sin(delay_t*20.f + (M_PI*(3.f / 2.f))), 0, 0, 1), User::Fonts::Mode::RIGHTUP );
+                             ColorA( 0.5f + 0.5f*sin( delay_t*20.f + ( M_PI*( 3.f / 2.f ) ) ), 0, 0, 1 ), User::Fonts::Mode::RIGHTUP );
             }
         }
     }
 
-	void SceneResult::drawEnd()
-	{
-		if (rankin) {
-			if (myrank_camera_t >= 1) {
-				Easing::tCount(endt_[0],0.5f);
-			}
-		}
-		else {
-			if (camera_t >= 1) {
-				Easing::tCount(endt_[0], 0.5f);
-			}
-		}
-		if (endt_[0] >= 1.0f) {
-			Vec2f size = Vec2f(700,160);
-			Easing::tCount(endt_[1], 2.f);
-			gl::pushModelView();
-			gl::translate(env.getWindowSize()/2);
-			gl::color(ColorA(1,1,1,1));
-			window->enableAndBind();
-			gl::drawSolidRect(Rectf(-size / 2, size / 2));
-			window->disable();
-			gl::popModelView();
-			std::string str = u8"おつかれさまでした";
-			tables.Draw(str, env.getWindowSize() / 2 +Vec2f(0,-tables.BoundingBox(str).getHeight() / 2.2F),Color::black(),User::Fonts::Mode::CENTERUP);
-		}
-		if (endt_[1] >= 1.0f) {
-			Easing::tCount(endt_[2], 2.f);
-			gl::pushModelView();
-			gl::translate(env.getWindowSize() / 2);
-			gl::color(ColorA(0, 0, 0, endt_[2]));
-			gl::drawSolidRect(Rectf(-env.getWindowSize()/2 , env.getWindowSize() / 2));
-			gl::popModelView();
-			bgm->Gain(0.5f-0.5f*endt_[2]);
-		}
-	}
+    void SceneResult::drawEnd( )
+    {
+        if ( rankin ) {
+            if ( myrank_camera_t >= 1 ) {
+                Easing::tCount( endt_[0], 0.5f );
+            }
+        }
+        else {
+            if ( camera_t >= 1 ) {
+                Easing::tCount( endt_[0], 0.5f );
+            }
+        }
+        if ( endt_[0] >= 1.0f ) {
+            Vec2f size = Vec2f( 700, 160 );
+            Easing::tCount( endt_[1], 2.f );
+            gl::pushModelView( );
+            gl::translate( env.getWindowSize( ) / 2 );
+            gl::color( ColorA( 1, 1, 1, 1 ) );
+            window->enableAndBind( );
+            gl::drawSolidRect( Rectf( -size / 2, size / 2 ) );
+            window->disable( );
+            gl::popModelView( );
+            std::string str = u8"おつかれさまでした";
+            tables.Draw( str, env.getWindowSize( ) / 2 + Vec2f( 0, -tables.BoundingBox( str ).getHeight( ) / 2.2F ), Color::black( ), User::Fonts::Mode::CENTERUP );
+        }
+        if ( endt_[1] >= 1.0f ) {
+            Easing::tCount( endt_[2], 2.f );
+            gl::pushModelView( );
+            gl::translate( env.getWindowSize( ) / 2 );
+            gl::color( ColorA( 0, 0, 0, endt_[2] ) );
+            gl::drawSolidRect( Rectf( -env.getWindowSize( ) / 2, env.getWindowSize( ) / 2 ) );
+            gl::popModelView( );
+            bgm->Gain( 0.5f - 0.5f*endt_[2] );
+        }
+    }
 
 }

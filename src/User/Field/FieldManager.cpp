@@ -80,6 +80,10 @@ namespace User
     {
         return fieldName[nowNumber];
     }
+    int FieldManager::GetFieldNumber( )
+    {
+        return nowNumber;
+    }
     void FieldManager::NextField( )
     {
         if ( !IsLastField( ) )

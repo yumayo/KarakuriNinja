@@ -17,29 +17,26 @@ namespace User
         kougeki = &GData::FindTexture( "kougeki.png" );
         bougyo = &GData::FindTexture( "bougyo.png" );
     }
-    void Description::Draw( cinder::Vec2f position )
+    void Description::Draw( cinder::Vec2f position, cinder::Vec2f size )
     {
-        // 説明用のセリフが無かった場合は描画しません。
-        if ( TRData::Serif( ).empty( ) ) return;
-
         frame += 1;
 
         switch ( mode )
         {
         case User::Description::NORMAL:
-            DrawNORMAL( position );
+            DrawNORMAL( position, size );
             break;
         case User::Description::KOUGEKI:
-            DrawKOUGEKI( position );
+            DrawKOUGEKI( position, size );
             break;
         case User::Description::BOUGYO:
-            DrawBOUGYO( position );
+            DrawBOUGYO( position, size );
             break;
         default:
             break;
         }
     }
-    void Description::DrawNORMAL( cinder::Vec2f position )
+    void Description::DrawNORMAL( cinder::Vec2f position, cinder::Vec2f size )
     {
         int index = ( frame / 30 ) % ( 2 );
         Vec2f cutSize( 768, 256 );
@@ -48,26 +45,27 @@ namespace User
         float y_offset = ( index / num ) * cutSize.y;
         Vec2f offset( x_offset, y_offset );
 
-        DrawCutTexture( touchToNext, position, cutSize / 1.5, offset, cutSize );
+        DrawCutTexture( touchToNext, position, size, offset, cutSize );
     }
-    void Description::DrawKOUGEKI( cinder::Vec2f position )
+    void Description::DrawKOUGEKI( cinder::Vec2f position, cinder::Vec2f size )
     {
         Vec2f cutSize( 768, 256 );
         Vec2f offset( Vec2f::zero( ) );
 
-        DrawCutTexture( kougeki, position, cutSize / 1.5, offset, cutSize );
+        DrawCutTexture( kougeki, position, size, offset, cutSize );
     }
-    void Description::DrawBOUGYO( cinder::Vec2f position )
+    void Description::DrawBOUGYO( cinder::Vec2f position, cinder::Vec2f size )
     {
         Vec2f cutSize( 768, 256 );
         Vec2f offset( Vec2f::zero( ) );
 
-        DrawCutTexture( bougyo, position, cutSize / 1.5, offset, cutSize );
+        DrawCutTexture( bougyo, position, size, offset, cutSize );
     }
     void Description::DrawCutTexture( cinder::gl::Texture* texture, cinder::Vec2f position, cinder::Vec2f size, cinder::Vec2f offset, cinder::Vec2f cutSize )
     {
         gl::pushModelView( );
         gl::translate( -offset + position );
+        gl::color( Color::white( ) );
         gl::draw( *texture, Area( offset, offset + cutSize ), Area( offset, offset + size ) );
         gl::popModelView( );
     }

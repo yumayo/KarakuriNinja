@@ -29,13 +29,13 @@ namespace User
     public:
         Description( );
     public:
-        // 右下を起点に描画します。
-        void Draw( cinder::Vec2f position );
+        // 左上を起点に描画します。
+        void Draw( cinder::Vec2f position, cinder::Vec2f size = cinder::Vec2f(768, 256) / 1.5F );
         void SetMode( Mode mode ) { this->mode = mode; }
     private:
-        void DrawNORMAL( cinder::Vec2f position );
-        void DrawKOUGEKI( cinder::Vec2f position );
-        void DrawBOUGYO( cinder::Vec2f position );
+        void DrawNORMAL( cinder::Vec2f position, cinder::Vec2f size );
+        void DrawKOUGEKI( cinder::Vec2f position, cinder::Vec2f size );
+        void DrawBOUGYO( cinder::Vec2f position, cinder::Vec2f size );
     private:
         void DrawCutTexture( cinder::gl::Texture* texture, cinder::Vec2f position, cinder::Vec2f size, cinder::Vec2f offset, cinder::Vec2f cutSize );
     };

@@ -17,4 +17,6 @@ namespace User
     void SceneTask::setup( ) { create( start( ) ); }
 
     void SceneTask::shutdown( ) { SceneCreater::shutdown( ); }
+
+    void SceneTask::setScene( ) { SceneCreater::setScene( ); }
 }

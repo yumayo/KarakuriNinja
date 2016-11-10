@@ -10,6 +10,7 @@
 #include "EnemyBullet.h"
 #include "EnemyBulletNot.h"
 #include "EnemyBoss.h"
+#include "EnemyBulletTutorial.h"
 
 # include "../Utilitys/Hirasawa.h"
 
@@ -464,6 +465,10 @@ namespace User
                 else if ( type == "tutorial" )
                 {
                     EnemyCreate<EnemyTutorial>( position, camera );
+                }
+                else if ( type == "bulletTutorial" )
+                {
+                    EnemyCreate<EnemyBulletTutorial>( position, camera );
                 }
                 else if ( type == "bullet" )
                 {

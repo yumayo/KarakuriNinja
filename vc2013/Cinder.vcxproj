@@ -134,6 +134,7 @@
     <ClCompile Include="..\src\User\Enemys\EnemyBulletManager.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyBulletNot.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyBulletTexture.cpp" />
+    <ClCompile Include="..\src\User\Enemys\EnemyBulletTutorial.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyManager.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyObject.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemySlash.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="..\src\User\Field\KarakuriMeshObj.cpp" />
     <ClCompile Include="..\src\User\Field\KarakuriObject.cpp" />
     <ClCompile Include="..\src\User\Field\KarakuriRectObj.cpp" />
+    <ClCompile Include="..\src\User\Interfaces\Combo.cpp" />
     <ClCompile Include="..\src\User\Interfaces\Description.cpp" />
     <ClCompile Include="..\src\User\Interfaces\Interface.cpp" />
     <ClCompile Include="..\src\User\Interfaces\Talk.cpp" />
@@ -155,6 +157,7 @@
     <ClCompile Include="..\src\User\SceneSystems\SceneCreater.cpp" />
     <ClCompile Include="..\src\User\SceneSystems\SceneTask.cpp" />
     <ClCompile Include="..\src\User\Scenes\SceneBegin.cpp" />
+    <ClCompile Include="..\src\User\Scenes\SceneGame.cpp" />
     <ClCompile Include="..\src\User\Scenes\SceneResult.cpp" />
     <ClCompile Include="..\src\User\Scenes\SceneTitle.cpp" />
     <ClCompile Include="..\src\User\Scenes\SceneTutorial.cpp" />
@@ -172,6 +175,7 @@
     <ClCompile Include="..\src\User\Special\Tree.cpp" />
     <ClCompile Include="..\src\User\Special\Water.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Audio.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\CameraData.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Colli2D.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Coloring.cpp" />
     <ClCompile Include="..\src\User\Utilitys\ETC.cpp" />
@@ -190,6 +194,7 @@
     <ClCompile Include="..\src\User\Utilitys\Skydome.cpp" />
     <ClCompile Include="..\src\User\Utilitys\TitleCircle.cpp" />
     <ClCompile Include="..\src\User\Utilitys\TutorialData.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\TutorialManager.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Yumayo.cpp" />
     <ClCompile Include="..\src\User\ZKOO\InputZKOO.cpp" />
     <ClCompile Include="..\src\User\ZKOO\ZKOO.cpp" />
@@ -231,6 +236,7 @@
     <ClInclude Include="..\src\User\Enemys\EnemyBulletManager.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyBulletNot.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyBulletTexture.h" />
+    <ClInclude Include="..\src\User\Enemys\EnemyBulletTutorial.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyManager.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyObject.h" />
     <ClInclude Include="..\src\User\Enemys\EnemySlash.h" />
@@ -242,6 +248,7 @@
     <ClInclude Include="..\src\User\Field\KarakuriMeshObj.h" />
     <ClInclude Include="..\src\User\Field\KarakuriObject.h" />
     <ClInclude Include="..\src\User\Field\KarakuriRectObj.h" />
+    <ClInclude Include="..\src\User\Interfaces\Combo.h" />
     <ClInclude Include="..\src\User\Interfaces\Description.h" />
     <ClInclude Include="..\src\User\Interfaces\Interface.h" />
     <ClInclude Include="..\src\User\Interfaces\Talk.h" />
@@ -253,6 +260,7 @@
     <ClInclude Include="..\src\User\SceneSystems\SceneCreater.h" />
     <ClInclude Include="..\src\User\SceneSystems\SceneTask.h" />
     <ClInclude Include="..\src\User\Scenes\SceneBegin.h" />
+    <ClInclude Include="..\src\User\Scenes\SceneGame.h" />
     <ClInclude Include="..\src\User\Scenes\SceneResult.h" />
     <ClInclude Include="..\src\User\Scenes\SceneStart.h" />
     <ClInclude Include="..\src\User\Scenes\SceneTitle.h" />
@@ -276,6 +284,7 @@
     <ClInclude Include="..\src\User\Special\Tree.h" />
     <ClInclude Include="..\src\User\Special\Water.h" />
     <ClInclude Include="..\src\User\Utilitys\Audio.h" />
+    <ClInclude Include="..\src\User\Utilitys\CameraData.h" />
     <ClInclude Include="..\src\User\Utilitys\Colli2D.h" />
     <ClInclude Include="..\src\User\Utilitys\Coloring.h" />
     <ClInclude Include="..\src\User\Utilitys\ETC.h" />
@@ -294,6 +303,7 @@
     <ClInclude Include="..\src\User\Utilitys\Skydome.h" />
     <ClInclude Include="..\src\User\Utilitys\TitleCircle.h" />
     <ClInclude Include="..\src\User\Utilitys\TutorialData.h" />
+    <ClInclude Include="..\src\User\Utilitys\TutorialManager.h" />
     <ClInclude Include="..\src\User\Utilitys\Yumayo.h" />
     <ClInclude Include="..\src\User\ZKOO\InputZKOO.h" />
     <ClInclude Include="..\src\User\ZKOO\ZKOO.h" />

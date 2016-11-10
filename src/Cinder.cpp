@@ -11,6 +11,8 @@ void Cinder::setup( )
 
     scene.setup( );
 
+    scene.setScene( );
+
     //setFullScreen( true );
 }
 
@@ -28,6 +30,8 @@ void Cinder::shutdown( )
 
 void Cinder::update( )
 {
+    scene.setScene( );
+
     // Inputのbeginとendで囲まれた部分のみ、Inputの機能を扱えます。
     Lib::InputTask::Geti( ).update( );
     Lib::Input::Geti( ).begin( );

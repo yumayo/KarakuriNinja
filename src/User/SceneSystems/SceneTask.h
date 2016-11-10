@@ -14,5 +14,6 @@ namespace User
     public:
         void setup( );
         void shutdown( );
+        void setScene( );
     };
 }

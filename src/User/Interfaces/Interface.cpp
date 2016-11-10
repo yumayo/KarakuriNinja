@@ -1,6 +1,8 @@
 #include "Interface.h"
 #include "Framework.hpp"
-#include "cinder/ImageIo.h"
+
+#include "GlobalData.hpp"
+#include"../Utilitys/Hirasawa.h"
 
 namespace User
 {
@@ -30,7 +32,6 @@ namespace User
 
     void Interface::draw( float APNormalized, float HPNormalized, bool ismpmax, int specialsubtime )
     {
-
         auto leftDown = Vec2f( 0, env.getWindowHeight( ) );
         auto rightDown = env.getWindowSize( );
 
@@ -90,9 +91,14 @@ namespace User
         combo.Update( );
     }
 
-    void Interface::PlusCombo( bool isAttackSuccess )
+    void Interface::PlusCombo( int attackSuccessNum )
     {
-        combo.PlusCombo( isAttackSuccess );
+        combo.PlusCombo( attackSuccessNum );
+    }
+
+    void Interface::ResetCombo( )
+    {
+        combo.ResetCombo( );
     }
 
     void Interface::textureDraw( cinder::gl::Texture const & texture, cinder::Vec2f position )
@@ -258,52 +264,5 @@ namespace User
         //color = ColorA(0, 0, 0, alfa);
 
         //touchfont.Draw( u8"タッチで必殺発動", pos, ColorA( 0, 0, 0, 1 ), Fonts::Mode::CENTERUP );
-    }
-
-    Combo::Combo( )
-        : font( u8"HG行書体", 85 )
-        , backGround( &GData::FindTexture( "UI/ReamHammer.png" ) )
-        , effect( "Textures/Effect/pipo-btleffect102c.png",
-                  Vec2f::zero( ),
-                  0.0F,
-                  Vec2f( 480, 480 ),
-                  Vec2f( 240, 240 ),
-                  EffectBase::Mode::LEFTUP )
-        , comboNumber( 0 )
-        , maxComboNumber( comboNumber )
-    {
-    }
-    void Combo::Update( )
-    {
-        if ( comboNumber != 0 )
-        {
-            effect.Update( );
-        }
-    }
-    void Combo::PlusCombo( bool isSuccess )
-    {
-        if ( isSuccess )
-        {
-            comboNumber += 1;
-            if ( maxComboNumber < comboNumber ) maxComboNumber = comboNumber;
-        }
-        else
-        {
-            comboNumber = 0;
-        }
-    }
-    void Combo::Draw( cinder::Vec2f position )
-    {
-        if ( comboNumber != 0 )
-        {
-            gl::pushModelView( );
-            gl::translate( position );
-
-            effect.Draw( );
-
-            gl::draw( *backGround );
-            font.Draw( std::to_string( comboNumber ), Vec2f( 60, 95 ), Color::white( ) );
-            gl::popModelView( );
-        }
     }
 }

@@ -35,6 +35,7 @@ namespace User
         bool IsLastField( );
         // 現在のフィールド情報の入ったJSONファイルのパスを返します。
         std::string FieldDataPath( );
+        int GetFieldNumber( );
     private:
         void NextField( );
         void CreateField( int number );

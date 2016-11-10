@@ -17,9 +17,12 @@ HundAnimation::HundAnimation( )
     lefthandclose = &GData::FindTexture( "ZKOO/Left_CloseHand.png" );
     yazirushi = &GData::FindTexture( "Textures/yazirushi.png" );
     guardyazirushi = &GData::FindTexture( "Textures/guardyazirushi.png" );
-    attackhand = nullptr;
-    leftguardhand = nullptr;
-    rightguardhand = nullptr;
+    attackhand = righthandopen;
+    leftguardhand = lefthandopen;
+    rightguardhand = righthandopen;
+
+    updateAttack( Vec2f::one( ), Vec2f::one( ), Vec2f( 256, 256 ) );
+    updateGuard( Vec2f::one( ), Vec2f::one( ), Vec2f( 256, 256 ) );
 }
 
 
@@ -49,8 +52,6 @@ void HundAnimation::updateGuard( cinder::Vec2f leftpos, cinder::Vec2f rightpos, 
 
 void HundAnimation::drawAttack( cinder::Vec2f linesize )
 {
-    if ( !attackhand ) return;
-
     gl::pushModelView( );
     gl::translate( attackcenterpos );
     gl::rotate( attackangle );
@@ -71,8 +72,6 @@ void HundAnimation::drawAttack( cinder::Vec2f linesize )
 
 void HundAnimation::drawGuard( cinder::Vec2f linesize )
 {
-    if ( !leftguardhand && !rightguardhand ) return;
-
     gl::pushModelView( );
     gl::translate( guardcenterpos );
     gl::rotate( guardangle );

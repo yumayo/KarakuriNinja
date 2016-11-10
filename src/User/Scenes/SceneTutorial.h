@@ -10,11 +10,8 @@
 # include "../Effect/EffectManager.h"
 # include "../Interfaces/Interface.h"
 # include "../Utilitys/Yumayo.h"
-# include "../Interfaces/Talk.h"
-# include "../Interfaces/Description.h"
-# include "../Utilitys/HundAnimation.h"
-# include "../Utilitys/MojiManager.h"
-# include "cinder/params/Params.h"
+# include "../Utilitys/CameraData.h"
+# include "../Utilitys/TutorialManager.h"
 
 //Nomoto's include
 # include "../Player/Player.h"
@@ -26,23 +23,6 @@
 namespace User
 {
     class Fusuma;
-
-    struct CameraData
-    {
-        cinder::Vec3f eyePosition;
-        cinder::Vec3f targetPosition;
-        float fov;
-        cinder::JsonTree jsonData;
-        cinder::CameraPersp camera;
-        cinder::params::InterfaceGlRef editor;
-
-        CameraData( );
-        ~CameraData( );
-        void Update( );
-        void Shake( float range );
-        void DrawEditor( );
-        cinder::CameraPersp& operator()( ) { return camera; }
-    };
 
     class SceneTutorial : public SceneBase
     {
@@ -63,36 +43,27 @@ namespace User
         void endDrawUI( );
     private:
         void UpdateDamage( );
-        void UpdateColor( );
-        void UpdateScore( );
         void UpdateCombo( );
-        void UpdateDamageExpression( );
         void UpdateNextStage( );
+        void UpdateCamera( );
         void UpdateAllInstans( );
-        void UpdateSpecial( );
+    public:
+        void UpdateEnemySpawn( );
+        void UpdateGuardSucceed( );
     private:
-        void UpdateDebugTutorialClear( );
         void UpdateTutorialClear( );
     private:
         //=======================================
         // ユーマヨが管理するもののインスタンス化。
-        CameraData camera;
         EnemyManagerRef enemyManager;
         EnemyBulletManagerRef enemyBulletManager;
         FieldManagerRef fieldManager;
         EffectManagerRef effectManager;
-        InterfaceRef UI;
-        Timer timer;
-        int maxSceneChangeFrame = 60 * 3;
-        int sceneChangeFrame = maxSceneChangeFrame;
-        cinder::ColorA damageColor;
-        TalkRef talk;
-        DescriptionRef description;
-        cinder::gl::Texture* kougeki;
-        cinder::gl::Texture* bougyo;
+        int combo = 0;
+
+        CameraData camera;
         MoveInput moveInput;
-        HundAnimation handAnimation;
-        MojiManager mojiManager;
+        TutorialManager tutorialManager;
         //=======================================
 
 
@@ -106,17 +77,8 @@ namespace User
         //=======================================
         // 大ちゃんが管理するもののインスタンス化。
 
-        Special special;
-        std::vector<Audio*> mainbgm;
-        int watercount;
+        Audio* mainbgm;
         std::shared_ptr<Fusuma> fusuma;
-        int time;
-        Audio* mpmax;
-        bool ismpmax;
-        Audio* horagai;
-        bool isTutorialStart = false;
-        bool isTutorialEnd = false;
-        bool isGameStart = false;
         //=======================================
     };
 }

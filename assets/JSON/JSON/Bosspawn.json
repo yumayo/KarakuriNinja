@@ -1,0 +1,44 @@
+{
+  "Enemy": [
+    {
+      "type": "slashNot",
+      "position": [ 1.0, 0.0, -3.0 ]
+    },
+    {
+      "type": "bulletNot",
+      "position": [ -1.0, 0.0, -3.0 ]
+    },
+    {
+      "type": "slashNot",
+      "position": [ 2.0, 0.0, -2.0 ]
+    },
+    {
+      "type": "bulletNot",
+      "position": [ -2.0, 0.0, -2.0 ]
+    },
+    {
+      "type": "slashNot",
+      "position": [ 3.0, 0.0, -1.0 ]
+    },
+    {
+      "type": "bulletNot",
+      "position": [ -3.0, 0.0, -1.0 ]
+    },
+    {
+      "type": "slashNot",
+      "position": [ 4.0, 0.0, 0.0 ]
+    },
+    {
+      "type": "bulletNot",
+      "position": [ -4.0, 0.0, 0.0 ]
+    },
+    {
+      "type": "slashNot",
+      "position": [ 5.0, 0.0, 1.0 ]
+    },
+    {
+      "type": "bulletNot",
+      "position": [ -5.0, 0.0, 1.0 ]
+    }
+  ]
+}
