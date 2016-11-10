@@ -12,7 +12,7 @@ void Circle::update()
 	}
 	if ((routes.size() == ROUTENUM)&&(movestart_== false)) {
 		delay_++;
-		if (delay_ > 1*30) {
+		if (delay_ > 1*80) {
 			movestart_ = true;
 		}
 	}
@@ -127,7 +127,7 @@ void Circle::setValue(Vec2f leftstartpos, Vec2f leftendpos, Easing::EasingType l
 void Circle::move()
 {
 	if (movestart_) {
-		Easing::tCount(move_t_,2.f);
+		Easing::tCount(move_t_,3.0f);
 	}
 	pos_.x = Easing::getEasing[easingtype_x_](move_t_, startpos_.x, endpos_.x);
 	pos_.y = EasingLinear(move_t_, startpos_.y, endpos_.y);

@@ -37,6 +37,8 @@ namespace User
 		Audio* bgm;
 		// シーン遷移に使います。
 		bool isEnd;
+		bool isStartTouch();
+		bool isblackout;
 		void drawfade();
 	};
 }

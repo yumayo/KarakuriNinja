@@ -13,13 +13,14 @@ namespace User
 		, logoAlpha(0.0f)
 		, logoAlphaSpeed(0.0125f)
 		, isEnd(false)
+		, endt_(0.0f)
+		, isblackout(false)
 	{
 		startButtonPosition = env.getWindowCenter() + Vec2f(0, 100);
 		bgm = &GData::FindAudio("BGM/mainbgm1.wav");
 		bgm->Looping(true);
 		bgm->Gain(0.5f);
 		bgm->Play();
-		endt_ = 0.0f;
 	}
 
 	SceneTitle::~SceneTitle()
@@ -38,8 +39,14 @@ namespace User
 		UpdateLogoAlpha();
 
 		// スラッシュとの当たり判定を取るには、円の中心ポジションと半径を入れます。
-		if (slashInput.IsHitCircle(startButtonPosition, 125)) isEnd = true;
-
+		//if (slashInput.IsHitCircle(startButtonPosition, 125)) isEnd = true;
+		if (!isblackout) {
+			isblackout = isStartTouch();
+		}
+		if (isblackout) {
+			Easing::tCount(endt_,2.0f);
+		}
+		if (endt_ >= 1.0f)isEnd = true;
 		slashInput.End();
 	}
 	void SceneTitle::draw()
@@ -92,13 +99,40 @@ namespace User
 		font.Draw(u8"スタート", startButtonPosition + Vec2f(0, -80 / 2), Color::white(), Fonts::Mode::CENTERUP);
 
 		slashInput.Draw();
+		drawfade();
 	}
 	void SceneTitle::endDrawUI()
 	{
 
 	}
+	bool SceneTitle::isStartTouch()
+	{
+		auto touch = inputs.touch();
+		auto ids = inputs.GetTouchHandleIDs();
+
+		for (auto id : ids)
+		{
+
+			//////とりあえずこれでプレイヤーアイコンの近くをプッシュするとスペシャルモードに入れるようにしておきました
+			if (inputs.isPushTouch(id, touch))
+			{
+				Vec2f iconpos = startButtonPosition;
+				float iconsize = 128.f;
+				float kyori = (iconpos.x - touch.getPos().x)*(iconpos.x - touch.getPos().x) + (iconpos.y - touch.getPos().y)*(iconpos.y - touch.getPos().y);
+				if (kyori < (iconsize*iconsize)) {
+					return true;
+				}
+			}
+			//////
+		}
+		return false;
+	}
 	void SceneTitle::drawfade()
 	{
-
+		gl::pushModelView();
+		gl::translate(env.getWindowSize()/2);
+		gl::color(ColorA(0,0,0,endt_));
+		gl::drawSolidRect(Rectf(-env.getWindowSize() / 2, env.getWindowSize() / 2));
+		gl::popModelView();
 	}
 }

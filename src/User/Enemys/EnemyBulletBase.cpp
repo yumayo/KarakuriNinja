@@ -10,7 +10,7 @@ namespace User
     using namespace cinder;
 
     EnemyBulletBase::EnemyBulletBase( cinder::Vec3f begin, cinder::Vec3f end )
-        : object( begin, Vec3f( 0.1, 0.1, 0.01 ), Vec3f::zero( ) )
+        : object( begin, Vec3f( 0.15, 0.15, 0.01 ), Vec3f::zero( ) )
         , begin( begin )
         , end(end)
         , attackPoint( 3 )
@@ -22,11 +22,11 @@ namespace User
     }
 
     EnemyBulletBase::EnemyBulletBase( cinder::Vec3f begin, cinder::Vec3f end, int attackPoint )
-        : object( begin, Vec3f( 0.1, 0.1, 0.01 ), Vec3f::zero( ) )
+        : object( begin, Vec3f( 0.15, 0.15, 0.01 ), Vec3f::zero( ) )
         , begin( begin )
         , end( end )
         , attackPoint( attackPoint )
-        , maxMoveTime( 60 * 2 )
+        , maxMoveTime( 60 * 3 )
         , moveTime( 0 )
         , isActive( true )
     {
