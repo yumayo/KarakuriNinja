@@ -3,6 +3,8 @@
 # include "cinder/ImageIo.h"
 # include "cinder/App/App.h"
 
+# include "../Utilitys/Colli2D.h"
+
 namespace User
 {
     using namespace cinder;
@@ -24,7 +26,7 @@ namespace User
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, const cinder::CameraPersp & camera, std::string const & path )
         : object( pos, Vec3f( 0.5, 0.8, 0.01 ), Vec3f::zero( ) )
-        , texture( loadImage( app::loadAsset( path ) ) )
+        , textureRef( std::make_shared<gl::Texture>( loadImage( app::loadAsset( path ) ) ) )
         , maxHP( 5.0F )
         , HP( maxHP )
         , hitColor( Color::white( ) )
@@ -40,7 +42,7 @@ namespace User
     }
     EnemyBase::EnemyBase( cinder::Vec3f pos, float sizeScale, const cinder::CameraPersp & camera, std::string const & path )
         : object( pos, Vec3f( 0.5 * sizeScale, 0.8 * sizeScale, 0.01 ), Vec3f::zero( ) )
-        , texture( loadImage( app::loadAsset( path ) ) )
+        , textureRef( std::make_shared<gl::Texture>( loadImage( app::loadAsset( path ) ) ) )
         , maxHP( 5.0F )
         , HP( maxHP )
         , hitColor( Color::white( ) )
@@ -53,9 +55,9 @@ namespace User
 
         initObject = object;
     }
-    EnemyBase::EnemyBase( cinder::Vec3f pos, float sizeScale, float HP, int attackPoint, const cinder::CameraPersp & camera, std::string const & path ) 
+    EnemyBase::EnemyBase( cinder::Vec3f pos, float sizeScale, float HP, int attackPoint, const cinder::CameraPersp & camera, std::string const & path )
         : object( pos, Vec3f( 0.5 * sizeScale, 0.8 * sizeScale, 0.01 ), Vec3f::zero( ) )
-        , texture( loadImage( app::loadAsset( path ) ) )
+        , textureRef( std::make_shared<gl::Texture>( loadImage( app::loadAsset( path ) ) ) )
         , maxHP( HP )
         , HP( maxHP )
         , hitColor( Color::white( ) )
@@ -95,13 +97,13 @@ namespace User
         gl::translate( object.Position( ) );
         gl::multModelView( object.Quaternion( ).toMatrix44( ) );
 
-        texture.bind( );
+        textureRef->bind( );
         gl::pushModelView( );
         gl::rotate( Vec3f( 0, 0, 180 ) );
         gl::color( HitColor( ) );
         gl::drawCube( Vec3f::zero( ), object.Size( ) );
         gl::popModelView( );
-        texture.unbind( );
+        textureRef->unbind( );
 
     #ifdef _DEBUG
         gl::color( Color::white( ) );
@@ -160,9 +162,20 @@ namespace User
         bulletList.clear( );
         return ret;
     }
+
+    bool EnemyBase::IsJumping( )
+    {
+        return isLanding == false;
+    }
+
     bool EnemyBase::IsUnderGround( )
     {
         return Position( ).y - Size( ).y / 2.0F < 0.0F;
+    }
+    bool EnemyBase::IsInTheScreen( cinder::CameraPersp const & camera )
+    {
+        Vec2f ScreenPosition = camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
+        return Utl::Colli2D::rectPoint( Vec2f::zero( ), env.getWindowSize( ), ScreenPosition );
     }
     void EnemyBase::CollideGround( )
     {

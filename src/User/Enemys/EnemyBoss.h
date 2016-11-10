@@ -6,7 +6,7 @@
 
 #include <vector>
 #include <functional>
-
+#include"../Utilitys/Audio.h"
 namespace User
 {
     class EnemyBoss : public EnemyBase
@@ -55,9 +55,6 @@ namespace User
         void ヌルセルフ( );
         void セリフ( );
     private:
-        bool IsJumping( );
-        // スクリーンの中にいる時はtrueが返ってきます。
-        bool IsInTheScreen( cinder::CameraPersp const& camera );
         bool IsHalfHPSerif( );
         bool IsDeadSerif( );
     private:
@@ -71,5 +68,8 @@ namespace User
         void WavyBulletFiring( float angle, cinder::CameraPersp const& camera );
         // ランダムに決めた二点から中点を求める波状バレット攻撃
         void RandomWavyBulletFiring( cinder::CameraPersp const& camera );
+		std::vector<Audio> se;
+		int 弾の上限回数 = 3;
+		int 弾カウント;
     };
 }

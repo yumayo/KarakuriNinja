@@ -46,6 +46,10 @@ void SpecialSelect::updateIcon()
 			}
 		}
 		icons[i].angle_t = std::min(1.0f, icons[i].angle_t);
+		if ((!icons[i].opened) && icons[i].angle_t >= 1.0f) {
+			icons[i].opened = true;
+			open_se[0].Play();
+		}
 		icons[i].angle = EasingQuintIn(icons[i].angle_t, icons[i].startangle, 0);
 
 	}

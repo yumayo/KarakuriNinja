@@ -14,8 +14,14 @@ namespace User
         bool isAttack;
         cinder::Vec3f prevMovePosition;
         std::function<void( cinder::CameraPersp const& )> behavior;
+    private:
+        std::shared_ptr<cinder::gl::Texture> 待機;
+        std::shared_ptr<cinder::gl::Texture> 攻撃モーション画像;
+        std::shared_ptr<cinder::gl::Texture> 攻撃画像;
+        std::shared_ptr<cinder::gl::Texture> 左に移動;
+        std::shared_ptr<cinder::gl::Texture> 右に移動;
     public:
-        EnemySlash( cinder::Vec3f pos, const cinder::CameraPersp& camera );
+        EnemySlash( cinder::Vec3f pos, const cinder::CameraPersp& camera, std::string const& fieldName );
         void update( cinder::CameraPersp const& camera ) override;
         void draw( ) override;
         bool Attack( const cinder::CameraPersp& camera ) override;
@@ -30,6 +36,9 @@ namespace User
         void 攻撃後硬直( cinder::CameraPersp const& camera );
         void ジャンプで戻る( cinder::CameraPersp const& camera );
         void 着地( cinder::CameraPersp const& camera );
+    private:
+        void 左へ移動( cinder::CameraPersp const& camera );
+        void 右へ移動( cinder::CameraPersp const& camera );
     private:
         bool IsJumping( );
     private:

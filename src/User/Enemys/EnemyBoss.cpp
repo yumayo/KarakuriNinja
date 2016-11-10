@@ -6,8 +6,6 @@
 
 # include "../Utilitys/Hirasawa.h"
 
-# include "../Utilitys/Colli2D.h"
-
 # include "EnemyBulletTexture.h"
 
 namespace User
@@ -28,6 +26,11 @@ namespace User
         timer.Advance( 180 ); // セリフを吐くフレーム
         SetFunction( &EnemyBoss::出現した時のセリフ );
         SetSerifFunction( u8"", &EnemyBoss::ヌルセルフ );
+		for (int i = 0;i < 3;i++) {
+			se.push_back(Audio("SE/shuri"+std::to_string(i)+".wav"));
+			弾カウント = 0;
+		}
+		
     }
     void EnemyBoss::update( cinder::CameraPersp const& camera )
     {
@@ -103,10 +106,11 @@ namespace User
     }
     void EnemyBoss::どっちの攻撃を出すかの確認( cinder::CameraPersp const & camera )
     {
-        if ( randBool( ) )
+        if ( randBool( ) ||(弾カウント >= 弾の上限回数))
         {
             timer.Advance( 120 ); // 高速移動フレーム
             SetFunction( &EnemyBoss::左右に高速移動しながらカメラへ近づく );
+			弾カウント = 0;
             return;
         }
         else
@@ -194,15 +198,18 @@ namespace User
     void EnemyBoss::弾を投げる( cinder::CameraPersp const & camera )
     {
         RandomWavyBulletFiring( camera );
-
+		for (int i = 0;i < 3;i++) {
+			se[i].Play();
+		}
         timer.Advance( 90 ); // 次の弾の発射フレーム
         isBulletFiring = randBool( );
         SetFunction( &EnemyBoss::弾をもう一度投げるかの確認 );
+		弾カウント++;
         return;
     }
     void EnemyBoss::弾をもう一度投げるかの確認( cinder::CameraPersp const & camera )
     {
-        if ( isBulletFiring )
+        if ( isBulletFiring &&(弾カウント < 弾の上限回数))
         {
             if ( timer.IsAction( ) )
             {
@@ -271,15 +278,7 @@ namespace User
         font.Draw( serif, serifDrawPosition );
     }
 
-    bool EnemyBoss::IsJumping( )
-    {
-        return isLanding == false;
-    }
-    bool EnemyBoss::IsInTheScreen( cinder::CameraPersp const& camera )
-    {
-        Vec2f ScreenPosition = camera.worldToScreen( object.Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
-        return Utl::Colli2D::rectPoint( Vec2f::zero( ), env.getWindowSize( ), ScreenPosition );
-    }
+    
     bool EnemyBoss::IsHalfHPSerif( )
     {
         return isHalfHPSerif && NormalizedHitPoint( ) <= 0.5F;
@@ -354,13 +353,13 @@ namespace User
 
         Vec2f pos1, pos2, pos3;
 
-        pos1.x = randFloat( 0 + 50, env.getWindowWidth( ) / 2.0F - 50 ) / env.getWindowWidth( );
-        pos1.y = randFloat( 0 + 50, env.getWindowHeight( ) - 50 ) / env.getWindowHeight( );
+        auto u = randFloat( 0 + 100, env.getWindowWidth( ) / 2.0F - 50 ) / env.getWindowWidth( );
+        auto v = randFloat( 0 + 100, env.getWindowHeight( ) - 300 ) / env.getWindowHeight( );
         auto ray = camera.generateRay( pos1.x, pos1.y, env.getWindowAspectRatio( ) );
         BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken2.png", attackPoint ) );
 
-        pos2.x = randFloat( env.getWindowWidth( ) / 2.0F + 50, env.getWindowWidth( ) - 50 ) / env.getWindowWidth( );
-        pos2.y = randFloat( 0 + 50, env.getWindowHeight( ) - 50 ) / env.getWindowHeight( );
+        pos2.x = randFloat( env.getWindowWidth( ) / 2.0F + 50, env.getWindowWidth( ) - 100 ) / env.getWindowWidth( );
+        pos2.y = randFloat( 0 + 100, env.getWindowHeight( ) - 300 ) / env.getWindowHeight( );
         ray = camera.generateRay( pos2.x, pos2.y, env.getWindowAspectRatio( ) );
         BulletCreate( EnemyBulletTexture( object.Position( ), ray.getOrigin( ) + ray.getDirection( ), "shuriken2.png", attackPoint ) );
 

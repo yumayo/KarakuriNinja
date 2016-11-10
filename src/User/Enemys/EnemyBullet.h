@@ -3,22 +3,33 @@
 #include "EnemyBase.h"
 
 # include "../Utilitys/Yumayo.h"
-
+#include"../Utilitys/Audio.h"
 namespace User
 {
     class EnemyBullet : public EnemyBase
     {
         Timer timer;
         std::function<void( cinder::CameraPersp const& camera )> behavior;
+    private:
+        std::shared_ptr<cinder::gl::Texture> ‘Ò‹@;
+        std::shared_ptr<cinder::gl::Texture> UŒ‚ƒ‚[ƒVƒ‡ƒ“‰æ‘œ;
+        std::shared_ptr<cinder::gl::Texture> UŒ‚‰æ‘œ;
+        std::shared_ptr<cinder::gl::Texture> ¶‚ÉˆÚ“®;
+        std::shared_ptr<cinder::gl::Texture> ‰E‚ÉˆÚ“®;
     public:
-        EnemyBullet( cinder::Vec3f pos, const cinder::CameraPersp& camera );
+        EnemyBullet( cinder::Vec3f pos, const cinder::CameraPersp& camera, std::string const& fieldName );
         void update( cinder::CameraPersp const& camera ) override;
         void draw( ) override;
         bool Attack( const cinder::CameraPersp& camera ) override;
     private:
         void ƒ^ƒCƒ}[‚ª–Â‚é‚Ü‚Å‘Ò‹@( cinder::CameraPersp const& camera );
-        void ’e‚ğ“Š‚°‚é( cinder::CameraPersp const& camera );
+        void UŒ‚ƒ‚[ƒVƒ‡ƒ“( cinder::CameraPersp const& camera );
+        void UŒ‚( cinder::CameraPersp const& camera );
+        void UŒ‚Œãd’¼( cinder::CameraPersp const& camera );
+        void ¶‚ÖˆÚ“®( cinder::CameraPersp const& camera );
+        void ‰E‚ÖˆÚ“®( cinder::CameraPersp const& camera );
     private:
         void SetFunction( void ( EnemyBullet::* function ) ( cinder::CameraPersp const& camera ) );
+        std::vector<Audio> se;
     };
 }

@@ -6,7 +6,7 @@ namespace User
 
     EnemyBulletManager::EnemyBulletManager( )
     {
-
+		guard_se.push_back(Audio("SE/guard.wav"));
     }
 
     void EnemyBulletManager::update( )
@@ -65,14 +65,22 @@ namespace User
     int EnemyBulletManager::EnemyToPlayerDamage( Line & line_, const cinder::CameraPersp & camera )
     {
         int totalDamage = 0;
-        Each( [ &totalDamage, &line_, &camera ] ( EnemyBulletBaseRef& bulletRef )
+        Each( [ &totalDamage, &line_, &camera, this ] ( EnemyBulletBaseRef& bulletRef )
         {
             if ( bulletRef->Attack( camera ) )
             {
                 Vec2f vec = camera.worldToScreen( bulletRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
                 Vec2f size = camera.worldToScreen( bulletRef->Position( ) + bulletRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
                 float radius = Vec3f( size - vec ).length( ) / 2.0F;
-                if ( CheckDefLineOfCircle( line_, vec, radius + 50 ) > 1.0f ) totalDamage += bulletRef->AttackPoint( );
+				if (CheckDefLineOfCircle(line_, vec, radius + 50) > 1.0f) {
+					totalDamage += bulletRef->AttackPoint();
+				}
+				else {
+					if (bulletRef->NormalizedMoveTime() == 1) {
+						guard_se[0].Play();
+					}
+				}
+				
                 bulletRef->Erase( );
             }
         } );

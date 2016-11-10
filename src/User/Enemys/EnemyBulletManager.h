@@ -8,7 +8,7 @@
 
 #include "cinder/Camera.h"
 #include "../Utilitys/Nomoto.h"
-
+#include"../Utilitys/Audio.h"
 namespace User
 {
     using EnemyBulletBaseRef = std::shared_ptr<EnemyBulletBase>;
@@ -39,6 +39,7 @@ namespace User
     private:
         void Each( std::function<void( EnemyBulletBaseRef& )> func );
         void BulletEraser( );
+		std::vector<Audio> guard_se;
     };
 
     using EnemyBulletManagerRef = std::shared_ptr<EnemyBulletManager>;

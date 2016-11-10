@@ -7,7 +7,7 @@
 #include "cinder/Camera.h"
 #include "EnemyBase.h"
 #include "../Utilitys/Nomoto.h"
-
+#include"../Utilitys/Audio.h"
 namespace User
 {
     using EnemyBaseRef = std::shared_ptr<EnemyBase>;
@@ -27,6 +27,9 @@ namespace User
         // エネミーの作成を行います。
         template <class Ty>
         void Create( cinder::Vec3f position, const cinder::CameraPersp& camera );
+        // エネミーの作成を行います。
+        template <class Ty>
+        void Create( cinder::Vec3f position, const cinder::CameraPersp& camera, std::string const& fieldName );
         // エネミーが一体でも攻撃していたら true になります。
         bool IsAttack( const cinder::CameraPersp& camera );
         // プレイヤーからエネミーへのダメージラインとの当たり判定も込み
@@ -48,6 +51,7 @@ namespace User
         void EnemyEraser( );
         // 各エネミーの弾を回収します。
         void EnemyBulletsRecovery( );
+		std::vector<Audio> gurad_se;
     };
 
     using EnemyManagerRef = std::shared_ptr<EnemyManager>;
@@ -56,5 +60,11 @@ namespace User
     inline void EnemyManager::Create( cinder::Vec3f position, const cinder::CameraPersp& camera )
     {
         enemyList.emplace_back( std::make_shared<Ty>( position, camera ) );
+    }
+
+    template<class Ty>
+    inline void EnemyManager::Create( cinder::Vec3f position, const cinder::CameraPersp& camera, std::string const& fieldName )
+    {
+        enemyList.emplace_back( std::make_shared<Ty>( position, camera, fieldName ) );
     }
 }

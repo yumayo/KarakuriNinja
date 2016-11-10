@@ -11,6 +11,8 @@
 #include "cinder/app/App.h"
 #include "cinder/Json.h"
 
+#include "../Utilitys/fileUtil.hpp"
+
 namespace User
 {
     using namespace cinder;
@@ -22,17 +24,18 @@ namespace User
         {
             if ( obj.getValue( ) == "Bullet" )
             {
-                Create<EnemyBullet>( Vec3f( randFloat( -2.0F, 2.0F ), 2, randFloat( -2, 1 ) ), camera );
+                Create<EnemyBullet>( Vec3f( randFloat( -2.0F, 2.0F ), 2, randFloat( -2, 1 ) ), camera, getFilenameNoExt( path ) );
             }
             if ( obj.getValue( ) == "Slash" )
             {
-                Create<EnemySlash>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera );
+                Create<EnemySlash>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera, getFilenameNoExt( path ) );
             }
             if ( obj.getValue( ) == "Boss" )
             {
                 Create<EnemyBoss>( Vec3f( randFloat( -2.0F, 2.0F ), 0, randFloat( -2, 1 ) ), camera );
             }
         }
+        gurad_se.push_back( Audio( "SE/guard.wav" ) );
     }
 
     void EnemyManager::update( cinder::CameraPersp const& camera )
@@ -103,14 +106,19 @@ namespace User
     int EnemyManager::EnemyToPlayerDamage( Line& line_, const cinder::CameraPersp& camera )
     {
         int totalDamage = 0;
-        Each( [ &totalDamage, &line_, &camera ] ( EnemyBaseRef& enemyRef )
+        Each( [ &totalDamage, &line_, &camera, this ] ( EnemyBaseRef& enemyRef )
         {
             if ( enemyRef->Attack( camera ) )
             {
                 Vec2f vec = camera.worldToScreen( enemyRef->Position( ), env.getWindowWidth( ), env.getWindowHeight( ) );
                 Vec2f size = camera.worldToScreen( enemyRef->Position( ) + enemyRef->Size( ), env.getWindowWidth( ), env.getWindowHeight( ) );
                 float radius = Vec3f( size - vec ).length( ) / 2.0F;
-                if ( CheckDefLineOfCircle( line_, vec, radius + 50 ) > 1.0f ) totalDamage += enemyRef->AttackPoint( );
+                if ( CheckDefLineOfCircle( line_, vec, radius + 50 ) > 1.0f ) {
+                    totalDamage += enemyRef->AttackPoint( );
+                }
+                else {
+                    gurad_se[0].Play( );
+                }
             }
         } );
         return totalDamage;

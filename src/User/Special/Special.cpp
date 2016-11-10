@@ -20,6 +20,21 @@ void Special::update(bool canspecial) {
 			}
 			//////
 		}
+
+		auto hand = inputzkoo.hand();
+		for (auto& i : inputzkoo.GetHandleIDs())
+		{
+			if (inputzkoo.isPush(i, hand))
+			{
+				Vec2f iconpos = Vec2f(0, env.getWindowHeight()) + Vec2f(10 + 128, -10 - 128);
+				float iconsize = 128.f;
+				float kyori = (iconpos.x - hand.Position().x)*(iconpos.x - hand.Position().x) + (iconpos.y - hand.Position().y)*(iconpos.y - hand.Position().y);
+				if (kyori < (iconsize*iconsize)) {
+					goSpecialMode();
+				}
+			}
+		}
+
 	}
 
 	/////////////

@@ -14,11 +14,11 @@ namespace User
         EnemyObject object;
         EnemyObject initObject;
         bool isLanding;
+        cinder::gl::TextureRef textureRef;
     private:
         float maxHP;
         float HP; // HPの変動はプレイヤーの攻撃のみなのでprivate.
         cinder::Color hitColor; // カラーの変動はプレイヤーの攻撃のみなのでprivate.
-        cinder::gl::Texture texture;
         bool isLive; // 生きているかどうかを判断するのは各自でやらないのでprivate.
         int deadTime; // 死にゆく時間もいじることはないのでprivate.
         int attackPoint; // プレイヤーへの攻撃力もいじることはないのでprivate.
@@ -54,8 +54,11 @@ namespace User
         // 発射した弾を全て回収します。この関数を呼ぶとこのクラスが持っている弾を全てクリアします。
         EnemyBulletList BulletsRecovery( );
     protected:
+        bool IsJumping( );
         // 地面の中にいるかどうか。
         bool IsUnderGround( );
+        // スクリーンの中にいる時はtrueが返ってきます。
+        bool IsInTheScreen( cinder::CameraPersp const& camera );
     protected: // 以下 アップデートに記入推奨
         // 地面の中にいたら地上に引き戻します。
         void CollideGround( );

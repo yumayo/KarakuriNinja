@@ -26,12 +26,12 @@ namespace User
 
         textureDraw( HPEdge, leftDown );
         textureDraw( HPEdgeBase, leftDown,
-                     Area( 224, 0, 864, HPEdgeBase.getHeight( ) ), HPNormalized );
+                     Area( 225, 0, 639, HPEdgeBase.getHeight( ) ), HPNormalized );
 
         auto translateAPEdgePosition = Vec2f( 226, -101 );
         textureDraw( APEdge, leftDown + translateAPEdgePosition );
         textureDraw( APEdgeBase, leftDown + translateAPEdgePosition,
-                     Area( 14, 0, 354, APEdgeBase.getHeight( ) ), APNormalized );
+                     Area( 15, 0, 340, APEdgeBase.getHeight( ) ), APNormalized );
     }
 
     void Interface::update( )

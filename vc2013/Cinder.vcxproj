@@ -158,10 +158,12 @@
     <ClCompile Include="..\src\User\Special\SpecialSelect.cpp" />
     <ClCompile Include="..\src\User\Special\Tree.cpp" />
     <ClCompile Include="..\src\User\Special\Water.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\Audio.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Colli2D.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Coloring.cpp" />
     <ClCompile Include="..\src\User\Utilitys\ETC.cpp" />
     <ClCompile Include="..\src\User\Utilitys\FileIO.cpp" />
+    <ClCompile Include="..\src\User\Utilitys\fileUtil.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Hirasawa.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Nomoto.cpp" />
     <ClCompile Include="..\src\User\Utilitys\Yumayo.cpp" />
@@ -233,10 +235,12 @@
     <ClInclude Include="..\src\User\Special\SubTime.h" />
     <ClInclude Include="..\src\User\Special\Tree.h" />
     <ClInclude Include="..\src\User\Special\Water.h" />
+    <ClInclude Include="..\src\User\Utilitys\Audio.h" />
     <ClInclude Include="..\src\User\Utilitys\Colli2D.h" />
     <ClInclude Include="..\src\User\Utilitys\Coloring.h" />
     <ClInclude Include="..\src\User\Utilitys\ETC.h" />
     <ClInclude Include="..\src\User\Utilitys\FileIO.h" />
+    <ClInclude Include="..\src\User\Utilitys\fileUtil.hpp" />
     <ClInclude Include="..\src\User\Utilitys\Hirasawa.h" />
     <ClInclude Include="..\src\User\Utilitys\Nomoto.h" />
     <ClInclude Include="..\src\User\Utilitys\Yumayo.h" />

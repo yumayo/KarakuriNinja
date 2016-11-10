@@ -6,6 +6,7 @@
 #include "cinder/app/App.h"
 #include"../Utilitys/Hirasawa.h"
 #include"../Special/SpecialSceneBase.h"
+#include"../Utilitys/Audio.h"
 using namespace cinder;
 const int ICONNUM = 3;
 class SpecialSelect : public SpecialSceneBase{
@@ -27,11 +28,13 @@ public:
 			icon.size = Vec2f(250.f, 250.f);
 			icon.angle_t = 0.0f;
 			icon.startangle = 5.f;
+			icon.opened = false;
 			icons.push_back(icon);
 		}
 		for (int i = 0;i < 3;i++) {
 			icontex[i] = loadImage(app::loadAsset("Textures/select"+std::to_string(i)+".png"));
 		}
+		open_se.push_back(User::Audio("SE/hiraku.wav"));
 	}
 	void draw() override;
 	void update() override;
@@ -54,8 +57,9 @@ private:
 		float angle;
 		Vec2f size;//四角形としてのサイズです。円なら半分にしてください
 		Vec2f shiftpos;
+		bool opened;
 	};
-
+	std::vector<User::Audio> open_se;
 	std::vector<Icon>icons;
 	void drawIcon();
 	Vec2f iconsize;
