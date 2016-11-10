@@ -60,7 +60,7 @@ namespace User
 
 
     }
-    SceneResult::SceneResult( int _score, int maxcombo, int nowhp, int time )
+    SceneResult::SceneResult( int _score, int maxcombo, int nowhp, int time,bool win)
         : score( _score )
 		,maxcombo_(maxcombo)
 		,nowhp_(nowhp)
@@ -74,7 +74,6 @@ namespace User
         , texture( &GData::FindTexture( "title.png" ) )
 
         , background( &GData::FindTexture( "Textures/resultback.png" ) )
-        , ninja( &GData::FindTexture( "Textures/resultninja.png" ) )
         , makimonotex( &GData::FindTexture( "Textures/makimono.png" ) )
         , makimonotex2( &GData::FindTexture( "Textures/makimono2.png" ) )
         , fire( &GData::FindTexture( "Textures/Effect/effect0.png" ) )
@@ -84,7 +83,7 @@ namespace User
 
         , flash_t( 0.0f )
         , flash_alfa( 1.0f )
-
+		, win_(win)
         , rankin( false )
         , camera_t( 0.0f )
         , delay_t( 0.0f )
@@ -112,6 +111,12 @@ namespace User
         datanum = player_scores.size( );
         writeScores( );
         pushIcon( );
+		if (win) {
+			ninja = &GData::FindTexture("Textures/resultninja.png");
+		}
+		else {
+			ninja = &GData::FindTexture("Textures/resultninja2.png");
+		}
     }
 
     SceneResult::~SceneResult( )

@@ -13,6 +13,8 @@
 #include "EnemyBulletNot.h"
 #include "EnemyBoss.h"
 #include "EnemyBulletTutorial.h"
+#include "EnemySlashWalk.h"
+#include "EnemyBulletWalk.h"
 
 #include "cinder/app/App.h"
 #include "cinder/Json.h"
@@ -41,6 +43,14 @@ namespace User
             else if ( type == "bulletNot" )
             {
                 EnemyCreate<EnemyBulletNot>( position, camera );
+            }
+            else if ( type == "slashWalk" )
+            {
+                EnemyCreate<EnemySlashWalk>( position, camera );
+            }
+            else if ( type == "bulletWalk" )
+            {
+                EnemyCreate<EnemyBulletWalk>( position, camera );
             }
             else if ( type == "tutorial" )
             {

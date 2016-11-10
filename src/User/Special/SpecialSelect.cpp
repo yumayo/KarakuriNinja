@@ -8,11 +8,13 @@ void SpecialSelect::draw()
 	drawYazirushi();
 	drawSubInfo();
 	drawIcon();
+	drawSelectInfo();
 	drawbeginSpecial();
 	for (int i = 0;i<shurikens.size();i++) {
 		shurikens[i].draw(Vec2f(0, beginposy));
 	}
 	drawKuriko();
+	drawHatsudouInfo();
 	gl::popModelView();
 }
 
@@ -148,7 +150,7 @@ void SpecialSelect::drawKuriko()
 	if (delay_t_ < 1.0f) {
 		
 		Vec2f startpos = Vec2f(-size.x*2.f, beginposy - size.y / 2.f);
-		Vec2f endpos = Vec2f(env.getWindowWidth()/2-size.x/2, beginposy - size.y / 2.f);
+		Vec2f endpos = Vec2f(env.getWindowWidth()/2+size.x/4.f, beginposy - size.y / 2.f);
 		Vec2f pos;
 		pos.x = Easing::getEasing[Easing::QuartOut](awake_t_, startpos.x, endpos.x);
 		pos.y = Easing::getEasing[Easing::ExpoIn](awake_t_, startpos.y, endpos.y);
@@ -157,7 +159,7 @@ void SpecialSelect::drawKuriko()
 		Easing::tCount(awake_t_, 0.4f);
 	}
 	else {
-		Vec2f startpos = Vec2f(env.getWindowWidth()/2 - size.x / 2, beginposy - size.y / 2.f);
+		Vec2f startpos = Vec2f(env.getWindowWidth()/2 + size.x / 4.f, beginposy - size.y / 2.f);
 		Vec2f endpos = Vec2f(env.getWindowWidth() + size.x*2.f, beginposy - size.y / 2.f);
 		Vec2f pos;
 		pos.x = Easing::getEasing[Easing::CubicIn](awake2_t_, startpos.x, endpos.x);
@@ -188,9 +190,9 @@ void SpecialSelect::drawYazirushi()
 	if (!isCanChoose())return;
 	for (int i = 0;i < 3;i++) {
 		Vec2f size;
-		size.x = env.getWindowWidth() / 10.f;
+		size.x = env.getWindowWidth() / 11.f;
 		size.y = 2*size.x*(float(yazirushi->getHeight()) / float(yazirushi->getWidth()));
-		Vec2f pos = Vec2f(app::getWindowWidth() / 2 + float((i - 1)*450.f), size.x*1.2f+30*(0.5+0.5*cos(yazirushirotate_)));
+		Vec2f pos = Vec2f(app::getWindowWidth() / 2 + float((i - 1)*450.f), size.x*1.5f+30*(0.5+0.5*cos(yazirushirotate_)));
 		gl::pushModelView();
 		gl::translate(pos);
 		gl::rotate(90);
@@ -201,6 +203,73 @@ void SpecialSelect::drawYazirushi()
 		gl::popModelView();
 	}
 	yazirushirotate_ += 0.1f;
+}
+void SpecialSelect::drawHatsudouInfo()
+{
+	if (shurikenEnd())return;
+	float posy = beginposy - 180;
+	Vec2f size;
+	size.y= cutinsizey*0.575f;
+	size.x = size.y*(float(hasudouinfotex->getWidth()) / float(hasudouinfotex->getHeight()));
+	if (delay_t_ < 1.0f) {
+		Vec2f startpos = Vec2f(env.getWindowWidth() + size.x / 2, posy);
+		Vec2f endpos = Vec2f(env.getWindowWidth() / 2.5f , posy);
+		Vec2f pos;
+		pos.x = Easing::getEasing[Easing::QuartOut](awake_t_, startpos.x, endpos.x);
+		pos.y = Easing::getEasing[Easing::ExpoIn](awake_t_, startpos.y, endpos.y);
+		gl::pushModelView();
+		gl::translate(pos + Vec2f(10, 10));
+		gl::color(ColorA(1, 1, 1, 1));
+		hasudouinfotex->enableAndBind();
+		gl::drawSolidRect(Rectf(-size / 2, size/2));
+		hasudouinfotex->disable();
+		gl::popModelView();
+
+		gl::pushModelView();
+		gl::translate(pos);
+		gl::color(ColorA(0, 0, 0, 1));
+		hasudouinfotex->enableAndBind();
+		gl::drawSolidRect(Rectf(-size / 2, size/2));
+		hasudouinfotex->disable();
+		gl::popModelView();
+	}
+	else {
+		Vec2f startpos = Vec2f(env.getWindowWidth() / 2.5f , posy);
+		Vec2f endpos = Vec2f(-env.getWindowWidth() - size.x*2.f, posy);
+		Vec2f pos;
+		pos.x = Easing::getEasing[Easing::CubicIn](awake2_t_, startpos.x, endpos.x);
+		pos.y = Easing::getEasing[Easing::ExpoIn](awake2_t_, startpos.y, endpos.y);
+		gl::pushModelView();
+		gl::translate(pos+Vec2f(10,10));
+		gl::color(ColorA(1, 1, 1, 1));
+		hasudouinfotex->enableAndBind();
+		gl::drawSolidRect(Rectf(-size / 2, size/2));
+		hasudouinfotex->disable();
+		gl::popModelView();
+
+		gl::pushModelView();
+		gl::translate(pos);
+		gl::color(ColorA(0, 0, 0, 1));
+		hasudouinfotex->enableAndBind();
+		gl::drawSolidRect(Rectf(-size / 2, size/2));
+		hasudouinfotex->disable();
+		gl::popModelView();
+	}
+}
+void SpecialSelect::drawSelectInfo()
+{
+	if (awake2_t_ < 1)return;
+	Vec2f pos = Vec2f(env.getWindowWidth() / 2, env.getWindowHeight()*0.1f);
+	Vec2f size;
+	size.x = env.getWindowWidth() / 1.75f;
+	size.y = size.x*(float(selectinfotex->getHeight()) / float(selectinfotex->getWidth()));
+	gl::pushModelView();
+	gl::translate(pos);
+	gl::color(ColorA(1, 1, 1, 1));
+	selectinfotex->enableAndBind();
+	gl::drawSolidRect(Rectf(-size / 2, size / 2));
+	selectinfotex->disable();
+	gl::popModelView();
 }
 void SpecialSelect::drawSubInfo()
 {

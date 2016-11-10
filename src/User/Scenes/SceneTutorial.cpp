@@ -119,6 +119,7 @@ namespace User
             }
             if ( tutorialManager.BougyoIsNextStage( ) )
             {
+                enemyBulletManager = std::make_shared<EnemyBulletManager>( );
                 fieldManager->End( );
                 enemyManager->PlayerSpecialAttackToEnemyDamage( 100, camera( ), SpecialType::NOTSELECTED );
             }

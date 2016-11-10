@@ -90,12 +90,12 @@
       "position": [ 0.0, 0.0, 1.0 ]
     },
     {
-      "type": "slashNot",
-      "position": [ 3.0, 0.0, 0.0 ]
+      "type": "slashWalk",
+      "position": [ 2.0, 0.0, -1.0 ]
     },
     {
-      "type": "slashNot",
-      "position": [ -3.0, 0.0, 0.0 ]
+      "type": "slashWalk",
+      "position": [ -2.0, 0.0, -2.0 ]
     }
   ]
 }

@@ -178,13 +178,23 @@ void SpecialMinigame::startBackgroundEasing()
 void SpecialMinigame::drawInfo()
 {
 	if (startend()) {
+		Vec2f pos = Vec2f(app::getWindowWidth() / 2, 250 - 150 * info_t_);
 		gl::pushModelView();
-		gl::translate(Vec2f(app::getWindowWidth() / 2, 250-150*info_t_));
-		gl::color(ColorA(0, 0, 0, infoalfa_));
+		gl::translate(pos+Vec2f(5,-5));
+		gl::color(ColorA(1, 1, 1, infoalfa_));
 		cursor_->enableAndBind();
 		gl::drawSolidRect(ci::Rectf(-infosize, infosize));
 		cursor_->disable();
 		gl::color(ColorA(1, 1, 1, 1));
+		gl::popModelView();
+
+		gl::pushModelView();
+		gl::translate(pos);
+		gl::color(ColorA(0, 0, 0, infoalfa_));
+		cursor_->enableAndBind();
+		gl::drawSolidRect(ci::Rectf(-infosize, infosize));
+		cursor_->disable();
+		gl::color(ColorA(0, 0, 0, 1));
 		gl::popModelView();
 	}
 }

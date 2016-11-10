@@ -15,6 +15,10 @@ namespace User
 		Fonts font;
 		int comboNumber;
 		int maxComboNumber;
+		cinder::gl::Texture* num10[9];
+		cinder::gl::Texture* num1[10];
+		cinder::gl::Texture* combo;
+		float t_;
 	public:
 		Combo();
         int ComboNumber( ) { return comboNumber; }
@@ -23,5 +27,6 @@ namespace User
         void PlusCombo( int attackSuccessNum );
         void ResetCombo( );
 		void Draw(cinder::Vec2f position);
+		void drawCombo();
 	};
 }

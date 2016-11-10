@@ -94,12 +94,12 @@
       "position": [ 0.0, 2.0, 2.0 ]
     },
     {
-      "type": "slashNot",
+      "type": "slashWalk",
       "position": [ 3.0, 0.0, -1.0 ]
     },
     {
-      "type": "bulletNot",
-      "position": [ -3.0, 0.0, -1.0 ]
+      "type": "bulletWalk",
+      "position": [ -3.0, 0.0, 0.0 ]
     }
   ]
 }

@@ -147,40 +147,26 @@ namespace User
 	}
 	void SceneTitle::drawKunai()
 	{
-		Vec2f startpos = Vec2f(1.5f*env.getWindowWidth(), env.getWindowHeight() / 2.f);
+		if (!countend(t_[LOGOSLIDE]))return;
 		Vec2f endpos = env.getWindowSize() / 2;
 		Vec2f size = env.getWindowSize();
-		if (!countend(t_[FLASH])) {
-			int num = 3;
-			if (countend(t_[TitleEasing::LOGOSLIDE])) {
-				num = 1;
-			}
-			for (int i = num - 1;i >= 0;i--) {
-				Vec2f pos;
-				pos.x = Easing::getEasing[Easing::Linear](t_[TitleEasing::LOGOSLIDE] - 2 * i*(1.0f / (60.0f*1.0f)), startpos.x, endpos.x);
-				pos.y = Easing::getEasing[Easing::Linear](t_[TitleEasing::LOGOSLIDE] - i*(1.0f / (60.0f*1.0f)), startpos.y, endpos.y);
-				gl::pushModelView();
-				gl::translate(pos);
-				textures[T_MAINKUNAI]->enableAndBind();
-				float color = 1 - float(i) / float(num);
-				gl::color(ColorA(color, color, 1, color));
-				gl::drawSolidRect(Rectf(-size / 2.f, size / 2.f));
-				textures[T_MAINKUNAI]->disable();
-				gl::popModelView();
-			}
-		}
-		else {
-			gl::pushModelView();
-			gl::translate(endpos+Vec2f(0,40*sin(kunaiangle)));
-			textures[T_MAINKUNAI]->enableAndBind();
-			gl::color(ColorA(1, 1, 1, 1));
-			gl::drawSolidRect(Rectf(-size / 2.f, size / 2.f));
-			textures[T_MAINKUNAI]->disable();
-			gl::popModelView();
-			kunaiangle += 0.05;
-		}
+		gl::pushModelView();
+		gl::translate(endpos + Vec2f(0, 15 * sin(kunaiangle)));
+		textures[T_MAINKUNAI]->enableAndBind();
+		gl::color(ColorA(1, 1, 1, 1));
+		gl::drawSolidRect(Rectf(-size / 2.f, size / 2.f));
+		textures[T_MAINKUNAI]->disable();
+		gl::popModelView();
+		kunaiangle += 0.05;
 		
-
+		gl::pushModelView();
+		gl::translate(endpos + Vec2f(0, 60 * sin(kunaiangle)));
+		textures[T_SUBKUNAI]->enableAndBind();
+		gl::color(ColorA(1, 1, 1, 1));
+		gl::drawSolidRect(Rectf(-size / 2.f, size / 2.f));
+		textures[T_SUBKUNAI]->disable();
+		gl::popModelView();
+		kunaiangle += 0.05;
 	}
     bool SceneTitle::isStartTouch( )
     {
@@ -389,7 +375,7 @@ namespace User
 	void SceneTitle::drawBackground()
 	{
 		if (!countend(t_[CROSS])) return;
-		Easing::tCount(t_[UP],4.5f);
+		Easing::tCount(t_[UP],3.0f);
 		float alfa = Easing::getEasing[Easing::QuadIn](t_[UP], 0.f, 1.f);
 		Vec2f size;
 		Vec2f endsize = env.getWindowSize();
@@ -472,7 +458,7 @@ namespace User
 	void SceneTitle::drawStartIcon()
 	{
 		if (!countend(t_[FLASH]))return;
-		Vec2f pos=Vec2f(env.getWindowWidth()/2,env.getWindowHeight()*(7.2f/10.f));
+		Vec2f pos=Vec2f( env.getWindowWidth( ) / 3.6f, env.getWindowHeight( ) / 1.1f );
 		Vec2f size;
 		size.x = env.getWindowWidth()/5.f;
 		size.y = size.x*((float(textures[T_START]->getHeight()) / float(textures[T_START]->getWidth())));
@@ -500,6 +486,7 @@ namespace User
 		str[T_MAINKURIKO] = "mainkuriko";
 		str[T_START] = "start";
 		str[T_MAINKUNAI] = "mainkunai";
+		str[T_SUBKUNAI] = "titlekunai";
 		for (int i = 0;i < TexType::TEXMAX;i++) {
 			textures[i] = &GData::FindTexture("Textures/Title/" + str[i] + ".png");
 		}

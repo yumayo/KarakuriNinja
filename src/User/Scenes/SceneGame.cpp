@@ -15,7 +15,7 @@ namespace User
     SceneGame::SceneGame( )
     {
         TRData::Reset( );
-        
+
         // ユーマヨが管理するものを作成。
         fieldManager = std::make_shared<FieldManager>( "JSON/GameMainField.json" );
         enemyManager = std::make_shared<EnemyManager>( camera( ), fieldManager->FieldDataPath( ) );
@@ -32,7 +32,7 @@ namespace User
         player = Player( 100, 100 );
 
         // 大ちゃんが管理するものを作成。
-        mainbgm.push_back( &GData::FindAudio( "BGM/mainbgm0.wav" ) );
+        mainbgm = &GData::FindAudio( "BGM/mainbgm0.wav" );
         watercount = 0;
         fusuma = std::make_shared<Fusuma>( );
         time = 0;
@@ -40,10 +40,11 @@ namespace User
         mpmax = &GData::FindAudio( "SE/mpmax.wav" );
         horagai = &GData::FindAudio( "SE/gamestart.wav" );
         horagai->Play( );
+        gameClearSE = &GData::FindAudio( "SE/j_26.wav" );
     }
     SceneGame::~SceneGame( )
     {
-        mainbgm[0]->Stop( );
+        mainbgm->Stop( );
     }
     void SceneGame::resize( )
     {
@@ -94,6 +95,7 @@ namespace User
             damageColor.a = std::min( damageColor.a + 0.2, 0.6 );
             timer.On( );
             timer.Advance( 60 );
+            UI->ResetCombo( );
         }
 
         for ( auto& obj : moveInput.Lines( ) )
@@ -120,17 +122,21 @@ namespace User
 
         if ( moveInput.Lines( ).empty( ) ) return;
 
-        bool isHit = false;
+        int hitNum = 0;
         for ( auto& obj : moveInput.Lines( ) )
         {
             if ( 0 != enemyManager->PlayerToEnemyAttackCheck( obj, camera( ) ) )
             {
-                isHit = true;
-                break;
+                hitNum += 1;
             }
         }
 
-        UI->PlusCombo( isHit );
+        UI->PlusCombo( hitNum );
+
+        if ( hitNum == 0 )
+        {
+            UI->ResetCombo( );
+        }
     }
     void SceneGame::UpdateDamageExpression( )
     {
@@ -192,7 +198,7 @@ namespace User
             effectManager->EffectRegister( enemyBulletManager->EffectRecovery( ) );
             effectManager->Update( );
         }
-        if ( ( TRData::enemyKill.IsComplete( ) ) && ( !special.getIsSpecial( ) ) && ( !fieldManager->IsMoveing( ) ) ) {
+        if ( ( !special.getIsSpecial( ) ) && ( !fieldManager->IsMoveing( ) ) ) {
             time++;
         }
 
@@ -207,7 +213,12 @@ namespace User
 
         if ( TRData::special.IsStopUpdate( ) )
         {
-            talk->Update( );
+            if ( !isTalk ) talkTime = time;
+            isTalk = true;
+            if ( ( ( time - talkTime ) % 120 ) == ( 120 - 1 ) )
+            {
+                TRData::PopFrontSerif( );
+            }
             if ( TRData::IsSerifTalked( ) )
             {
                 TRData::special.TutorialEnd( );
@@ -215,6 +226,8 @@ namespace User
                 mpmax->Play( );
                 special.goSpecialMode( );
 
+                isTalk = false;
+                talkTime = 0;
             }
         }
 
@@ -245,20 +258,25 @@ namespace User
         // ラスボスを倒し終わったら、何らかのアクション後、次のシーンへ。
         if ( enemyManager->IsEmpty( ) && fieldManager->IsLastField( ) && sceneChangeFrame != 0 )
         {
+            if ( !isGameClear ) gameClearSE->Play( );
+            isGameClear = true;
+
+
             float gain = ( static_cast<float>( sceneChangeFrame ) / maxSceneChangeFrame ) * 0.4F;
-            mainbgm[0]->Gain( gain );
+            mainbgm->Gain( gain );
             sceneChangeFrame = std::max( sceneChangeFrame - 1, 0 );
 
             camera.Shake( 0.05F );
 
             mojiManager.ReCall( "JSON/GameClear.json" );
         }
-
         // 死亡したらゲームオーバーの文字を表示して襖を閉める。
-        if ( player.NowHp( ) <= 0.0F && sceneChangeFrame != 0 )
+        else if ( player.NowHp( ) <= 0.0F && sceneChangeFrame != 0 )
         {
+            isGameClear = false;
+
             float gain = ( static_cast<float>( sceneChangeFrame ) / maxSceneChangeFrame ) * 0.4F;
-            mainbgm[0]->Gain( gain );
+            mainbgm->Gain( gain );
             sceneChangeFrame = std::max( sceneChangeFrame - 1, 0 );
 
             damageColor.a = std::min( damageColor.a + 0.005, 0.6 );
@@ -304,7 +322,7 @@ namespace User
     {
         if ( inputs.isPressKey( Key::KEY_LCTRL ) && inputs.isPushKey( Key::KEY_r ) )
         {
-            create( new SceneResult( UI->Score( ), UI->MaxComboNumber( ), player.NowHp( ) + player.NowMp( ), time / 60 ) );///////ここ！！
+            create( new SceneResult( UI->Score( ), UI->MaxComboNumber( ), player.NowHp( ) + player.NowMp( ), time / 60, false ) );///////ここ！！
             return;
         }
 
@@ -318,7 +336,7 @@ namespace User
 
                 if ( fusuma->IsMoveFinished( ) )
                 {
-                    create( new SceneResult( UI->Score( ), UI->MaxComboNumber( ), player.NowHp( ) + player.NowMp( ), time / 60 ) );
+                    create( new SceneResult( UI->Score( ), UI->MaxComboNumber( ), player.NowHp( ) + player.NowMp( ), time / 60, isGameClear ) );
                     return;
                 }
             }
@@ -388,7 +406,7 @@ namespace User
 
             effectManager->Draw( );
 
-            enemyManager->DrawEnemyHitPoint( );
+            //enemyManager->DrawEnemyHitPoint( );
 
             UI->draw( player.NormalizedMp( ),
                       player.NormalizedHp( ),
@@ -397,13 +415,14 @@ namespace User
 
             talk->Draw( Vec2f( 0, env.getWindowHeight( ) ) + Vec2f( 0, -220 ) );
 
-            mojiManager.Draw( env.getWindowCenter( ), 135 );
         }
 
         special.draw( );
 
         gl::color( damageColor );
         gl::drawSolidRect( Rectf( Vec2f::zero( ), env.getWindowSize( ) ) );
+
+        mojiManager.Draw( env.getWindowCenter( ), 135 );
 
         fusuma->drawFusuma( );
     }

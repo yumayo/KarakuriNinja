@@ -135,10 +135,12 @@
     <ClCompile Include="..\src\User\Enemys\EnemyBulletNot.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyBulletTexture.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyBulletTutorial.cpp" />
+    <ClCompile Include="..\src\User\Enemys\EnemyBulletWalk.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyManager.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyObject.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemySlash.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemySlashNot.cpp" />
+    <ClCompile Include="..\src\User\Enemys\EnemySlashWalk.cpp" />
     <ClCompile Include="..\src\User\Enemys\EnemyTutorial.cpp" />
     <ClCompile Include="..\src\User\Field\Field.cpp" />
     <ClCompile Include="..\src\User\Field\FieldManager.cpp" />
@@ -238,10 +240,12 @@
     <ClInclude Include="..\src\User\Enemys\EnemyBulletNot.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyBulletTexture.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyBulletTutorial.h" />
+    <ClInclude Include="..\src\User\Enemys\EnemyBulletWalk.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyManager.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyObject.h" />
     <ClInclude Include="..\src\User\Enemys\EnemySlash.h" />
     <ClInclude Include="..\src\User\Enemys\EnemySlashNot.h" />
+    <ClInclude Include="..\src\User\Enemys\EnemySlashWalk.h" />
     <ClInclude Include="..\src\User\Enemys\EnemyTutorial.h" />
     <ClInclude Include="..\src\User\Field\Field.h" />
     <ClInclude Include="..\src\User\Field\FieldManager.h" />

@@ -29,7 +29,7 @@ namespace User
     class SceneResult : public SceneBase
     {
     public:
-        SceneResult( int score, int maxcombo, int nowhp, int time );
+        SceneResult( int score, int maxcombo, int nowhp, int time,bool win);
         ~SceneResult( );
     public:
         void resize( );
@@ -105,6 +105,7 @@ namespace User
         float t_[TS::MAX];
         bool s_end[SPE::E_MAX];
         bool rankin;
+		bool win_;
 		float endt_[3];
         Fusuma fusuma;
 

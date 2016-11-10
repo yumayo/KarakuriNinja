@@ -11,7 +11,7 @@ namespace User
 {
     using namespace cinder;
     EnemyBulletTutorial::EnemyBulletTutorial( cinder::Vec3f pos, const cinder::CameraPersp& camera )
-        : EnemyBase( pos, camera, Status( 6.0F, 4 ) )
+        : EnemyBase( pos, camera, Status( 80.0F, 0 ) )
     {
         timer.Advance( 60 );
 

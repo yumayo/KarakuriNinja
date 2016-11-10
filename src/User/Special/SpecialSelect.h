@@ -54,6 +54,8 @@ public:
 		subinfo[0]= &GData::FindTexture("Textures/subfire.png");
 		subinfo[1] = &GData::FindTexture("Textures/subwater.png");
 		subinfo[2] = &GData::FindTexture("Textures/subtree.png");
+		hasudouinfotex= &GData::FindTexture("Textures/specailhatudou.png");
+		selectinfotex = &GData::FindTexture("Textures/specialselect.png");
 		beginposy = env.getWindowHeight() / 2.f;
 		cutinsizey = env.getWindowHeight() / 2.f;
 		pushShuriken();
@@ -109,6 +111,8 @@ private:
 	gl::Texture* icontex[3];
 	gl::Texture* yazirushi;
 	gl::Texture* subinfo[3];
+	gl::Texture* hasudouinfotex;
+	gl::Texture* selectinfotex;
 	bool isCanChoose() {
 		return (icons[icons.size() - 1].angle_t >= 1.0f)&&(ischoosed_==false);
 	}
@@ -119,9 +123,11 @@ private:
 	void pushShuriken();
 	void updateShuriken();
 	void drawYazirushi();
+	void drawHatsudouInfo();
 	bool shurikenEnd() {
 		return shurikens[shurikens.size() - 1].end();
 	}
+	void drawSelectInfo();
 	void drawSubInfo();
 	void updateSubInfo();
 	void DrawCutTexture(cinder::gl::Texture* texture, cinder::Vec2f position, cinder::Vec2f size, cinder::Vec2f offset, cinder::Vec2f cutSize);

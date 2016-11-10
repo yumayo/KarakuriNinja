@@ -68,10 +68,14 @@ namespace User
         Timer timer;
         int maxSceneChangeFrame = 60 * 3;
         int sceneChangeFrame = maxSceneChangeFrame;
+        bool isGameClear = false;
         cinder::ColorA damageColor;
         TalkRef talk;
+        bool isTalk = false;
+        int talkTime = 0;
         MoveInput moveInput;
         MojiManager mojiManager;
+        Audio* gameClearSE;
         //=======================================
 
 
@@ -86,7 +90,7 @@ namespace User
         // 大ちゃんが管理するもののインスタンス化。
 
         Special special;
-        std::vector<Audio*> mainbgm;
+        Audio* mainbgm;
         int watercount;
         std::shared_ptr<Fusuma> fusuma;
         int time;
